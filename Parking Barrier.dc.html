@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:sysfallback;src:local(system-ui)}
+body{margin:0;background:#EDEFEC}
+*{box-sizing:border-box}
+::selection{background:#087F5B;color:#fff}
+button{font-family:inherit}
+a{color:#087F5B}
+a:hover{color:#066647}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#EDEFEC;display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start;justify-content:center;padding:40px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+  <!-- PHONE -->
+  <div style="position:relative;">
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" width="{{ 390 }}" height="{{ 844 }}" hint-size="390px,844px">
+      <div style="height:100%;display:flex;flex-direction:column;background:#F7F8FA;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#172B26;">
+
+        <!-- shared top spacer for status bar / dynamic island -->
+        <div style="height:54px;flex:none;"></div>
+
+        <!-- ===================== CONNECT SCREEN ===================== -->
+        <sc-if value="{{ isConnect }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;padding:0 22px 28px;overflow:auto;">
+          <div style="text-align:center;padding:8px 0 22px;">
+            <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;">Parking Barrier</div>
+            <div style="font-size:12px;color:#7C8B86;margin-top:4px;">Demo mode · Simulated device</div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #E7EAE8;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 1px 2px rgba(23,43,38,0.04);">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:44px;height:44px;border-radius:12px;background:#EAF6F0;display:flex;align-items:center;justify-content:center;flex:none;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 7l10 10-5 5V2l5 5L7 17" stroke="#087F5B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:16px;font-weight:600;">M010 Barrier</div>
+                <div style="font-size:13px;color:#7C8B86;">Nearby device</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="width:8px;height:8px;border-radius:50%;background:{{ bleColor }};display:inline-block;"></span>
+                <span style="font-size:13px;font-weight:600;color:{{ bleColor }};">{{ bleLabel }}</span>
+              </div>
+            </div>
+
+            <sc-if value="{{ showConnectBtn }}" hint-placeholder-val="{{ true }}">
+            <button onclick="{{ connect }}" disabled="{{ connectDisabled }}" style="width:100%;padding:14px;border-radius:12px;border:none;background:#087F5B;color:#fff;font-size:16px;font-weight:600;cursor:pointer;opacity:{{ connectBtnOpacity }};">{{ connectBtnLabel }}</button>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ showUnauthorizedNotice }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;background:#FFF4E6;border:1px solid #FFE0AA;border-radius:14px;padding:16px;display:flex;gap:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:none;margin-top:1px;"><path d="M12 9v4M12 17h.01M10.3 3.86L1.8 18a1.5 1.5 0 001.3 2.25h17.8a1.5 1.5 0 001.3-2.25L13.7 3.86a1.5 1.5 0 00-2.6 0z" stroke="#E8590C" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#8A4B00;">This phone is not authorized to control this barrier.</div>
+              <div style="font-size:13px;color:#8A4B00;margin-top:4px;line-height:1.4;">Only the enrolled owner phone can send commands. Pairing was simulated for this demo.</div>
+            </div>
+          </div>
+          </sc-if>
+
+          <div style="margin-top:18px;font-size:12px;color:#9AAAA5;text-align:center;line-height:1.5;">Bluetooth Low Energy connects your phone to the barrier controller directly — no internet or cloud service is used.</div>
+        </div>
+        </sc-if>
+
+        <!-- ===================== MAIN SCREEN ===================== -->
+        <sc-if value="{{ isMain }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;padding:0 20px 22px;overflow:auto;">
+
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 2px 14px;">
+            <div>
+              <div style="font-size:18px;font-weight:700;">M010 Barrier</div>
+              <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                <span style="width:7px;height:7px;border-radius:50%;background:{{ bleColor }};display:inline-block;"></span>
+                <span style="font-size:12.5px;color:{{ bleColor }};font-weight:600;">{{ bleLabel }}</span>
+                <span style="font-size:12.5px;color:#C7D0CC;">·</span>
+                <span style="font-size:12.5px;color:{{ authColor }};font-weight:600;">{{ authLabel }}</span>
+              </div>
+            </div>
+            <div style="font-size:10.5px;color:#9AAAA5;background:#EEF2F0;padding:5px 9px;border-radius:20px;font-weight:600;letter-spacing:0.2px;">DEMO</div>
+          </div>
+
+          <sc-if value="{{ showDisconnectedBanner }}" hint-placeholder-val="{{ false }}">
+          <button onclick="{{ reconnect }}" style="text-align:left;border:none;cursor:pointer;background:#F1F3F1;border-radius:12px;padding:11px 14px;margin-bottom:12px;font-size:12.5px;color:#5B6B66;display:flex;align-items:center;justify-content:space-between;">
+            <span>Phone disconnected — position shown is last known.</span>
+            <span style="color:#087F5B;font-weight:700;">Reconnect ›</span>
+          </button>
+          </sc-if>
+
+          <sc-if value="{{ showUnauthorizedBanner }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFF4E6;border:1px solid #FFE0AA;border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:12.5px;color:#8A4B00;font-weight:600;">This phone is not authorized to control this barrier.</div>
+          </sc-if>
+
+          <!-- illustration card -->
+          <div style="background:#fff;border:1px solid #E7EAE8;border-radius:20px;padding:22px 18px 18px;display:flex;flex-direction:column;align-items:center;box-shadow:0 1px 2px rgba(23,43,38,0.04);">
+            <svg width="100%" height="150" viewBox="0 0 300 170" style="max-width:280px;">
+              <line x1="20" y1="150" x2="280" y2="150" stroke="#DCE3E0" stroke-width="2"/>
+              <line x1="60" y1="150" x2="60" y2="30" stroke="#DCE3E0" stroke-width="2" stroke-dasharray="6 6"/>
+              <line x1="240" y1="150" x2="240" y2="30" stroke="#DCE3E0" stroke-width="2" stroke-dasharray="6 6"/>
+              <rect x="78" y="140" width="28" height="16" rx="3" fill="#DCE3E0"/>
+              <rect x="76" y="146" width="32" height="10" rx="4" fill="#B9C4BF"/>
+              <g transform="rotate({{ armAngle }} 90 150)">
+                <rect x="90" y="144" width="82" height="13" rx="6" fill="#087F5B"/>
+                <circle cx="172" cy="150.5" r="9" fill="#F59F00"/>
+              </g>
+            </svg>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+              <span style="width:10px;height:10px;border-radius:50%;background:{{ positionColor }};display:inline-block;"></span>
+              <span style="font-size:20px;font-weight:700;color:{{ positionColor }};">{{ positionLabel }}</span>
+            </div>
+            <div style="font-size:12.5px;color:#7C8B86;margin-top:4px;text-align:center;">{{ positionSub }}</div>
+          </div>
+
+          <!-- safety status -->
+          <div style="display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 14px;background:{{ safetyBg }};border-radius:12px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:{{ safetyColor }};display:inline-block;flex:none;"></span>
+            <span style="font-size:13px;font-weight:600;color:{{ safetyColor }};">{{ safetyLabel }}</span>
+          </div>
+
+          <!-- stop reason explanation -->
+          <sc-if value="{{ showStopReason }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px;background:#FFF0EE;border:1px solid #FFD3CC;border-radius:14px;padding:14px 16px;">
+            <div style="font-size:13.5px;font-weight:700;color:#C1121F;">{{ stopReasonTitle }}</div>
+            <div style="font-size:12.5px;color:#8A2E2E;margin-top:4px;line-height:1.45;">{{ stopReasonBody }}</div>
+            <button onclick="{{ checkAgain }}" style="margin-top:10px;padding:9px 16px;border-radius:10px;border:1px solid #C1121F;background:#fff;color:#C1121F;font-size:13px;font-weight:700;cursor:pointer;">Check again</button>
+          </div>
+          </sc-if>
+
+          <!-- blockers list -->
+          <sc-if value="{{ showBlockers }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px;background:#F1F3F1;border-radius:12px;padding:12px 14px;">
+            <div style="font-size:12px;font-weight:700;color:#5B6B66;margin-bottom:6px;">Can't move right now:</div>
+            <sc-for list="{{ blockers }}" as="b" hint-placeholder-count="1">
+              <div style="font-size:12.5px;color:#5B6B66;padding:2px 0;">• {{ b }}</div>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <!-- primary action -->
+          <sc-if value="{{ showPrimary }}" hint-placeholder-val="{{ false }}">
+          <button onclick="{{ primaryAction }}" disabled="{{ primaryDisabled }}" style="margin-top:16px;width:100%;padding:16px;border-radius:14px;border:none;background:{{ primaryBg }};color:#fff;font-size:16px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <span>{{ primaryLabel }}</span>
+            <span style="font-size:12px;font-weight:500;opacity:0.85;">{{ primarySub }}</span>
+          </button>
+          </sc-if>
+
+          <sc-if value="{{ showBothActions }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;display:flex;gap:10px;">
+            <button onclick="{{ doLower }}" style="flex:1;padding:15px 8px;border-radius:14px;border:none;background:#087F5B;color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;">Lower barrier</button>
+            <button onclick="{{ doRaise }}" style="flex:1;padding:15px 8px;border-radius:14px;border:none;background:#172B26;color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;">Raise barrier</button>
+          </div>
+          </sc-if>
+
+          <!-- stop movement -->
+          <sc-if value="{{ showStopControl }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <button onclick="{{ manualStop }}" disabled="{{ stopDisabled }}" style="margin-top:16px;width:100%;padding:16px;border-radius:14px;border:2px solid #C1121F;background:#fff;color:#C1121F;font-size:16px;font-weight:700;cursor:pointer;opacity:{{ stopOpacity }};">■ Stop movement</button>
+            <sc-if value="{{ stopDisabled }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:12px;color:#9AAAA5;text-align:center;margin-top:8px;">Phone can't send a stop request while disconnected. The barrier's local safety system keeps working on its own.</div>
+            </sc-if>
+          </div>
+          </sc-if>
+
+          <a href="javascript:void(0)" onclick="{{ goActivity }}" style="display:block;text-align:center;margin-top:18px;font-size:13.5px;font-weight:600;text-decoration:none;">Recent activity &amp; device details ›</a>
+
+          <div style="margin-top:auto;padding-top:16px;text-align:center;font-size:11px;color:#B7C2BE;">Demo mode · Simulated device</div>
+        </div>
+        </sc-if>
+
+        <!-- ===================== ACTIVITY SCREEN ===================== -->
+        <sc-if value="{{ isActivity }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;padding:0 20px 22px;overflow:auto;">
+          <div style="display:flex;align-items:center;gap:10px;padding:2px 0 16px;">
+            <button onclick="{{ goMain }}" style="border:none;background:#F1F3F1;width:36px;height:36px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+              <svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M8 1L1 7.5L8 14" stroke="#172B26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div style="font-size:17px;font-weight:700;">Activity &amp; device</div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #E7EAE8;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:11.5px;font-weight:700;color:#9AAAA5;letter-spacing:0.4px;">DEVICE DETAILS</div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span style="color:#7C8B86;">Device name</span><span style="font-weight:600;">M010 Barrier</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span style="color:#7C8B86;">Controller</span><span style="font-weight:600;">ESP32-S3 (simulated)</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span style="color:#7C8B86;">Connection</span><span style="font-weight:600;color:{{ bleColor }};">{{ bleLabel }}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span style="color:#7C8B86;">Owner authorization</span><span style="font-weight:600;color:{{ authColor }};">{{ authLabel }}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span style="color:#7C8B86;">Network</span><span style="font-weight:600;">Local BLE only</span></div>
+          </div>
+
+          <div style="font-size:11.5px;font-weight:700;color:#9AAAA5;letter-spacing:0.4px;margin:18px 0 8px;">SIMULATED EVENTS</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <sc-for list="{{ log }}" as="item" hint-placeholder-count="4">
+              <div style="background:#fff;border:1px solid #E7EAE8;border-radius:12px;padding:11px 14px;display:flex;justify-content:space-between;gap:10px;">
+                <span style="font-size:13px;">{{ item.text }}</span>
+                <span style="font-size:11.5px;color:#9AAAA5;flex:none;">{{ item.time }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ logEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13px;color:#9AAAA5;text-align:center;padding:20px 0;">No simulated events yet.</div>
+            </sc-if>
+          </div>
+
+          <div style="margin-top:16px;font-size:11.5px;color:#B7C2BE;line-height:1.5;">Events above are simulated for this demo and are not measured performance data.</div>
+        </div>
+        </sc-if>
+
+      </div>
+    </x-import>
+  </div>
+
+  <!-- PRESENTER PANEL -->
+  <div style="position:relative;">
+    <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" width="{{ 390 }}" height="{{ 844 }}" dark="{{ true }}" hint-size="390px,844px">
+      <div style="height:100%;display:flex;flex-direction:column;background:#20262A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#fff;">
+        <div style="height:54px;flex:none;"></div>
+        <div style="flex:1;display:flex;flex-direction:column;padding:0 20px 22px;overflow:auto;">
+          <div onclick="{{ togglePresenter }}" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:12px;padding:2px 2px 4px;">
+            <div style="font-size:16px;font-weight:700;color:#fff;white-space:nowrap;">Presenter controls</div>
+            <span style="font-size:12px;color:#8A9490;flex:none;">{{ presenterToggleLabel }}</span>
+          </div>
+          <div style="font-size:11.5px;color:#8A9490;margin-top:4px;">Not part of the app — drives the simulated controller for this demo.</div>
+
+          <sc-if value="{{ presenterOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px;">
+
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:#E4E9E7;white-space:nowrap;">Phone authorized</span>
+              <button onclick="{{ toggleAuthorized }}" style="width:44px;height:26px;border-radius:14px;border:none;cursor:pointer;background:{{ authSwitchBg }};position:relative;"><span style="position:absolute;top:3px;left:{{ authSwitchLeft }}px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.3);"></span></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:#E4E9E7;white-space:nowrap;">Bluetooth connected</span>
+              <button onclick="{{ toggleBle }}" style="width:44px;height:26px;border-radius:14px;border:none;cursor:pointer;background:{{ bleSwitchBg }};position:relative;"><span style="position:absolute;top:3px;left:{{ bleSwitchLeft }}px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.3);"></span></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:#E4E9E7;white-space:nowrap;">Area clear</span>
+              <button onclick="{{ toggleArea }}" style="width:44px;height:26px;border-radius:14px;border:none;cursor:pointer;background:{{ areaSwitchBg }};position:relative;"><span style="position:absolute;top:3px;left:{{ areaSwitchLeft }}px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.3);"></span></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:#E4E9E7;white-space:nowrap;">Sensors valid</span>
+              <button onclick="{{ toggleSensors }}" style="width:44px;height:26px;border-radius:14px;border:none;cursor:pointer;background:{{ sensorSwitchBg }};position:relative;"><span style="position:absolute;top:3px;left:{{ sensorSwitchLeft }}px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.3);"></span></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:#E4E9E7;white-space:nowrap;">Power healthy</span>
+              <button onclick="{{ togglePower }}" style="width:44px;height:26px;border-radius:14px;border:none;cursor:pointer;background:{{ powerSwitchBg }};position:relative;"><span style="position:absolute;top:3px;left:{{ powerSwitchLeft }}px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.3);"></span></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:13px;color:#E4E9E7;white-space:nowrap;">Position feedback</span>
+              <button onclick="{{ togglePosFeedback }}" style="width:44px;height:26px;border-radius:14px;border:none;cursor:pointer;background:{{ posSwitchBg }};position:relative;"><span style="position:absolute;top:3px;left:{{ posSwitchLeft }}px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.3);"></span></button>
+            </div>
+
+            <button onclick="{{ triggerTimeout }}" style="margin-top:6px;padding:10px;border-radius:10px;border:1px solid #3A4145;background:#2A3134;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;text-align:left;">Trigger motion timeout</button>
+
+            <div style="margin-top:4px;">
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;color:#B7C0BC;margin-bottom:4px;"><span>Simulated movement duration</span><span>{{ durationLabel }}</span></div>
+              <input type="range" min="1000" max="4000" step="100" value="{{ duration }}" oninput="{{ onDurationChange }}" style="width:100%;"/>
+            </div>
+
+            <div style="height:1px;background:#3A4145;margin:6px 0;"></div>
+
+            <div style="font-size:11.5px;font-weight:700;color:#8A9490;letter-spacing:0.4px;">QUICK SCENARIOS</div>
+            <button onclick="{{ scenario1 }}" style="text-align:left;padding:9px 10px;border-radius:8px;border:1px solid #3A4145;background:#2A3134;color:#fff;font-size:12.5px;cursor:pointer;">1 · Normal access</button>
+            <button onclick="{{ scenario2 }}" style="text-align:left;padding:9px 10px;border-radius:8px;border:1px solid #3A4145;background:#2A3134;color:#fff;font-size:12.5px;cursor:pointer;">2 · Reserve space</button>
+            <button onclick="{{ scenario3 }}" style="text-align:left;padding:9px 10px;border-radius:8px;border:1px solid #3A4145;background:#2A3134;color:#fff;font-size:12.5px;cursor:pointer;">3 · Obstacle during motion</button>
+            <button onclick="{{ scenario4 }}" style="text-align:left;padding:9px 10px;border-radius:8px;border:1px solid #3A4145;background:#2A3134;color:#fff;font-size:12.5px;cursor:pointer;">4 · Unauthorized phone</button>
+            <button onclick="{{ scenario5 }}" style="text-align:left;padding:9px 10px;border-radius:8px;border:1px solid #3A4145;background:#2A3134;color:#fff;font-size:12.5px;cursor:pointer;">5 · Connection lost</button>
+            <button onclick="{{ scenario6 }}" style="text-align:left;padding:9px 10px;border-radius:8px;border:1px solid #3A4145;background:#2A3134;color:#fff;font-size:12.5px;cursor:pointer;">6 · Missing position feedback</button>
+
+            <button onclick="{{ resetDemo }}" style="margin-top:8px;padding:11px;border-radius:10px;border:none;background:#087F5B;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Reset demo</button>
+          </div>
+          </sc-if>
+        </div>
+      </div>
+    </x-import>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'connect',
+    ble: 'disconnected',
+    authorized: true,
+    areaClear: true,
+    sensorsValid: true,
+    powerHealthy: true,
+    posFeedback: true,
+    position: 'raised',
+    armAngle: -78,
+    stopReason: null,
+    duration: 2200,
+    log: [],
+    presenterOpen: true,
+  };
+
+  componentWillUnmount() {
+    clearTimeout(this._moveTimer);
+    clearInterval(this._animInterval);
+    this._clearScenario();
+  }
+
+  _clearScenario() {
+    (this._scenarioTimers || []).forEach(clearTimeout);
+    this._scenarioTimers = [];
+  }
+
+  _time() {
+    const d = new Date();
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  addLog(text) {
+    this.setState(s => ({ log: [{ id: Math.random(), text, time: this._time() }, ...s.log].slice(0, 30) }));
+  }
+
+  // ---- connection ----
+  connect = () => {
+    if (this.state.ble !== 'disconnected') return;
+    this.setState({ ble: 'connecting' });
+    this._t(() => {
+      this.setState({ ble: 'connected' });
+      if (this.state.authorized) {
+        this.addLog('Owner connected');
+        this.setState({ screen: 'main' });
+      }
+    }, 900);
+  };
+
+  reconnect = () => { this.setState({ screen: 'connect', ble: 'disconnected' }); };
+  goActivity = () => this.setState({ screen: 'activity' });
+  goMain = () => this.setState({ screen: 'main' });
+
+  _t(fn, ms) { const id = setTimeout(fn, ms); this._scenarioTimers = (this._scenarioTimers || []).concat(id); return id; }
+
+  toggleAuthorized = () => {
+    const v = !this.state.authorized;
+    this.setState({ authorized: v });
+    if (v && this.state.ble === 'connected' && this.state.screen === 'connect') {
+      this.addLog('Owner connected');
+      this.setState({ screen: 'main' });
+    }
+  };
+
+  toggleBle = () => {
+    if (this.state.ble === 'connected') {
+      let { position, stopReason } = this.state;
+      if (position === 'raising' || position === 'lowering') {
+        clearInterval(this._animInterval);
+        position = 'stopped'; stopReason = 'connection';
+      }
+      this.addLog('Bluetooth connection lost');
+      this.setState({ ble: 'disconnected', position, stopReason });
+    } else if (this.state.ble === 'disconnected') {
+      this.setState({ ble: 'connected' });
+      this.addLog('Owner connected');
+    }
+  };
+
+  toggleArea = () => {
+    const next = !this.state.areaClear;
+    this.setState({ areaClear: next });
+    if (!next && (this.state.position === 'raising' || this.state.position === 'lowering')) {
+      this._stopFor('obstacle', 'Movement stopped — obstacle detected');
+    }
+  };
+  toggleSensors = () => this.setState({ sensorsValid: !this.state.sensorsValid });
+  togglePower = () => this.setState({ powerHealthy: !this.state.powerHealthy });
+  togglePosFeedback = () => this.setState({ posFeedback: !this.state.posFeedback });
+  togglePresenter = () => this.setState({ presenterOpen: !this.state.presenterOpen });
+  onDurationChange = (e) => this.setState({ duration: parseInt(e.target.value, 10) });
+
+  _stopFor(reason, logText) {
+    clearInterval(this._animInterval);
+    clearTimeout(this._moveTimer);
+    this.setState({ position: 'stopped', stopReason: reason });
+    if (logText) this.addLog(logText);
+  }
+
+  triggerTimeout = () => {
+    if (this.state.position === 'raising' || this.state.position === 'lowering') {
+      this._stopFor('timeout', 'Motion timeout');
+    }
+  };
+
+  canMoveNow() {
+    const s = this.state;
+    return s.ble === 'connected' && s.authorized && !s.stopReason && s.areaClear && s.sensorsValid && s.powerHealthy && s.posFeedback &&
+      (s.position === 'raised' || s.position === 'lowered' || s.position === 'stopped');
+  }
+
+  startMove(dir) {
+    if (!this.canMoveNow()) return;
+    this.addLog(dir === 'lower' ? 'Lower request accepted' : 'Raise request accepted');
+    const toAngle = dir === 'lower' ? 0 : -78;
+    const fromAngle = this.state.armAngle;
+    const start = Date.now();
+    const duration = this.state.duration;
+    clearInterval(this._animInterval);
+    this.setState({ position: dir === 'lower' ? 'lowering' : 'raising', stopReason: null });
+    this._animInterval = setInterval(() => {
+      const t = Math.min(1, (Date.now() - start) / duration);
+      this.setState({ armAngle: fromAngle + (toAngle - fromAngle) * t });
+      if (t >= 1) clearInterval(this._animInterval);
+    }, 40);
+    clearTimeout(this._moveTimer);
+    this._moveTimer = setTimeout(() => this._completeMove(dir), duration);
+  }
+
+  _completeMove(dir) {
+    const s = this.state;
+    if (s.position !== 'raising' && s.position !== 'lowering') return;
+    if (!s.areaClear) { this._stopFor('obstacle', 'Movement stopped — obstacle detected'); return; }
+    if (!s.posFeedback) return; // waiting indefinitely for feedback
+    const finalPos = dir === 'lower' ? 'lowered' : 'raised';
+    this.setState({ position: finalPos, armAngle: dir === 'lower' ? 0 : -78 });
+    this.addLog(dir === 'lower' ? 'Barrier lowered' : 'Barrier raised');
+  }
+
+  doLower = () => this.startMove('lower');
+  doRaise = () => this.startMove('raise');
+
+  manualStop = () => {
+    if (this.state.ble !== 'connected') return;
+    if (this.state.position !== 'raising' && this.state.position !== 'lowering') return;
+    this._stopFor('manual', 'Movement stopped by owner');
+  };
+
+  checkAgain = () => {
+    const s = this.state;
+    const stillBlocked = s.ble !== 'connected' || !s.authorized || !s.areaClear || !s.sensorsValid || !s.powerHealthy;
+    if (!stillBlocked) {
+      this.setState({ stopReason: null });
+      this.addLog('Fault cleared');
+    }
+  };
+
+  resetDemo = () => {
+    clearTimeout(this._moveTimer);
+    clearInterval(this._animInterval);
+    this._clearScenario();
+    this.setState({
+      screen: 'connect', ble: 'disconnected', authorized: true, areaClear: true,
+      sensorsValid: true, powerHealthy: true, posFeedback: true,
+      position: 'raised', armAngle: -78, stopReason: null, log: [],
+    });
+  };
+
+  scenario1 = () => { // normal access
+    this.resetDemo();
+    this._t(() => this.connect(), 300);
+    this._t(() => this.startMove('lower'), 1600);
+  };
+  scenario2 = () => { // reserve space
+    this.resetDemo();
+    const dur = this.state.duration;
+    this._t(() => this.connect(), 300);
+    this._t(() => this.startMove('lower'), 1600);
+    this._t(() => this.startMove('raise'), 1600 + dur + 600);
+  };
+  scenario3 = () => { // obstacle during motion
+    this.resetDemo();
+    const dur = this.state.duration;
+    this._t(() => this.connect(), 300);
+    this._t(() => this.startMove('lower'), 1600);
+    this._t(() => this.setState({ areaClear: false }), 1600 + Math.round(dur * 0.45));
+    this._t(() => this.setState({ areaClear: true }), 1600 + Math.round(dur * 0.45) + 1300);
+  };
+  scenario4 = () => { // unauthorized
+    this.resetDemo();
+    this.setState({ authorized: false });
+    this._t(() => this.connect(), 300);
+  };
+  scenario5 = () => { // connection lost
+    this.resetDemo();
+    const dur = this.state.duration;
+    this._t(() => this.connect(), 300);
+    this._t(() => this.startMove('lower'), 1600);
+    this._t(() => this.toggleBle(), 1600 + dur + 500);
+  };
+  scenario6 = () => { // missing position feedback
+    this.resetDemo();
+    this._t(() => this.connect(), 300);
+    this._t(() => this.setState({ posFeedback: false }), 1600);
+    this._t(() => this.startMove('raise'), 2000);
+  };
+
+  renderVals() {
+    const s = this.state;
+    const isConnect = s.screen === 'connect';
+    const isMain = s.screen === 'main';
+    const isActivity = s.screen === 'activity';
+
+    const bleLabel = s.ble === 'connected' ? 'Connected' : s.ble === 'connecting' ? 'Connecting…' : 'Disconnected';
+    const bleColor = s.ble === 'connected' ? '#087F5B' : s.ble === 'connecting' ? '#F59F00' : '#9AAAA5';
+    const authLabel = s.authorized ? 'Owner authorized' : 'Not authorized';
+    const authColor = s.authorized ? '#087F5B' : '#E03131';
+
+    const positionMeta = {
+      raised: ['Raised', 'Space reserved — vehicle access blocked.'],
+      lowered: ['Lowered', 'Vehicle access enabled.'],
+      raising: ['Raising…', 'Reserving the space.'],
+      lowering: ['Lowering…', 'Enabling vehicle access.'],
+      stopped: ['Stopped', 'Movement paused mid-travel.'],
+    }[s.position] || ['—', ''];
+    let positionLabel = positionMeta[0], positionSub = positionMeta[1];
+    let positionColor = '#172B26';
+    if (s.position === 'raising' || s.position === 'lowering') positionColor = '#F59F00';
+    if (s.position === 'stopped') positionColor = '#E03131';
+    if (s.ble !== 'connected') { positionSub += ' (last known)'; }
+
+    const safetyLabel = !s.areaClear ? 'Obstacle detected' : !s.sensorsValid ? 'Sensor unavailable' : 'Area clear';
+    const safetyColor = !s.areaClear || !s.sensorsValid ? '#E03131' : '#087F5B';
+    const safetyBg = !s.areaClear || !s.sensorsValid ? '#FFF0EE' : '#EAF6F0';
+
+    const blockers = [];
+    if (s.ble !== 'connected') blockers.push('Phone not connected to barrier');
+    if (s.authorized === false) blockers.push('Phone not authorized as owner');
+    if (!s.areaClear) blockers.push('Obstacle detected in monitored area');
+    if (!s.sensorsValid) blockers.push('Safety sensor unavailable');
+    if (!s.powerHealthy) blockers.push('Power too low for movement');
+    if (!s.posFeedback) blockers.push('Barrier position feedback unavailable');
+
+    const idle = s.position === 'raised' || s.position === 'lowered';
+    const canMove = this.canMoveNow();
+    const showBlockers = idle && !canMove && blockers.length > 0;
+    const showPrimary = idle;
+    const primaryLabel = s.position === 'raised' ? 'Lower barrier' : 'Raise barrier';
+    const primarySub = s.position === 'raised' ? 'Allow vehicle access' : 'Reserve parking space';
+    const primaryAction = s.position === 'raised' ? this.doLower : this.doRaise;
+    const primaryDisabled = !canMove;
+    const primaryBg = canMove ? '#087F5B' : '#B9C4BF';
+
+    const showBothActions = s.position === 'stopped' && !s.stopReason;
+    const showStopReason = s.position === 'stopped' && !!s.stopReason;
+    const stopReasonMap = {
+      manual: ['Movement stopped by owner', 'You stopped the barrier mid-travel. Send a new command when ready.'],
+      obstacle: ['Movement stopped — obstacle detected', 'The monitored area was not clear. Confirm the area is clear, then check again before sending a new command.'],
+      timeout: ['Motion timeout', 'The barrier did not confirm its new position in time. Check conditions before trying again.'],
+      connection: ['Connection lost during movement', 'Position is uncertain until you reconnect and send a new command.'],
+    };
+    const [stopReasonTitle, stopReasonBody] = stopReasonMap[s.stopReason] || ['', ''];
+
+    const showStopControl = s.position === 'raising' || s.position === 'lowering';
+    const stopDisabled = s.ble !== 'connected';
+
+    const showDisconnectedBanner = isMain && s.ble !== 'connected';
+    const showUnauthorizedBanner = isMain && s.ble === 'connected' && !s.authorized;
+
+    const showConnectBtn = s.ble === 'disconnected' || s.ble === 'connecting';
+    const connectDisabled = s.ble !== 'disconnected';
+    const connectBtnLabel = s.ble === 'connecting' ? 'Connecting…' : 'Connect to barrier';
+    const connectBtnOpacity = connectDisabled ? 0.6 : 1;
+    const showUnauthorizedNotice = s.ble === 'connected' && !s.authorized;
+
+    const sw = (on) => ({ bg: on ? '#087F5B' : '#DDE3E0', left: on ? 21 : 3 });
+    const a = sw(s.authorized), b = sw(s.ble === 'connected'), ar = sw(s.areaClear), se = sw(s.sensorsValid), po = sw(s.powerHealthy), pf = sw(s.posFeedback);
+
+    return {
+      isConnect, isMain, isActivity,
+      bleLabel, bleColor, authLabel, authColor,
+      positionLabel, positionSub, positionColor,
+      safetyLabel, safetyColor, safetyBg,
+      blockers, showBlockers,
+      showPrimary, primaryLabel, primarySub, primaryAction, primaryDisabled, primaryBg,
+      showBothActions, showStopReason, stopReasonTitle, stopReasonBody,
+      showStopControl, stopDisabled, stopOpacity: stopDisabled ? 0.5 : 1,
+      showDisconnectedBanner, showUnauthorizedBanner,
+      showConnectBtn, connectDisabled, connectBtnLabel, connectBtnOpacity, showUnauthorizedNotice,
+      armAngle: s.armAngle,
+      log: s.log, logEmpty: s.log.length === 0,
+      presenterOpen: s.presenterOpen, presenterToggleLabel: s.presenterOpen ? 'Hide ▾' : 'Show ▸',
+      duration: s.duration, durationLabel: (s.duration / 1000).toFixed(1) + 's',
+      authSwitchBg: a.bg, authSwitchLeft: a.left,
+      bleSwitchBg: b.bg, bleSwitchLeft: b.left,
+      areaSwitchBg: ar.bg, areaSwitchLeft: ar.left,
+      sensorSwitchBg: se.bg, sensorSwitchLeft: se.left,
+      powerSwitchBg: po.bg, powerSwitchLeft: po.left,
+      posSwitchBg: pf.bg, posSwitchLeft: pf.left,
+      connect: this.connect, reconnect: this.reconnect, goActivity: this.goActivity, goMain: this.goMain,
+      manualStop: this.manualStop, checkAgain: this.checkAgain, doLower: this.doLower, doRaise: this.doRaise,
+      togglePresenter: this.togglePresenter, toggleAuthorized: this.toggleAuthorized, toggleBle: this.toggleBle,
+      toggleArea: this.toggleArea, toggleSensors: this.toggleSensors, togglePower: this.togglePower,
+      togglePosFeedback: this.togglePosFeedback, triggerTimeout: this.triggerTimeout, onDurationChange: this.onDurationChange,
+      scenario1: this.scenario1, scenario2: this.scenario2, scenario3: this.scenario3,
+      scenario4: this.scenario4, scenario5: this.scenario5, scenario6: this.scenario6, resetDemo: this.resetDemo,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
