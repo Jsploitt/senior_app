@@ -1,0 +1,1104 @@
+[
+  {
+    "screen": "onboarding-welcome",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear hero tile, title, value prop, three feature rows with icons; single primary CTA.",
+      "Large dead zone between the feature list and the page dots (~200 pt); content is top-heavy.",
+      "Bluetooth badge uses the success-green fill decoratively; green is reserved for LOWERED/completed."
+    ]
+  },
+  {
+    "screen": "control-disconnected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Empty state is clear: icon, 'Find your barrier', explanation, full-width primary 'Find barrier'.",
+      "Icon-only cloud-off chip beside 'Disconnected' has no label; its meaning (local-only? offline?) is not obvious and it looks tappable.",
+      "Empty state sits low with ~350 pt of empty space above it."
+    ]
+  },
+  {
+    "screen": "control-lowered",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "State readable instantly: green 'Lowered' + flat arm illustration + 'You can drive in'.",
+      "Header block is dense (title, device+auth line, measurement caption, chip row) before the hero.",
+      "Idle STOP uses a pale tinted fill that is close to the disabled Lower button treatment; whether STOP is live is not obvious at a glance.",
+      "'Already lowered.' hint plus disabled Lower is good feedback."
+    ]
+  },
+  {
+    "screen": "control-raising",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Motion state is excellent: blue 'Raising', mid-travel arm, progress bar with '0.8 s of about 4.0 s'.",
+      "STOP becomes solid red and Lower/Raise disable with 'Arm is moving. Use Stop.' - correct emphasis shift."
+    ]
+  },
+  {
+    "screen": "control-raised",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "State is clear (blue 'Raised', vertical arm).",
+      "Triple redundancy: hero 'Raised', banner 'Barrier is up', hint 'Already raised.' - the banner pushes the controls and adds little.",
+      "Lower takes the success-green fill (target-state color) - consistent with the LOWERED token."
+    ]
+  },
+  {
+    "screen": "control-stopped",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Orange 'Stopped' + mid-angle arm is readable; both directions enabled, matching the copy.",
+      "Hero subtitle wraps leaving an orphan 'continue.'.",
+      "Banner says 'Stopped for safety' even though this may be a user STOP; wording could be more neutral."
+    ]
+  },
+  {
+    "screen": "control-guard-reject",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Rejection banner is clear and actionable: title, bullet reason, plain-language fix.",
+      "'Zone blocked' chip switches to warning style - not color-only (icon + text).",
+      "Hero still shouts green 'Lowered' while the actionable problem is in the banner; Raise remains a vivid primary although the zone is blocked."
+    ]
+  },
+  {
+    "screen": "control-fault",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 3,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Contradiction: chip row shows green 'Sensors OK' while the hero says 'Position sensors disagree'.",
+      "Arm is drawn flat (lowered) although the position is not trustworthy; UNKNOWN uses a dashed ghost arm, FAULT should not assert a position.",
+      "The same message appears three times: hero subtitle 'Locked until it is reset on site', card 'Needs on-site reset', dock hint 'Fault latched: needs on-site reset'.",
+      "Fault card ends ~5 pt above the dock divider; cramped.",
+      "Recovery instruction (hold unit button 8 s) is clear and honest that the app cannot clear it."
+    ]
+  },
+  {
+    "screen": "control-unknown",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Neutral surface, dashed ghost arm, '?' glyph, 'Position unknown' + 'Lower it to home the barrier' - very clear.",
+      "Lower is the only enabled primary with hint 'Lower first to confirm position' - excellent guidance.",
+      "'?' glyph floats in the headroom slightly disconnected from the arm."
+    ]
+  },
+  {
+    "screen": "control-link-lost",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 3,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Connection-lost banner with Reconnect CTA is clear and prominent; all controls including STOP correctly disabled.",
+      "'Last known: Raising' with faded arm communicates staleness, but the chip row (Zone clear, Sensors OK, 12.90 V) is still drawn in live green styles, implying fresh data.",
+      "Chip row collides with the dock divider (no bottom gap); the explanatory caption is pushed out.",
+      "Hero title 'Last known: Raising' in gray at title weight competes with the banner."
+    ]
+  },
+  {
+    "screen": "connect-modal",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Sheet with Close, large title, one inset-grouped row (icon, name, 'Previously paired' chip, signal bars, chevron), Scan again, local-only note.",
+      "Section header 'NEARBY BARRIERS' is inset ~20 pt while every other screen insets headers ~32 pt (aligned to cell content).",
+      "Signal-strength bars have no text equivalent visible.",
+      "No scanning/empty/failed-scan state shown in this capture."
+    ]
+  },
+  {
+    "screen": "health-connected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Inset-grouped lists, clear section headers, value-right rows; interlocks have icon + text.",
+      "Status pill sits beside the large title here but below it on the Barrier tab - header pattern inconsistent across tabs.",
+      "'Last counter 1' here vs 'Last counter (reported by barrier) 0' on This barrier - same field, different values.",
+      "Power card '12900 mV' caption cut by the tab bar at the fold (scroll content, acceptable)."
+    ]
+  },
+  {
+    "screen": "health-disconnected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Good empty state with icon, explanation, CTA; requirements list stays useful offline.",
+      "CTA says 'Connect to barrier' while the Barrier tab says 'Find barrier' for the same action.",
+      "Requirement IDs (C4, S5, S6) are engineering jargon for an end-user screen."
+    ]
+  },
+  {
+    "screen": "log",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "'Clear log' is a solid red filled button at the top, visually heavier than 'Share CSV'; destructive actions should be de-emphasized.",
+      "Status chips break the color system: 'Moving' is success-green (motion token is accent blue), 'Stopped' is neutral gray (STOPPED token is warning orange).",
+      "Row separators run full-bleed, unlike the inset separators in Settings/Health.",
+      "Each row has 3-4 pill chips (direction, counter, result, latency); tag-soup density makes scanning slow.",
+      "Command rows and state rows use the same blue icon styling; hard to tell event types apart.",
+      "Evidence summary wraps leaving '0.54 s' orphaned."
+    ]
+  },
+  {
+    "screen": "settings",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Inset-grouped sections, icon tiles, chevrons, disabled Bluetooth segment with lock + explanatory footer - solid.",
+      "Haptics switch uses a teal thumb on a green track (platform-default web Switch color); off-token and neither iOS nor Material You looking.",
+      "Haptics lives under 'Appearance' - misgrouped.",
+      "'Replay onboarding' icon tile uses the warning orange decoratively."
+    ]
+  },
+  {
+    "screen": "presenter",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Grouped scenario list with title, description, step/FSM chips and chevrons; SIMULATED badge in nav; sticky Exit.",
+      "Sticky 'Exit presenter' bar hard-cuts the 'Sensor failure' row with no material/fade.",
+      "'FPR'/'FSM rows' jargon is acceptable for a presenter tool."
+    ]
+  },
+  {
+    "screen": "onboarding-mode",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Two option cards with clear selected state (border + tint + check) and a locked option with reason.",
+      "Icon treatment differs: disabled option has its icon in a gray tile, selected option has a bare icon.",
+      "Disabled card keeps a heavy 2 pt border, so it still reads as a selectable card at first glance."
+    ]
+  },
+  {
+    "screen": "onboarding-bluetooth",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Page indicator shows 5 dots here (3rd active) but 4 dots on every other onboarding page - visible step-count inconsistency.",
+      "Clear permission primer with primary 'Allow Bluetooth' and secondary 'Not now'.",
+      "Large empty area between copy and footer.",
+      "No denied-permission state captured."
+    ]
+  },
+  {
+    "screen": "onboarding-enroll",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 3,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Two competing primaries: tonal 'Start 60 s timer' inside the card and filled 'Connect' in the footer.",
+      "Step 2 says 'You now have 60 seconds' while the timer reads 1:00 and has not started; the phone cannot know when the button was held, so the flow is ambiguous.",
+      "Step 2 card is cut by the footer separator mid-card with no scroll cue.",
+      "Shown after the user picked 'Try the simulator', yet it instructs holding a physical button."
+    ]
+  },
+  {
+    "screen": "onboarding-done",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear completion: check tile, 'You're all set.', single CTA.",
+      "Copy says 'tap Connect' but the Barrier tab button is labeled 'Find barrier'.",
+      "Spec'd 'Authenticated in X.XX s' proof is absent (fine for simulator skip path)."
+    ]
+  },
+  {
+    "screen": "settings-device",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Native-feeling detail list, footer explanations, standalone destructive 'Forget this barrier' row in red - very iOS.",
+      "Counter values (next 1 / last 0) disagree with Health 'Last counter 1'."
+    ]
+  },
+  {
+    "screen": "settings-about",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clean app-identity header, version rows, privacy and scope sections with footers.",
+      "'Firmware interface' value 'November 2026 contract' nearly collides with the label on narrow widths."
+    ]
+  },
+  {
+    "screen": "guard-details",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Checklist with icon + title + value; failing check gets warning icon, explanation and 'Blocked your last command' - excellent.",
+      "Sheet header (inline 28 pt title + Done on one row) differs from the Find barrier sheet (Close above a 34 pt large title).",
+      "Several secondaries just restate the title ('Sensors valid / Valid', 'No fault latched / No fault')."
+    ]
+  },
+  {
+    "screen": "connect-pairing",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 3,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Step list (Connecting, Securing, Checking owner, Ready) gives good progress visibility.",
+      "Completed step still reads 'Connecting' (present tense) next to a check; should read 'Connected'.",
+      "Two spinners at once (card header + current step).",
+      "Illustrative 'Bluetooth Pairing Request' with six empty boxes looks like a real, tappable input field inside the app.",
+      "No visible cancel/timeout state other than Close."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-start",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 3,
+      "polish": 2
+    },
+    "notes": [
+      "Interlocks table has no horizontal padding: 'State'/'Last result' labels and raw values 'RAISED'/'NONE' touch the card edges - a layout bug.",
+      "Raw-value column uses tiny monospaced caps (~10 pt) in tertiary color - below legible size.",
+      "Table is half-hidden under the dock on first view.",
+      "Bottom dock (segmented Interlocks/Auth latency + expand button + step label + 4 buttons) takes ~38% of the viewport and repeats the step title already in the card.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-step3",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Step 3 check list is cut mid-item ('Guard mask') by the dock with a hard edge.",
+      "Hero, step bubbles and the 'As expected' badge make the result obvious.",
+      "Bottom dock (segmented Interlocks/Auth latency + expand button + step label + 4 buttons) takes ~38% of the viewport and repeats the step title already in the card.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "presenter-limit-conflict",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Fault hero draws the arm at ~50 deg; the Barrier tab fault draws it flat - the same FAULT state has two depictions.",
+      "Check list ends right at the dock edge.",
+      "Bottom dock (segmented Interlocks/Auth latency + expand button + step label + 4 buttons) takes ~38% of the viewport and repeats the step title already in the card.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "presenter-replayed-command",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Raw enums (REJECTED_STALE (REPLAY)) in body copy are dense but appropriate for presenters.",
+      "Check list cut mid-item ('State unchanged') under the dock.",
+      "Bottom dock (segmented Interlocks/Auth latency + expand button + step label + 4 buttons) takes ~38% of the viewport and repeats the step title already in the card.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "presenter-auth-latency",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Expanded panel covers ~60% of the screen; the step card is cut after 'Owner authorized'.",
+      "Stat header misaligned: 'Auth latency, last' label sits ~10 pt higher than 'Median'/'95th pct'/'n' labels.",
+      "Spec line and '2.0 s spec' label use the danger red, which reads as an error rather than a reference threshold.",
+      "Very dense: histogram, 3 stats, stepper, segmented control, 2 footnotes, step label, 4 buttons.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "onboarding-welcome",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear hero tile, title, value prop, three feature rows with icons; single primary CTA.",
+      "Large dead zone between the feature list and the page dots (~200 pt); content is top-heavy.",
+      "Bluetooth badge uses the success-green fill decoratively; green is reserved for LOWERED/completed.",
+      "Dark: badge ring and tile tint read well; contrast fine."
+    ]
+  },
+  {
+    "screen": "control-disconnected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Empty state is clear: icon, 'Find your barrier', explanation, full-width primary 'Find barrier'.",
+      "Icon-only cloud-off chip beside 'Disconnected' has no label; its meaning (local-only? offline?) is not obvious and it looks tappable.",
+      "Empty state sits low with ~350 pt of empty space above it."
+    ]
+  },
+  {
+    "screen": "control-lowered",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "State readable instantly: green 'Lowered' + flat arm illustration + 'You can drive in'.",
+      "Header block is dense (title, device+auth line, measurement caption, chip row) before the hero.",
+      "Idle STOP uses a pale tinted fill that is close to the disabled Lower button treatment; whether STOP is live is not obvious at a glance.",
+      "'Already lowered.' hint plus disabled Lower is good feedback."
+    ]
+  },
+  {
+    "screen": "control-raising",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Motion state is excellent: blue 'Raising', mid-travel arm, progress bar with '0.8 s of about 4.0 s'.",
+      "STOP becomes solid red and Lower/Raise disable with 'Arm is moving. Use Stop.' - correct emphasis shift."
+    ]
+  },
+  {
+    "screen": "control-raised",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "State is clear (blue 'Raised', vertical arm).",
+      "Triple redundancy: hero 'Raised', banner 'Barrier is up', hint 'Already raised.' - the banner pushes the controls and adds little.",
+      "Lower takes the success-green fill (target-state color) - consistent with the LOWERED token."
+    ]
+  },
+  {
+    "screen": "control-stopped",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Orange 'Stopped' + mid-angle arm is readable; both directions enabled, matching the copy.",
+      "Hero subtitle wraps leaving an orphan 'continue.'.",
+      "Banner says 'Stopped for safety' even though this may be a user STOP; wording could be more neutral."
+    ]
+  },
+  {
+    "screen": "control-guard-reject",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Rejection banner is clear and actionable: title, bullet reason, plain-language fix.",
+      "'Zone blocked' chip switches to warning style - not color-only (icon + text).",
+      "Hero still shouts green 'Lowered' while the actionable problem is in the banner; Raise remains a vivid primary although the zone is blocked."
+    ]
+  },
+  {
+    "screen": "control-fault",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 3,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Contradiction: chip row shows green 'Sensors OK' while the hero says 'Position sensors disagree'.",
+      "Arm is drawn flat (lowered) although the position is not trustworthy; UNKNOWN uses a dashed ghost arm, FAULT should not assert a position.",
+      "The same message appears three times: hero subtitle 'Locked until it is reset on site', card 'Needs on-site reset', dock hint 'Fault latched: needs on-site reset'.",
+      "Fault card ends ~5 pt above the dock divider; cramped.",
+      "Recovery instruction (hold unit button 8 s) is clear and honest that the app cannot clear it."
+    ]
+  },
+  {
+    "screen": "control-unknown",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Neutral surface, dashed ghost arm, '?' glyph, 'Position unknown' + 'Lower it to home the barrier' - very clear.",
+      "Lower is the only enabled primary with hint 'Lower first to confirm position' - excellent guidance.",
+      "'?' glyph floats in the headroom slightly disconnected from the arm."
+    ]
+  },
+  {
+    "screen": "control-link-lost",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 3,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Connection-lost banner with Reconnect CTA is clear and prominent; all controls including STOP correctly disabled.",
+      "'Last known: Raising' with faded arm communicates staleness, but the chip row (Zone clear, Sensors OK, 12.90 V) is still drawn in live green styles, implying fresh data.",
+      "Chip row collides with the dock divider (no bottom gap); the explanatory caption is pushed out.",
+      "Hero title 'Last known: Raising' in gray at title weight competes with the banner."
+    ]
+  },
+  {
+    "screen": "connect-modal",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Sheet with Close, large title, one inset-grouped row (icon, name, 'Previously paired' chip, signal bars, chevron), Scan again, local-only note.",
+      "Section header 'NEARBY BARRIERS' is inset ~20 pt while every other screen insets headers ~32 pt (aligned to cell content).",
+      "Signal-strength bars have no text equivalent visible.",
+      "No scanning/empty/failed-scan state shown in this capture.",
+      "Dark: sheet uses pure black bg rather than an elevated surface; it reads as a full page, not a sheet."
+    ]
+  },
+  {
+    "screen": "health-connected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Inset-grouped lists, clear section headers, value-right rows; interlocks have icon + text.",
+      "Status pill sits beside the large title here but below it on the Barrier tab - header pattern inconsistent across tabs.",
+      "'Last counter 1' here vs 'Last counter (reported by barrier) 0' on This barrier - same field, different values.",
+      "Power card '12900 mV' caption cut by the tab bar at the fold (scroll content, acceptable)."
+    ]
+  },
+  {
+    "screen": "health-disconnected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Good empty state with icon, explanation, CTA; requirements list stays useful offline.",
+      "CTA says 'Connect to barrier' while the Barrier tab says 'Find barrier' for the same action.",
+      "Requirement IDs (C4, S5, S6) are engineering jargon for an end-user screen."
+    ]
+  },
+  {
+    "screen": "log",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "'Clear log' is a solid red filled button at the top, visually heavier than 'Share CSV'; destructive actions should be de-emphasized.",
+      "Status chips break the color system: 'Moving' is success-green (motion token is accent blue), 'Stopped' is neutral gray (STOPPED token is warning orange).",
+      "Row separators run full-bleed, unlike the inset separators in Settings/Health.",
+      "Each row has 3-4 pill chips (direction, counter, result, latency); tag-soup density makes scanning slow.",
+      "Command rows and state rows use the same blue icon styling; hard to tell event types apart.",
+      "Evidence summary wraps leaving '0.54 s' orphaned."
+    ]
+  },
+  {
+    "screen": "settings",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Inset-grouped sections, icon tiles, chevrons, disabled Bluetooth segment with lock + explanatory footer - solid.",
+      "Haptics switch uses a teal thumb on a green track (platform-default web Switch color); off-token and neither iOS nor Material You looking.",
+      "Haptics lives under 'Appearance' - misgrouped.",
+      "'Replay onboarding' icon tile uses the warning orange decoratively."
+    ]
+  },
+  {
+    "screen": "presenter",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Grouped scenario list with title, description, step/FSM chips and chevrons; SIMULATED badge in nav; sticky Exit.",
+      "Sticky 'Exit presenter' bar hard-cuts the 'Sensor failure' row with no material/fade.",
+      "'FPR'/'FSM rows' jargon is acceptable for a presenter tool."
+    ]
+  },
+  {
+    "screen": "onboarding-mode",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Two option cards with clear selected state (border + tint + check) and a locked option with reason.",
+      "Icon treatment differs: disabled option has its icon in a gray tile, selected option has a bare icon.",
+      "Disabled card keeps a heavy 2 pt border, so it still reads as a selectable card at first glance."
+    ]
+  },
+  {
+    "screen": "onboarding-bluetooth",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Page indicator shows 5 dots here (3rd active) but 4 dots on every other onboarding page - visible step-count inconsistency.",
+      "Clear permission primer with primary 'Allow Bluetooth' and secondary 'Not now'.",
+      "Large empty area between copy and footer.",
+      "No denied-permission state captured."
+    ]
+  },
+  {
+    "screen": "onboarding-enroll",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 3,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Two competing primaries: tonal 'Start 60 s timer' inside the card and filled 'Connect' in the footer.",
+      "Step 2 says 'You now have 60 seconds' while the timer reads 1:00 and has not started; the phone cannot know when the button was held, so the flow is ambiguous.",
+      "Step 2 card is cut by the footer separator mid-card with no scroll cue.",
+      "Shown after the user picked 'Try the simulator', yet it instructs holding a physical button."
+    ]
+  },
+  {
+    "screen": "onboarding-done",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear completion: check tile, 'You're all set.', single CTA.",
+      "Copy says 'tap Connect' but the Barrier tab button is labeled 'Find barrier'.",
+      "Spec'd 'Authenticated in X.XX s' proof is absent (fine for simulator skip path)."
+    ]
+  },
+  {
+    "screen": "settings-device",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Native-feeling detail list, footer explanations, standalone destructive 'Forget this barrier' row in red - very iOS.",
+      "Counter values (next 1 / last 0) disagree with Health 'Last counter 1'."
+    ]
+  },
+  {
+    "screen": "settings-about",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clean app-identity header, version rows, privacy and scope sections with footers.",
+      "'Firmware interface' value 'November 2026 contract' nearly collides with the label on narrow widths."
+    ]
+  },
+  {
+    "screen": "guard-details",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Checklist with icon + title + value; failing check gets warning icon, explanation and 'Blocked your last command' - excellent.",
+      "Sheet header (inline 28 pt title + Done on one row) differs from the Find barrier sheet (Close above a 34 pt large title).",
+      "Several secondaries just restate the title ('Sensors valid / Valid', 'No fault latched / No fault')."
+    ]
+  },
+  {
+    "screen": "connect-pairing",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 3,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Step list (Connecting, Securing, Checking owner, Ready) gives good progress visibility.",
+      "Completed step still reads 'Connecting' (present tense) next to a check; should read 'Connected'.",
+      "Two spinners at once (card header + current step).",
+      "Illustrative 'Bluetooth Pairing Request' with six empty boxes looks like a real, tappable input field inside the app.",
+      "No visible cancel/timeout state other than Close."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-start",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 3,
+      "polish": 2
+    },
+    "notes": [
+      "Interlocks table has no horizontal padding: 'State'/'Last result' labels and raw values 'RAISED'/'NONE' touch the card edges - a layout bug.",
+      "Raw-value column uses tiny monospaced caps (~10 pt) in tertiary color - below legible size.",
+      "Table is half-hidden under the dock on first view.",
+      "Bottom dock (segmented Interlocks/Auth latency + expand button + step label + 4 buttons) takes ~38% of the viewport and repeats the step title already in the card.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-step3",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Step 3 check list is cut mid-item ('Guard mask') by the dock with a hard edge.",
+      "Hero, step bubbles and the 'As expected' badge make the result obvious.",
+      "Bottom dock (segmented Interlocks/Auth latency + expand button + step label + 4 buttons) takes ~38% of the viewport and repeats the step title already in the card.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "presenter-limit-conflict",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Fault hero draws the arm at ~50 deg; the Barrier tab fault draws it flat - the same FAULT state has two depictions.",
+      "Check list ends right at the dock edge.",
+      "Bottom dock (segmented Interlocks/Auth latency + expand button + step label + 4 buttons) takes ~38% of the viewport and repeats the step title already in the card.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "presenter-replayed-command",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Raw enums (REJECTED_STALE (REPLAY)) in body copy are dense but appropriate for presenters.",
+      "Check list cut mid-item ('State unchanged') under the dock.",
+      "Bottom dock (segmented Interlocks/Auth latency + expand button + step label + 4 buttons) takes ~38% of the viewport and repeats the step title already in the card.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  },
+  {
+    "screen": "presenter-auth-latency",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 3,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Expanded panel covers ~60% of the screen; the step card is cut after 'Owner authorized'.",
+      "Stat header misaligned: 'Auth latency, last' label sits ~10 pt higher than 'Median'/'95th pct'/'n' labels.",
+      "Spec line and '2.0 s spec' label use the danger red, which reads as an error rather than a reference threshold.",
+      "Very dense: histogram, 3 stats, stepper, segmented control, 2 footnotes, step label, 4 buttons.",
+      "Nav row insets differ from the rest of the app: back chevron starts ~30 pt (others ~19 pt) and the SIMULATED badge sits ~12 pt from the right edge (others 16 pt).",
+      "Screen title is a 28 pt inline title, while the Presenter list uses a 34 pt large title.",
+      "Icon-only previous-step chevron button is ambiguous next to the nav back chevron."
+    ]
+  }
+]

@@ -105,3 +105,12 @@ settings pages; raw engineering strings in user UI.
 Fixes: shared components first (commit 0c7bbf6: one LocalOnlyChip/SimulatedBadge, StackHeader, neutral disabled
 Button, dark `segmentThumb`), then four parallel fix agents by folder (driver, health/log, settings/onboarding,
 presenter). Earlier fixes before this review (commit 6ece0f7): title wrap, raised arm clipped, presenter drawer.
+
+### Phase 3 iteration 2
+
+Fix commit c7848bf (4 parallel fix agents + shared components 0c7bbf6). Gates: tsc 0, eslint 0, prettier clean,
+jest 18 suites / 409 tests. Screenshots retaken (58, no console errors). Fresh reviewer (Opus, no access to code or
+earlier reviews): `qa/review-2.json`, `qa/review-2.md`. Result: **34 / 58 rows >= 4 on every criterion** (was 2 / 58).
+Failing: control-fault, control-link-lost, log, settings, onboarding-bluetooth, onboarding-enroll, connect-pairing,
+presenter-obstruction-start/step3, presenter-limit-conflict, presenter-replayed-command, presenter-auth-latency
+(each fails identically in light and dark). Round-2 fixes dispatched to four agents by folder.
