@@ -25,7 +25,7 @@ firmware **does** (the `.c` files run on the board); every such case is listed i
 | Device name                  | `M010-Barrier`                                                              | `firmware/components/barrier_types/include/app_config.h:73`, `INTERFACES.md:21`, `tools/ble_client.py:71` |
 | Name use                     | discovery only, carries no authority                                        | `INTERFACES.md:21-22`, `firmware/components/ble_auth/ble_auth_gatt.c:233`                                 |
 | Advertising type             | connectable undirected, general discoverable, forever                       | `firmware/components/ble_auth/ble_auth_gap.c:294-298`                                                     |
-| Adv flags                    | `BLE_HS_ADV_F_DISC_GEN \| BLE_HS_ADV_F_BREDR_UNSUP`                                                                                 | `firmware/components/ble_auth/ble_auth_gap.c:268` |
+| Adv flags                    | `BLE_HS_ADV_F_DISC_GEN \| BLE_HS_ADV_F_BREDR_UNSUP`                         | `firmware/components/ble_auth/ble_auth_gap.c:268`                                                         |
 | Service UUID location        | **advertising data** (complete 128-bit list)                                | `firmware/components/ble_auth/ble_auth_gap.c:269-271`                                                     |
 | Name location                | **scan response** (complete local name)                                     | `firmware/components/ble_auth/ble_auth_gap.c:279-286`                                                     |
 | Re-advertise                 | after every connect while a slot is free, after disconnect, on adv complete | `firmware/components/ble_auth/ble_auth_gap.c:172`, `:150`, `:235`, `:259-261`                             |
@@ -38,12 +38,12 @@ response, so a passive scan does not see it. Never treat the name as identity.
 
 ## 2. GATT service
 
-| Item            | UUID                                   | Properties (NimBLE flags) | Payload   | Citation                                                                                                       |
-| --------------- | -------------------------------------- | ------------------------- | --------- | -------------------------------------------------------------------------------------------------------------- |
-| Barrier service | `f5f61d53-97e4-4601-8204-81943dd7e865` | primary                   |           | `INTERFACES.md:16`, `firmware/components/ble_auth/ble_auth_gatt.c:31-33`, `:204-205`, `tools/ble_client.py:73` |
-| Command         | `d6a1e91e-0067-4e39-b4b2-b9c0d3032d84` | `WRITE \| WRITE_ENC \| WRITE_AUTHEN` (write **with response**; no write-without-response flag)                                        | 9-byte frame       | `INTERFACES.md:17`, `firmware/components/ble_auth/ble_auth_gatt.c:34-36`, `:183`, `tools/ble_client.py:74`, `:226` |
-| Status          | `40bad457-f09d-43a8-8ccf-fe7cf09786a1` | `READ \| READ_ENC \| READ_AUTHEN \| NOTIFY`            | 12 bytes                                                                                                           | `INTERFACES.md:18`, `firmware/components/ble_auth/ble_auth_gatt.c:37-39`, `:189-190`, `tools/ble_client.py:75` |
-| Session         | `1cd43f12-2ee3-472f-90c9-55907f75d50b` | `READ \| READ_ENC \| READ_AUTHEN`                                                                                                   | 4 bytes, LE uint32 | `INTERFACES.md:19`, `firmware/components/ble_auth/ble_auth_gatt.c:40-42`, `:196`, `tools/ble_client.py:76`         |
+| Item            | UUID                                   | Properties (NimBLE flags)                                                                      | Payload            | Citation                                                                                                           |
+| --------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Barrier service | `f5f61d53-97e4-4601-8204-81943dd7e865` | primary                                                                                        |                    | `INTERFACES.md:16`, `firmware/components/ble_auth/ble_auth_gatt.c:31-33`, `:204-205`, `tools/ble_client.py:73`     |
+| Command         | `d6a1e91e-0067-4e39-b4b2-b9c0d3032d84` | `WRITE \| WRITE_ENC \| WRITE_AUTHEN` (write **with response**; no write-without-response flag) | 9-byte frame       | `INTERFACES.md:17`, `firmware/components/ble_auth/ble_auth_gatt.c:34-36`, `:183`, `tools/ble_client.py:74`, `:226` |
+| Status          | `40bad457-f09d-43a8-8ccf-fe7cf09786a1` | `READ \| READ_ENC \| READ_AUTHEN \| NOTIFY`                                                    | 12 bytes           | `INTERFACES.md:18`, `firmware/components/ble_auth/ble_auth_gatt.c:37-39`, `:189-190`, `tools/ble_client.py:75`     |
+| Session         | `1cd43f12-2ee3-472f-90c9-55907f75d50b` | `READ \| READ_ENC \| READ_AUTHEN`                                                              | 4 bytes, LE uint32 | `INTERFACES.md:19`, `firmware/components/ble_auth/ble_auth_gatt.c:40-42`, `:196`, `tools/ble_client.py:76`         |
 
 UUID byte order was cross-checked: reversing each `BLE_UUID128_INIT` byte array in
 `ble_auth_gatt.c:31-42` reproduces the INTERFACES.md strings exactly (script in scratch, all four
@@ -331,14 +331,14 @@ never emitted by any `.c` file in `firmware/`.
 
 ### 7.4 ATT errors the app will see
 
-| Access                       | Condition                        | ATT error                                                            | Source                                                                         |
-| ---------------------------- | -------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Access                       | Condition                        | ATT error                                                            | Source                                                                                                                                                                        |
+| ---------------------------- | -------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Any of the 3 characteristics | link not encrypted+authenticated | Insufficient Authentication (0x05) or Insufficient Encryption (0x0F) | Chosen by NimBLE from the `*_ENC \| *_AUTHEN` flags (`firmware/components/ble_auth/ble_auth_gatt.c:183`, `:189`, `:196`); the exact code is not specified in firmware sources |
-| Session read                 | connected+encrypted, not owner   | Insufficient Authorization **0x08**                                  | `firmware/components/ble_auth/ble_auth_gatt.c:128-131`                         |
-| Command write                | connected+encrypted, not owner   | Insufficient Authorization **0x08**, logged `WRITE_UNAUTHORIZED`     | `firmware/components/ble_auth/ble_auth_gatt.c:155-158`                         |
-| Wrong operation type         | e.g. write to Status             | Unlikely Error 0x0E                                                  | `firmware/components/ble_auth/ble_auth_gatt.c:102-104`, `:123-125`, `:151-153` |
-| Status/Session read          | mbuf append failure              | Insufficient Resources 0x11                                          | `firmware/components/ble_auth/ble_auth_gatt.c:115-116`, `:139-140`             |
-| Command write by owner       | anything                         | **0 (success)**                                                      | `firmware/components/ble_auth/ble_auth_gatt.c:173`                             |
+| Session read                 | connected+encrypted, not owner   | Insufficient Authorization **0x08**                                  | `firmware/components/ble_auth/ble_auth_gatt.c:128-131`                                                                                                                        |
+| Command write                | connected+encrypted, not owner   | Insufficient Authorization **0x08**, logged `WRITE_UNAUTHORIZED`     | `firmware/components/ble_auth/ble_auth_gatt.c:155-158`                                                                                                                        |
+| Wrong operation type         | e.g. write to Status             | Unlikely Error 0x0E                                                  | `firmware/components/ble_auth/ble_auth_gatt.c:102-104`, `:123-125`, `:151-153`                                                                                                |
+| Status/Session read          | mbuf append failure              | Insufficient Resources 0x11                                          | `firmware/components/ble_auth/ble_auth_gatt.c:115-116`, `:139-140`                                                                                                            |
+| Command write by owner       | anything                         | **0 (success)**                                                      | `firmware/components/ble_auth/ble_auth_gatt.c:173`                                                                                                                            |
 
 Status read requires only an encrypted+authenticated link, **not** owner status
 (`firmware/components/ble_auth/ble_auth_gatt.c:98-117`). The reliable "am I the owner?" probe is a

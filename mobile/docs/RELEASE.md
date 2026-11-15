@@ -4,10 +4,10 @@ _Draft. Build links, numbers and commit hash are filled in Phase 4._
 
 ## Builds
 
-| Platform | Profile | Build | Link / status |
-| --- | --- | --- | --- |
-| Android APK | `preview` | TBD | TBD |
-| iOS (TestFlight) | `production` | TBD | TBD |
+| Platform         | Profile      | Build | Link / status |
+| ---------------- | ------------ | ----- | ------------- |
+| Android APK      | `preview`    | TBD   | TBD           |
+| iOS (TestFlight) | `production` | TBD   | TBD           |
 
 Commit: TBD (branch `expo-rewrite`).
 
