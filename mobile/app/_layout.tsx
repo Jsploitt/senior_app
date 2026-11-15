@@ -7,6 +7,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { loadSettings, useSettings } from '@/store/settings';
 import { setTransportKind } from '@/store/transport';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
+import { installQaHook } from '@/utils/qaHook';
+
+installQaHook();
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 

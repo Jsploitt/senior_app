@@ -1,4 +1,5 @@
 import { Redirect, Tabs } from 'expo-router';
+import { Platform } from 'react-native';
 import { Icon } from '@/components';
 import { useSettings } from '@/store/settings';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -13,7 +14,11 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: t.c.tint,
         tabBarInactiveTintColor: t.c.secondaryLabel,
-        tabBarStyle: { backgroundColor: t.c.surface, borderTopColor: t.c.separator },
+        tabBarStyle: {
+          backgroundColor: t.c.surface,
+          borderTopColor: t.c.separator,
+          ...(Platform.OS === 'web' ? { height: 62, paddingBottom: 8, paddingTop: 6 } : null),
+        },
         tabBarLabelStyle: { fontSize: 10, fontWeight: '500' },
       }}
     >

@@ -1,0 +1,7 @@
+{
+  "name": "m010-qa",
+  "private": true,
+  "description": "Visual QA tooling (dev-time only, never bundled into the app).",
+  "scripts": { "shots": "node shoot.mjs" },
+  "dependencies": { "playwright-core": "1.56.1" }
+}
