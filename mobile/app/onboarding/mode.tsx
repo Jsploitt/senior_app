@@ -44,7 +44,7 @@ export default function Mode() {
         />
         {bleOff ? (
           <Text variant="footnote" color="secondaryLabel" testID="mode-ble-unavailable">
-            Bluetooth needs the iPhone or Android app. In a web browser only the simulator is available.
+            Bluetooth needs the Android app. In a web browser only the simulator is available.
           </Text>
         ) : null}
       </View>

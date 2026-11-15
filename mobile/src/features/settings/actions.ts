@@ -27,4 +27,4 @@ export async function forgetBarrier(
 }
 
 export const FORGET_INSTRUCTIONS =
-  "Also remove M010-Barrier in your phone's Bluetooth settings (iOS: Settings > Bluetooth > (i) > Forget This Device). To use it again you must re-enroll: hold the barrier's button for 3 seconds.";
+  "Also remove M010-Barrier in your phone's Bluetooth settings (Settings > Connected devices > M010-Barrier > Forget). To use it again you must re-enroll: hold the barrier's button for 3 seconds.";

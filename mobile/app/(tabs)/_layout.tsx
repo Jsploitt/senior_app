@@ -17,7 +17,7 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: t.c.surface,
           borderTopColor: t.c.separator,
-          ...(Platform.OS === 'web' ? { height: 62, paddingBottom: 8, paddingTop: 6 } : null),
+          ...(Platform.OS === 'web' ? { height: 74, paddingBottom: 14, paddingTop: 6 } : null),
         },
         tabBarLabelStyle: { fontSize: 10, fontWeight: '500' },
       }}

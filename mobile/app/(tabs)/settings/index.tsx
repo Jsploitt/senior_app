@@ -9,7 +9,7 @@ import type { TransportKind } from '@/transport/types';
 export default function SettingsHome() {
   const s = useSettings();
   const connectionFooter = !bleSupported
-    ? 'Bluetooth needs the iPhone or Android app. In a web browser only the simulator is available.'
+    ? 'Bluetooth needs the Android app. In a web browser only the simulator is available.'
     : s.transport === 'sim'
       ? 'The simulator is a virtual barrier inside the app. Nothing is sent over Bluetooth.'
       : 'Talks to a real M010 barrier over Bluetooth. Switching disconnects the current barrier first.';
