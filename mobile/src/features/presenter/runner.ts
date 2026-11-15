@@ -222,6 +222,11 @@ export class ScenarioRunner {
     if (this.snap.view > 0) this.set({ view: this.snap.view - 1 });
   }
 
+  /** Jump the step card to an already-run step (review only; the device is not rewound). */
+  goTo(i: number) {
+    if (i >= 0 && i < this.snap.frontier) this.set({ view: i });
+  }
+
   /** Review a later, already-run step, otherwise run the next pending step. */
   async next(): Promise<StepResult | null> {
     const s = this.snap;
