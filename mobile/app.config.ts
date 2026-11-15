@@ -3,6 +3,11 @@ import type { ExpoConfig } from 'expo/config';
 const BLE_REASON =
   'M010 Barrier uses Bluetooth to talk directly to your parking barrier. No internet connection is used.';
 
+// Constraint 5 (100% local): release builds declare no network permission at all.
+// Development builds keep INTERNET so the dev client can reach Metro.
+const isDevBuild =
+  process.env.EAS_BUILD_PROFILE === 'development' || process.env.APP_VARIANT === 'development';
+
 const config: ExpoConfig = {
   name: 'M010 Barrier',
   slug: 'm010-barrier',
@@ -27,10 +32,13 @@ const config: ExpoConfig = {
       backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',
     },
-    permissions: [
-      'android.permission.BLUETOOTH_SCAN',
-      'android.permission.BLUETOOTH_CONNECT',
-      'android.permission.ACCESS_FINE_LOCATION',
+    // BLE permissions are owned by the react-native-ble-plx plugin (BLUETOOTH_SCAN neverForLocation,
+    // FINE/COARSE location capped at maxSdk 30). Declaring them here too can drop those flags.
+    permissions: [],
+    blockedPermissions: [
+      'android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.WRITE_EXTERNAL_STORAGE',
+      ...(isDevBuild ? [] : ['android.permission.INTERNET']),
     ],
     predictiveBackGestureEnabled: false,
   },
@@ -52,7 +60,7 @@ const config: ExpoConfig = {
     [
       'react-native-ble-plx',
       {
-        isBackgroundEnabled: false,
+        isBackgroundEnabled: false, // foreground only; see STACK.md
         neverForLocation: true,
         bluetoothAlwaysPermission: BLE_REASON,
       },
