@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BarrierState, FaultReason, GuardBit, Opcode } from '@/protocol/constants';
@@ -91,7 +91,7 @@ describe('Control screen: button enablement per state', () => {
     expect(enabled('btn-raise')).toBe(raise);
     expect(enabled('btn-stop')).toBe(stop);
     expect(screen.getByTestId('hero')).toBeTruthy();
-    if (state !== BarrierState.FAULT) expect(screen.getByTestId('footnote')).toBeTruthy();
+    expect(screen.queryByTestId('footnote')).toBeNull(); // no monitored-movement footnote
     // disabled buttons carry the reason as an accessibility hint
     // a one-line reason caption is always shown above the pad when a command is disabled
     if (!raise || !lower) expect(screen.getByTestId('pad-hint')).toBeTruthy();
@@ -123,7 +123,8 @@ describe('Control screen: commands and banners', () => {
     expect(enabled('btn-raise')).toBe(false);
     await advance(mockHandle.device.timings.travelMs + 500);
     expect(screen.getByTestId('hero').props.accessibilityLabel).toBe('Barrier, Raised');
-    expect(screen.getByText('Barrier is up')).toBeTruthy();
+    // the hero is the one confirmation: no extra "Barrier is up" toast
+    expect(screen.queryByTestId('result-banner')).toBeNull();
     expect(haptics.notify).toHaveBeenCalledWith('success');
   });
 
@@ -140,12 +141,19 @@ describe('Control screen: commands and banners', () => {
     expect(screen.getByTestId(`guard-row-${GuardBit.ZONE_NOT_CLEAR}`)).toBeTruthy();
     expect(screen.getByText('Something is in the way')).toBeTruthy();
     expect(screen.getAllByTestId(/^guard-row-/)).toHaveLength(1);
+    // live block: hero warning line, tinted (not filled) moves, Safety checks link, no pad hint
+    expect(screen.getByText('Movement blocked: something is in the way')).toBeTruthy();
+    expect(enabled('btn-raise')).toBe(true);
+    expect(screen.queryByTestId('pad-hint')).toBeNull();
+    await fireEvent.press(screen.getByTestId('banner-safety-checks'));
+    expect(router.push).toHaveBeenCalledWith('/guard-details');
     expect(haptics.notify).toHaveBeenCalledWith('warning');
     // guard banners stay until dismissed
     await advance(10_000);
     expect(screen.getByTestId('result-banner')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('banner-dismiss'));
     expect(screen.queryByTestId('result-banner')).toBeNull();
+    expect(screen.queryByText('Movement blocked: something is in the way')).toBeNull();
   });
 
   it('FAULT shows the fault card with the on-site reset instruction and an error haptic', async () => {
@@ -155,6 +163,7 @@ describe('Control screen: commands and banners', () => {
       mockHandle.device.injectFault(FaultReason.LIMIT_CONFLICT);
     });
     await advance(300);
+    expect(screen.getByTestId('hero-label').props.children).toBe('Fault');
     expect(screen.getByText('Position sensors disagree')).toBeTruthy();
     expect(screen.getByText(/Hold the unit button for 8 seconds/)).toBeTruthy();
     expect(haptics.notify).toHaveBeenCalledWith('error');
@@ -173,17 +182,18 @@ describe('Control screen: commands and banners', () => {
     await fireEvent.press(screen.getByTestId('btn-stop'));
     await advance(400);
     expect(send).toHaveBeenCalledWith(Opcode.STOP);
-    expect(within(screen.getByTestId('result-banner')).getByText('Stopped')).toBeTruthy();
+    expect(screen.queryByTestId('result-banner')).toBeNull(); // the hero says Stopped
+    expect(screen.getByTestId('hero').props.accessibilityLabel).toBe('Barrier, Stopped');
     expect(haptics.impact).toHaveBeenCalledWith('heavy');
     expect(enabled('btn-raise')).toBe(true);
     expect(enabled('btn-lower')).toBe(true);
   });
 
-  it('shows the auth latency badge with the 2.0 s reference, labelled simulated', async () => {
+  it('shows one compact auth line', async () => {
     mockHandle = await connectedSim();
     await mount();
-    expect(screen.getByText(/^Authenticated in \d\.\d\d s$/)).toBeTruthy();
-    expect(screen.getByText(/Phone-measured, simulated\. Reference: 2\.00 s/)).toBeTruthy();
+    expect(screen.getByText(/^Signed in \d\.\d\d s · phone-measured$/)).toBeTruthy();
+    expect(screen.queryByTestId('auth-latency-note')).toBeNull();
   });
 
   it('guard chips open the guard details sheet', async () => {

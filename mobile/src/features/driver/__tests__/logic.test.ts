@@ -1,5 +1,7 @@
 import { BarrierState, CmdResult, GuardBit, Opcode, SPEC5_AUTH_MAX_MS } from '@/protocol/constants';
 import {
+  authLine,
+  guardBlockWarning,
   colorRole,
   connectFailureCopy,
   connectionPill,
@@ -89,6 +91,14 @@ describe('latency formatting', () => {
   it('formats seconds with two decimals', () => {
     expect(formatLatency(840)).toBe('0.84 s');
     expect(latencyLabel(840)).toBe('Authenticated in 0.84 s');
+    expect(authLine(540)).toBe('Signed in 0.54 s · phone-measured');
+    const rej = { result: CmdResult.REJECTED_GUARD };
+    expect(guardBlockWarning(rej, { zoneClear: false, sensorsValid: true })).toMatch(/^Movement blocked/);
+    expect(guardBlockWarning(rej, { zoneClear: true, sensorsValid: true })).toBeUndefined();
+    expect(
+      guardBlockWarning({ result: CmdResult.COMPLETED }, { zoneClear: false, sensorsValid: true }),
+    ).toBeUndefined();
+    expect(guardBlockWarning(null, { zoneClear: false, sensorsValid: true })).toBeUndefined();
     expect(formatLatency(2000)).toBe('2.00 s');
   });
   it('bar fill is relative to 1.5x the Spec 5 reference and clamped', () => {

@@ -1,17 +1,10 @@
 /** Control tab: hero, guard chips, control pad, result banner, fault card, auth latency. */
 import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  AccessibilityInfo,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { AccessibilityInfo, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Banner, Button, EmptyState, Text } from '@/components';
-import { BarrierState, CmdResult, Opcode, SPEC5_AUTH_MAX_MS } from '@/protocol/constants';
+import { BarrierState, CmdResult, Opcode } from '@/protocol/constants';
 import { useSettings } from '@/store/settings';
 import { useTransport, useTransportSnapshot } from '@/store/transport';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -32,8 +25,8 @@ import {
   connectFailureCopy,
   connectionPill,
   FEED_RESULTS,
-  formatLatency,
-  latencyLabel,
+  authLine,
+  guardBlockWarning,
   resultHaptic,
   resultNotice,
   statusKey,
@@ -52,7 +45,6 @@ function fireHaptic(result: CmdResult) {
 export default function ControlScreen() {
   const t = useTheme();
   const insets = useSafeAreaInsets();
-  const { fontScale, height } = useWindowDimensions();
   const transport = useTransport();
   const snap = useTransportSnapshot();
   const settings = useSettings();
@@ -105,6 +97,8 @@ export default function ControlScreen() {
     lastKey.current = key;
     if (!FEED_RESULTS.has(status.lastResult)) return;
     fireHaptic(status.lastResult);
+    // the hero already shows Raised / Lowered / Stopped: no second confirmation toast for those
+    if (status.lastResult === CmdResult.COMPLETED || status.lastResult === CmdResult.STOPPED) return;
     show(
       resultNotice({
         id: ++seq.current,
@@ -199,8 +193,7 @@ export default function ControlScreen() {
   /* ---------- render ---------- */
   const pill = connectionPill(snap.phase, status?.ownerConnected ?? null, linkLost);
   const faulted = status?.state === BarrierState.FAULT;
-  // link lost / fault add a banner or card: shrink the hero so the chips always clear the dock
-  const compact = fontScale >= 1.3 || height < 700 || linkLost || faulted;
+  const guardWarning = guardBlockWarning(notice, status);
   const openFinder = () => router.push('/connect');
 
   return (
@@ -233,16 +226,11 @@ export default function ControlScreen() {
               </Text>
             ) : null}
             {latency !== null && connected ? (
-              <Text variant="subheadline" color="secondaryLabel" tabular testID="auth-latency">
-                {latencyLabel(latency)}
+              <Text variant="footnote" color="secondaryLabel" tabular testID="auth-latency">
+                {authLine(latency)}
               </Text>
             ) : null}
           </View>
-        ) : null}
-        {latency !== null && connected ? (
-          <Text variant="caption1" color="secondaryLabel" testID="auth-latency-note">
-            {`Phone-measured${snap.kind === 'sim' ? ', simulated' : ''}. Reference: ${formatLatency(SPEC5_AUTH_MAX_MS)}`}
-          </Text>
         ) : null}
         <View style={styles.chips}>
           <ConnectionPill spec={pill} onPress={connected ? undefined : openFinder} />
@@ -275,7 +263,7 @@ export default function ControlScreen() {
               <BarrierHero
                 state={status.state}
                 fault={status.fault}
-                compact={compact}
+                warning={guardWarning}
                 stale={!connected}
                 testID="hero"
               />
@@ -292,17 +280,6 @@ export default function ControlScreen() {
             </View>
             {status.state === BarrierState.FAULT ? (
               <FaultCard fault={status.fault} heading="Needs on-site reset" compact />
-            ) : null}
-            {connected && !faulted ? (
-              <Text
-                variant="caption1"
-                color="secondaryLabel"
-                style={{ marginTop: space.l }}
-                testID="footnote"
-              >
-                An accepted command starts a monitored movement; the barrier confirms arrival with its
-                end-limit switch.
-              </Text>
             ) : null}
           </>
         ) : (
@@ -342,9 +319,14 @@ export default function ControlScreen() {
           connected={connected}
           onCommand={onCommand}
           onHeight={setPadH}
+          guardBlocked={guardWarning !== undefined}
           banner={
             notice && notice.result !== CmdResult.FAULT ? (
-              <ResultBanner notice={notice} onDismiss={() => setNotice(null)} />
+              <ResultBanner
+                notice={notice}
+                onDismiss={() => setNotice(null)}
+                onDetails={() => router.push('/guard-details')}
+              />
             ) : null
           }
         />

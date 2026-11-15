@@ -149,27 +149,31 @@ function ReadRow({
   last?: boolean;
 }) {
   const t = useTheme();
+  // The raw code is secondary: show it only when it adds something the plain value does not.
+  const code = raw && sentence(raw).toLowerCase() !== value.toLowerCase() ? sentence(raw) : null;
   return (
     <View
       testID={testID}
       accessible
-      accessibilityLabel={`${label}: ${value}${raw ? `, code ${sentence(raw)}` : ''}`}
+      accessibilityLabel={`${label}: ${value}${code ? `, code ${code}` : ''}`}
       style={[
         styles.readRow,
         !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: t.c.separator },
       ]}
     >
-      <Text variant="footnote" color="secondaryLabel" style={styles.readLabel}>
+      <Text variant="subheadline" color="secondaryLabel" style={styles.readLabel}>
         {label}
       </Text>
-      <Text variant="callout" weight="600" color={tone} style={styles.readValue}>
-        {value}
-      </Text>
-      {raw ? (
-        <Text variant="footnote" color="secondaryLabel" style={styles.readRaw}>
-          {sentence(raw)}
+      <View style={styles.readValue}>
+        <Text variant="callout" weight="600" color={tone}>
+          {value}
         </Text>
-      ) : null}
+        {code ? (
+          <Text variant="caption1" color="secondaryLabel">
+            {code}
+          </Text>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -202,6 +206,9 @@ export function LiveReadout({ snap, device }: LiveReadoutProps) {
   return (
     <View testID="live-readout" style={styles.readout}>
       <MotionClock device={device} />
+      <Text variant="headline" accessibilityRole="header" style={styles.sectionTitle}>
+        Live status
+      </Text>
       <Card style={styles.strip}>
         <ReadRow testID="tile-state" label="State" value={stateText} raw={stateRaw} />
         <ReadRow
@@ -223,7 +230,7 @@ export function LiveReadout({ snap, device }: LiveReadoutProps) {
           label="Guard"
           value={guardValue}
           raw={guardBlocked ? hex2(s.guardFailMask) : undefined}
-          tone={guardBlocked ? 'warning' : 'secondaryLabel'}
+          tone={guardBlocked ? 'warning' : 'label'}
           last
         />
       </Card>
@@ -279,14 +286,14 @@ const styles = StyleSheet.create({
   strip: { paddingVertical: space.xs },
   readRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.s,
-    minHeight: 40,
+    alignItems: 'flex-start',
+    gap: space.m,
+    minHeight: 44,
     paddingVertical: space.s,
   },
-  readLabel: { width: 76 },
-  readValue: { flex: 1 },
-  readRaw: { maxWidth: 120, textAlign: 'right' },
+  readLabel: { width: 96, paddingTop: 2 },
+  readValue: { flex: 1, gap: 1 },
+  sectionTitle: { marginTop: space.s },
   upper: { textTransform: 'uppercase', letterSpacing: 0.4 },
   tileDetail: { marginTop: space.xxs },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s },

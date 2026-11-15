@@ -10,7 +10,7 @@ export function CountdownRing({
   startedAt,
   now,
   label,
-  size = 176,
+  size = 124,
 }: {
   totalMs: number;
   startedAt: number | null;
@@ -49,10 +49,10 @@ export function CountdownRing({
           strokeDashoffset={circ * (1 - frac)}
         />
       </Svg>
-      <Text variant="display" tabular color={expired ? 'critical' : idle ? 'secondaryLabel' : 'label'}>
+      <Text variant="title1" tabular color={expired ? 'critical' : idle ? 'secondaryLabel' : 'label'}>
         {formatCountdown(left)}
       </Text>
-      <Text variant="footnote" color="secondaryLabel">
+      <Text variant="caption1" color="secondaryLabel" numberOfLines={1}>
         {label}
       </Text>
     </View>

@@ -29,6 +29,20 @@ describe('log chip semantics', () => {
   });
 });
 
+describe('log chip dedupe', () => {
+  const base = { id: 2, t: 0, kind: 'command', transport: 'sim', opcode: 'LOWER' } as const;
+  it('drops a chip that repeats the row title or a status row result', () => {
+    expect(entryChips({ ...base, message: 'LOWER -> ACCEPTED', result: 'ACCEPTED' } as LogEntry)).toEqual([]);
+    expect(
+      entryChips({ ...base, kind: 'status', message: 'State Lowering', result: 'ACCEPTED' } as LogEntry),
+    ).toEqual([]);
+  });
+  it('keeps a chip that adds information', () => {
+    const e = { ...base, message: 'Command sent', result: 'REJECTED_GUARD' } as LogEntry;
+    expect(entryChips(e)).toHaveLength(1);
+  });
+});
+
 describe('last counter', () => {
   it('reads the status value or a placeholder, with one label', () => {
     expect(barrierLastCounter({ lastCounter: 3 })).toBe('3');

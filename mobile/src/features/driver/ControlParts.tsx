@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { Button, Card, Icon, Pill, Text, type IconName } from '@/components';
 import {
   BATTERY_CRITICAL_MV,
+  CmdResult,
   BATTERY_HEALTHY_MIN_MV,
   FaultReason,
   Opcode,
@@ -134,17 +135,11 @@ export function GuardChips({
       <Chip
         testID="chip-sensors"
         icon={
-          !live
-            ? 'time-outline'
-            : faulted
-              ? 'alert-circle-outline'
-              : sensorsValid
-                ? 'checkmark-circle'
-                : 'alert-circle'
+          !live ? 'time-outline' : faulted ? 'warning' : sensorsValid ? 'checkmark-circle' : 'alert-circle'
         }
         label={sensorsLabel}
         a11yLabel={live ? undefined : stale(sensorsLabel)}
-        tone={!live || faulted ? 'neutral' : sensorsValid ? 'positive' : 'warning'}
+        tone={!live ? 'neutral' : faulted ? 'critical' : sensorsValid ? 'positive' : 'warning'}
         onPress={onPress}
       />
       <Chip
@@ -219,7 +214,10 @@ export function ControlPad({
   onCommand,
   banner,
   onHeight,
+  guardBlocked = false,
 }: {
+  /** a guard rejection is the latest result and its cause is still live: moves render tinted */
+  guardBlocked?: boolean;
   state: BarrierState | null;
   connected: boolean;
   onCommand: (op: Opcode) => void;
@@ -232,7 +230,10 @@ export function ControlPad({
   const { fontScale } = useWindowDimensions();
   const en = controlEnablement(state, connected);
   const stacked = fontScale >= 1.4;
-  const hint = padCaption(en, connected, state);
+  // the banner already says why nothing moves: no second reason line above the buttons
+  const hint = banner ? undefined : padCaption(en, connected, state);
+  // enabled (the firmware decides) but quiet while a live guard block was just reported
+  const quiet = guardBlocked ? ('tinted' as const) : undefined;
   return (
     <View
       testID="control-pad"
@@ -257,7 +258,7 @@ export function ControlPad({
             title="Lower"
             icon="arrow-down"
             size="hero"
-            variant="positive"
+            variant={quiet ?? 'positive'}
             haptic={false}
             disabled={!en.lower.enabled}
             accessibilityLabel="Lower barrier"
@@ -271,7 +272,7 @@ export function ControlPad({
             title="Raise"
             icon="arrow-up"
             size="hero"
-            variant="filled"
+            variant={quiet ?? 'filled'}
             haptic={false}
             disabled={!en.raise.enabled}
             accessibilityLabel="Raise barrier"
@@ -290,7 +291,16 @@ export function ControlPad({
 
 /* ---------------- result banner ---------------- */
 
-export function ResultBanner({ notice, onDismiss }: { notice: ResultNotice; onDismiss: () => void }) {
+export function ResultBanner({
+  notice,
+  onDismiss,
+  onDetails,
+}: {
+  notice: ResultNotice;
+  onDismiss: () => void;
+  /** guard rejections: opens the Safety checks sheet */
+  onDetails?: () => void;
+}) {
   const t = useTheme();
   const label = [notice.title, notice.detail, ...(notice.rows ?? []).map((r) => r.title)]
     .filter(Boolean)
@@ -349,6 +359,21 @@ export function ResultBanner({ notice, onDismiss }: { notice: ResultNotice; onDi
             </View>
           ))}
         </View>
+      ) : null}
+      {notice.result === CmdResult.REJECTED_GUARD && onDetails ? (
+        <Pressable
+          onPress={onDetails}
+          accessibilityRole="button"
+          accessibilityLabel="Safety checks"
+          testID="banner-safety-checks"
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          style={styles.details}
+        >
+          <Text variant="subheadline" color="tint" weight="600">
+            Safety checks
+          </Text>
+          <Icon name="chevron-forward" size={16} color="tint" />
+        </Pressable>
       ) : null}
     </Card>
   );
@@ -472,6 +497,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: -8,
     marginRight: -8,
+  },
+  details: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    alignSelf: 'flex-start',
+    marginTop: space.m,
   },
   dot: { width: 6, height: 6, borderRadius: 3, marginTop: 7 },
   track: {

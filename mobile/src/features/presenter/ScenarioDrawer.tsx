@@ -213,7 +213,7 @@ export function LatencyPanel({
             />
             <View style={styles.flex}>
               <Text variant="footnote" color="secondaryLabel" align="center">
-                Simulated median (next run)
+                Next run median
               </Text>
               <Text variant="title3" align="center" tabular>
                 {(params.latencyMedianMs / 1000).toFixed(2)} s

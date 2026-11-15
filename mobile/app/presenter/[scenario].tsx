@@ -93,6 +93,9 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
       />
       {isLatency ? (
         <Card>
+          <Text variant="headline" accessibilityRole="header" style={styles.cardTitle}>
+            Auth latency
+          </Text>
           <LatencyPanel
             samples={snap.samples}
             params={snap.params}
@@ -131,8 +134,10 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
             </View>
           ) : (
             <View style={styles.stack}>
-              {hero}
+              {/* Step card leads; the latency scenario keeps the hero first so its meter sits mid-scroll. */}
+              {isLatency ? hero : null}
               {stepArea}
+              {isLatency ? null : hero}
               {readout}
             </View>
           )}
@@ -197,4 +202,5 @@ const styles = StyleSheet.create({
   col: { flex: 1 },
   summary: { marginTop: space.xs, marginBottom: space.s },
   stack: { gap: space.m },
+  cardTitle: { marginBottom: space.m },
 });

@@ -183,6 +183,25 @@ export function latencyLabel(ms: number): string {
   return `Authenticated in ${formatLatency(ms)}`;
 }
 
+/** One compact line for the Control header: "Signed in 0.54 s · phone-measured". */
+export function authLine(ms: number): string {
+  return `Signed in ${formatLatency(ms)} · phone-measured`;
+}
+
+/**
+ * Warning for the hero while the latest result is a guard rejection AND the blocking condition
+ * is still live (zone blocked / sensors invalid). undefined = nothing blocked.
+ */
+export function guardBlockWarning(
+  latest: { result: CmdResult } | null,
+  s: { zoneClear: boolean; sensorsValid: boolean } | null,
+): string | undefined {
+  if (!latest || latest.result !== CmdResult.REJECTED_GUARD || !s) return undefined;
+  if (!s.zoneClear) return 'Movement blocked: something is in the way';
+  if (!s.sensorsValid) return 'Movement blocked: a sensor is not reporting';
+  return undefined;
+}
+
 /** Fraction (0..1) of the bar scale; the scale ends at 1.5x the Spec 5 reference. */
 export function latencyFill(ms: number, specMs = SPEC5_AUTH_MAX_MS) {
   const scale = specMs * 1.5;

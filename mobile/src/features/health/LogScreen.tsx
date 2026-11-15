@@ -67,25 +67,33 @@ export function LogScreen() {
 
   const header = (
     <View>
-      <Text variant="largeTitle" accessibilityRole="header" style={{ marginBottom: space.l }}>
-        Log
-      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: space.m,
+        }}
+      >
+        <Text variant="largeTitle" accessibilityRole="header">
+          Log
+        </Text>
+        <Button
+          title="Share CSV"
+          icon="share-outline"
+          variant="tinted"
+          size="small"
+          disabled={entries.length === 0}
+          onPress={share}
+          accessibilityHint="Exports the whole log as a CSV file"
+          testID="share-csv"
+        />
+      </View>
       <Segmented
         value={filter}
         options={LOG_FILTERS}
         onChange={setFilter}
         accessibilityLabel="Filter events"
-      />
-      <Button
-        title="Share CSV"
-        icon="share-outline"
-        variant="filled"
-        size="small"
-        style={{ marginTop: space.m }}
-        disabled={entries.length === 0}
-        onPress={share}
-        accessibilityHint="Exports the whole log as a CSV file"
-        testID="share-csv"
       />
       {notice ? (
         <Banner
@@ -95,7 +103,7 @@ export function LogScreen() {
         />
       ) : null}
 
-      <View style={{ marginTop: space.l, marginBottom: space.l }}>
+      <View style={{ marginTop: space.m, marginBottom: space.m }}>
         <Card padded={false} testID="evidence-summary">
           <Pressable
             onPress={() => setOpen((o) => !o)}

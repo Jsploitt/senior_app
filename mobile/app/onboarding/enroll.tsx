@@ -66,11 +66,7 @@ export default function Enroll() {
     >
       <View style={{ gap: space.m, alignSelf: 'stretch' }}>
         {isSim ? (
-          <EnrollStep
-            n={1}
-            icon="hand-left-outline"
-            title={`In the simulator the enrollment button is virtual: tap Start to open the ${WINDOW_S} s window.`}
-          />
+          <EnrollStep n={1} icon="hand-left-outline" title="Tap Start to open the window (virtual button)." />
         ) : (
           <EnrollStep n={1} icon="hand-left-outline" title={`Hold its button for ${HOLD_S} seconds.`} />
         )}
@@ -92,7 +88,7 @@ export default function Enroll() {
             totalMs={timer.totalMs}
             startedAt={timer.startedAt}
             now={timer.now}
-            size={96}
+            size={124}
             label={expired ? 'Window closed' : idle ? 'not started' : 'to pair'}
           />
           {running ? (
@@ -121,7 +117,7 @@ export default function Enroll() {
               : "Tap Connect, then enter the 6-digit passkey from the barrier's label when your phone asks."
           }
         />
-        {running ? null : (
+        {running || isSim ? null : (
           <Text variant="footnote" color="secondaryLabel" align="center">
             Connect becomes available once the timer is running.
           </Text>

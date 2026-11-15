@@ -37,13 +37,15 @@ import { useReduceMotion } from './useReduceMotion';
 export interface BarrierHeroProps {
   state: BarrierState | null;
   fault: FaultReason;
-  /** compact variant for presenter / small layouts */
+  /** @deprecated the hero has one constant size in every state; kept so callers still compile */
   compact?: boolean;
   testID?: string;
   /** link lost: show the last known state dimmed, neutral and frozen (never as live motion) */
   stale?: boolean;
   /** override the one-line detail (defaults to STATE_TEXT) */
   detail?: string;
+  /** live guard block (e.g. "Movement blocked: something is in the way"): small amber line */
+  warning?: string;
 }
 
 /* Canvas geometry (units = pt at scale 1). */
@@ -54,8 +56,8 @@ const H = 216;
 const GROUND_Y = 202;
 const PIVOT_X = 58;
 const PIVOT_Y = 182;
-/** the scene is drawn at 320x216 and shown at this fraction: ~230x155 pt keeps the card near 250 pt */
-const SCENE_SCALE = 0.72;
+/** the scene is drawn at 320x216 and shown at this fraction (~198x134 pt) */
+const SCENE_SCALE = 0.62;
 const ARM_LEN = 170;
 const ARM_H = 18;
 const HOUSING = { x: 28, y: PIVOT_Y - 12, w: 60, h: GROUND_Y - (PIVOT_Y - 12) };
@@ -66,7 +68,10 @@ function ArmArt({
   stripeA,
   stripeB,
   post,
+  outline,
 }: {
+  /** hairline edge so the white segments stay visible on a white (stale) card */
+  outline?: string;
   ghost: boolean;
   fg: string;
   stripeA: string;
@@ -107,6 +112,18 @@ function ArmArt({
           <Circle cx={ARM_H / 2} cy={ARM_H / 2} r={ARM_H / 2 - 3} fill={post} />
         </G>
       )}
+      {!ghost && outline ? (
+        <Rect
+          x={0.75}
+          y={0.75}
+          width={ARM_LEN - 1.5}
+          height={ARM_H - 1.5}
+          rx={(ARM_H - 1.5) / 2}
+          fill="none"
+          stroke={outline}
+          strokeWidth={1.5}
+        />
+      ) : null}
     </Svg>
   );
 }
@@ -149,7 +166,7 @@ function ElapsedLine({ startedAt, color }: { startedAt: number; color: 'secondar
   );
 }
 
-export function BarrierHero({ state, fault, compact, testID, stale, detail }: BarrierHeroProps) {
+export function BarrierHero({ state, fault, testID, stale, detail, warning }: BarrierHeroProps) {
   const t = useTheme();
   const reduce = useReduceMotion();
   const { width: winW } = useWindowDimensions();
@@ -157,7 +174,7 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
   const fg = ROLE_FG[role];
   const wash = state === null || role === 'neutral' ? t.c.surface : t.c[ROLE_WASH[role]];
 
-  const scale = Math.min(SCENE_SCALE, (winW - 4 * space.l) / W) * (compact ? 0.78 : 1);
+  const scale = Math.min(SCENE_SCALE, (winW - 4 * space.l) / W);
   const cw = W * scale;
   const ch = H * scale;
 
@@ -215,9 +232,10 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
 
   const text = state === null ? null : STATE_TEXT[state];
   const faultTitle = state === BarrierState.FAULT && fault ? FAULT_TEXT[fault].title : undefined;
-  const base = state === null ? 'Not connected' : (faultTitle ?? text!.label);
+  const base = state === null ? 'Not connected' : text!.label;
   const label = stale && state !== null ? `Last known: ${base}` : base;
-  // FAULT: the title names the fault; the cause and the on-site reset live in the fault card only.
+  // FAULT: the title is the word "Fault", the cause is the subtitle; the on-site reset lives in the
+  // fault card only.
   const sub =
     detail ??
     (state === null
@@ -225,7 +243,7 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
       : stale
         ? 'Not live.'
         : state === BarrierState.FAULT
-          ? undefined
+          ? faultTitle
           : text!.detail);
   // FAULT: the arm position is untrusted, so draw it like UNKNOWN (dashed outline) in the fault tone
   const ghost = state === null || state === BarrierState.UNKNOWN || state === BarrierState.FAULT;
@@ -252,7 +270,7 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
         washStyle,
       ]}
     >
-      <View style={{ width: cw, height: ch, opacity: stale ? 0.5 : 1 }}>
+      <View style={{ width: cw, height: ch }}>
         {/* scene: everything drawn at scale 1 then scaled from the top-left corner */}
         <View
           style={{
@@ -285,6 +303,7 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
           <Animated.View
             style={[
               {
+                opacity: stale ? 0.55 : 1,
                 position: 'absolute',
                 left: PIVOT_X - ARM_H / 2,
                 top: PIVOT_Y - ARM_H / 2,
@@ -301,6 +320,7 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
               stripeA={t.c.armStripeA}
               stripeB={t.c.armStripeB}
               post={t.c.post}
+              outline={stale ? t.c.secondaryLabel : undefined}
             />
           </Animated.View>
           {/* pivot cap */}
@@ -326,7 +346,7 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
         </View>
       </View>
 
-      <View style={{ marginTop: space.s, paddingHorizontal: space.l, alignItems: 'center' }}>
+      <View style={styles.textSlot}>
         <View style={styles.labelRow}>
           {state === BarrierState.FAULT && !stale ? <Icon name="warning" size={24} color="critical" /> : null}
           <Text
@@ -346,6 +366,13 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
         ) : null}
         {isMoving(state) && !stale && !reduce && movingSince !== null ? (
           <ElapsedLine startedAt={movingSince} color="secondaryLabel" />
+        ) : warning && !stale ? (
+          <View style={styles.warnRow} testID={testID ? `${testID}-warning` : undefined}>
+            <Icon name="alert-circle" size={16} color="warning" />
+            <Text variant="footnote" color="warning" weight="600" style={{ flexShrink: 1 }}>
+              {warning}
+            </Text>
+          </View>
         ) : null}
       </View>
     </Animated.View>
@@ -354,6 +381,9 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
 
 const styles = StyleSheet.create({
   card: { alignItems: 'center', overflow: 'hidden' },
+  /* constant text slot: title + subtitle + one extra line (progress / warning) in every state */
+  textSlot: { marginTop: space.s, paddingHorizontal: space.l, alignItems: 'center', minHeight: 88 },
+  warnRow: { flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.xs },
   glyph: { position: 'absolute', width: 34, alignItems: 'center' },
   labelRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.s },
 });

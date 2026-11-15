@@ -30,9 +30,19 @@ export function resultTone(result: string): ChipTone {
 /** Result-style chips only; counter and latency go to the subtitle (see entryMeta). */
 export function entryChips(e: LogEntry): { label: string; tone: ChipTone }[] {
   const chips: { label: string; tone: ChipTone }[] = [];
-  if (e.result) chips.push({ label: resultTitleFromName(e.result), tone: resultTone(e.result) });
-  if (e.guardFailMask) chips.push({ label: 'Safety check blocked', tone: 'warning' });
-  if (e.fault && e.fault !== 'NONE') chips.push({ label: faultTitleFromName(e.fault), tone: 'critical' });
+  const title = humanizeMessage(e.message).toLowerCase();
+  // A chip is kept only when it adds information the row title does not already say.
+  const adds = (label: string) => !title.includes(label.toLowerCase());
+  if (e.result && e.kind !== 'status') {
+    const label = resultTitleFromName(e.result);
+    if (adds(label)) chips.push({ label, tone: resultTone(e.result) });
+  }
+  if (e.guardFailMask && adds('Safety check blocked'))
+    chips.push({ label: 'Safety check blocked', tone: 'warning' });
+  if (e.fault && e.fault !== 'NONE') {
+    const label = faultTitleFromName(e.fault);
+    if (adds(label)) chips.push({ label, tone: 'critical' });
+  }
   return chips;
 }
 
@@ -63,12 +73,12 @@ export function EventRow({ entry, inset = false }: { entry: LogEntry; inset?: bo
       accessibilityLabel={[k.label, entryMeta(entry), entry.message, ...chips.map((c) => c.label)].join(', ')}
       style={{ flexDirection: 'row', gap: space.m, paddingLeft: space.l }}
     >
-      <View style={{ width: 22, alignItems: 'center', paddingTop: space.m + 2 }}>
+      <View style={{ width: 22, alignItems: 'center', paddingTop: space.s + 4 }}>
         <Icon name={k.icon} size={18} color={tone} />
       </View>
       <View
         style={[
-          { flex: 1, paddingVertical: space.m, paddingRight: space.l },
+          { flex: 1, paddingVertical: space.s + 2, paddingRight: space.l },
           inset && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: t.c.separator },
         ]}
       >
@@ -77,7 +87,7 @@ export function EventRow({ entry, inset = false }: { entry: LogEntry; inset?: bo
           {entryMeta(entry)}
         </Text>
         {chips.length ? (
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.xs, marginTop: space.s }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.xs, marginTop: space.xs }}>
             {chips.map((c) => (
               <Pill key={c.label} label={c.label} tone={c.tone} />
             ))}

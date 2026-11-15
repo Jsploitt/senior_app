@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, Icon, Text, type IconName } from '../../components';
@@ -29,8 +29,7 @@ export function ProgressDots({
             width: i === index ? 20 : 8,
             height: 8,
             borderRadius: 4,
-            backgroundColor: i === index ? t.c.tint : t.c.separator,
-            opacity: skipped.includes(i) ? 0.45 : 1,
+            backgroundColor: i === index ? t.c.tint : t.c.tertiaryLabel,
           }}
         />
       ))}
@@ -99,7 +98,6 @@ export function OnboardingPage({
 }: OnboardingPageProps) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
-  const [footerH, setFooterH] = useState(0);
   return (
     <View style={[styles.flex, { backgroundColor: t.c.background }]} testID={testID}>
       <View style={[styles.top, { paddingTop: insets.top + space.s }]}>
@@ -110,7 +108,7 @@ export function OnboardingPage({
         )}
       </View>
       <ScrollView
-        contentContainerStyle={[styles.scroll, { paddingBottom: space.xl + footerH }]}
+        contentContainerStyle={[styles.scroll, { paddingBottom: space.xxl }]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
@@ -131,7 +129,6 @@ export function OnboardingPage({
         {children ? <View style={styles.extra}>{children}</View> : null}
       </ScrollView>
       <View
-        onLayout={(e) => setFooterH(Math.round(e.nativeEvent.layout.height))}
         style={[styles.footer, { paddingBottom: insets.bottom + space.l, borderTopColor: t.c.separator }]}
       >
         <ProgressDots index={step.index} total={step.total} skipped={step.skipped} />
