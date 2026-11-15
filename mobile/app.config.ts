@@ -1,8 +1,5 @@
 import type { ExpoConfig } from 'expo/config';
 
-const BLE_REASON =
-  'M010 Barrier uses Bluetooth to talk directly to your parking barrier. No internet connection is used.';
-
 // Constraint 5 (100% local): release builds declare no network permission at all.
 // Development builds keep INTERNET so the dev client can reach Metro.
 const isDevBuild =
@@ -16,14 +13,8 @@ const config: ExpoConfig = {
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  ios: {
-    bundleIdentifier: 'sa.edu.kfupm.m010.barrier',
-    supportsTablet: false,
-    infoPlist: {
-      NSBluetoothAlwaysUsageDescription: BLE_REASON,
-      ITSAppUsesNonExemptEncryption: false,
-    },
-  },
+  // Android only (decision 2026-11-15). Web is kept for screenshot QA, never shipped.
+  platforms: ['android', 'web'],
   android: {
     package: 'sa.edu.kfupm.m010.barrier',
     adaptiveIcon: {
@@ -62,7 +53,6 @@ const config: ExpoConfig = {
       {
         isBackgroundEnabled: false, // foreground only; see STACK.md
         neverForLocation: true,
-        bluetoothAlwaysPermission: BLE_REASON,
       },
     ],
   ],

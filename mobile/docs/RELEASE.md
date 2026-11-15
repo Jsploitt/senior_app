@@ -4,14 +4,16 @@ _Draft. Build links, numbers and commit hash are filled in Phase 4._
 
 ## Builds
 
-| Platform         | Profile      | Build | Link / status |
-| ---------------- | ------------ | ----- | ------------- |
-| Android APK      | `preview`    | TBD   | TBD           |
-| iOS (TestFlight) | `production` | TBD   | TBD           |
+| Platform    | Profile   | Build | Link / status |
+| ----------- | --------- | ----- | ------------- |
+| Android APK | `preview` | TBD   | TBD           |
 
 Commit: TBD (branch `expo-rewrite`).
 
 ## Known limitations
+
+- **Android only.** iOS was dropped on 2026-11-15 by decision of the team (no iOS build, no TestFlight).
+  Some BLE error mapping in `src/transport/ble/` still handles iOS codes; it is unused.
 
 - **Everything BLE is untested on hardware.** No ESP32-S3 board or phone was available during the build. The firmware
   itself is also marked untested on hardware (`firmware/components/ble_auth/README.md`, `tools/ble_client.py:9-12`).
@@ -48,7 +50,7 @@ See `docs/CONTRACT.md` section 12 (K1-K10) for citations.
 
 To run on a real unit with this build (record results in `docs/PROGRESS.md`):
 
-- [ ] Enrollment: hold button 3 s, UART logs `EVT_ENROLL_OPEN`; pair within 60 s using the label passkey (iOS and Android).
+- [ ] Enrollment: hold button 3 s, UART logs `EVT_ENROLL_OPEN`; pair within 60 s using the label passkey (Android).
 - [ ] Pairing outside the window is rejected; app shows the enrollment-window message.
 - [ ] Third phone when 2 owners exist: Session read fails with insufficient authorization; app shows "not an owner".
 - [ ] Every command: LOWER from RAISED, RAISE from LOWERED, STOP mid-travel, LOWER from UNKNOWN, RAISE from UNKNOWN rejected (mask 0x04).

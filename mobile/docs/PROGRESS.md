@@ -48,3 +48,10 @@ Notes / decisions:
 - Conflicts K1-K10 in CONTRACT.md section 12; none blocks BleTransport. K1 (counter not restored after
   device reboot) is handled by Status-based resync; recorded as a firmware request for RELEASE.md.
 - Risk: react-native-ble-plx 3.5.1 is a legacy bridge module; RN 0.88 runs it only via interop. Untested.
+
+### Scope change (2026-11-15, user decision): Android only
+
+- iOS dropped: removed `ios` block and `bluetoothAlwaysPermission` from `app.config.ts`, set
+  `platforms: ['android', 'web']` (web = screenshot QA only), removed iOS from `eas.json` (no `submit`).
+- Exit criterion "iOS build in TestFlight" no longer applies.
+- Visual design (DESIGN.md) unchanged.
