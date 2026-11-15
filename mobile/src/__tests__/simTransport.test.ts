@@ -280,3 +280,28 @@ describe('counter persistence and resync', () => {
     expect(transport.getSnapshot().phase).toBe('idle');
   });
 });
+
+describe('SimDevice knobs', () => {
+  it('sensor invalid for > FAULT_SENSOR_MS latches FAULT(SENSOR_PERSISTENT); recovering earlier does not', async () => {
+    const { transport, device } = await connected();
+    device.setSensors({ limitsValid: false });
+    await advance(1500);
+    device.setSensors({ limitsValid: true });
+    await advance(1000);
+    expect(device.state).toBe(BarrierState.LOWERED);
+    device.setSensors({ obstructionValid: false });
+    await advance(2100);
+    expect(transport.getSnapshot().status).toMatchObject({
+      state: BarrierState.FAULT,
+      fault: FaultReason.SENSOR_PERSISTENT,
+    });
+  });
+  it('bootAt sets the resting position', () => {
+    const d = new SimDevice();
+    d.bootAt('RAISED');
+    expect(d.state).toBe(BarrierState.RAISED);
+    d.bootAt('UNKNOWN');
+    expect(d.state).toBe(BarrierState.UNKNOWN);
+    d.dispose();
+  });
+});

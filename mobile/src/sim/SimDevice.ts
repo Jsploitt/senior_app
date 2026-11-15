@@ -17,6 +17,7 @@ import {
   CmdvResult,
   DEVICE_NAME,
   ENROLL_WINDOW_MS,
+  FAULT_SENSOR_MS,
   FaultReason,
   MAX_OWNERS,
   MOTION_NOMINAL_MS,
@@ -110,6 +111,7 @@ export class SimDevice {
   private motionTimer: ReturnType<typeof setTimeout> | null = null;
   private limitTimer: ReturnType<typeof setTimeout> | null = null;
   private seed: number;
+  private sensorTimer: ReturnType<typeof setTimeout> | null = null;
   private statusSubs = new Set<(b: Uint8Array) => void>();
   private dropSubs = new Set<(reason: string) => void>();
   private changeSubs = new Set<() => void>();
@@ -420,6 +422,16 @@ export class SimDevice {
     if (this.sensors.batteryMv < BATTERY_CRITICAL_MV && this.sensors.powerValid) {
       this.event({ type: FsmEvent.FAULT, fault: FaultReason.POWER_CRITICAL });
     }
+    // FAULT_SENSOR_MS (app_config.h:47): an input INVALID for longer than 2 s latches SENSOR_PERSISTENT.
+    if (!after.sensorsValid && this.sensorTimer === null) {
+      this.sensorTimer = setTimeout(() => {
+        this.sensorTimer = null;
+        if (!this.interlockView().sensorsValid) this.injectFault(FaultReason.SENSOR_PERSISTENT);
+      }, FAULT_SENSOR_MS);
+    } else if (after.sensorsValid && this.sensorTimer !== null) {
+      clearTimeout(this.sensorTimer);
+      this.sensorTimer = null;
+    }
   }
   injectFault(fault: FaultReason) {
     this.event({ type: FsmEvent.FAULT, fault });
@@ -432,6 +444,21 @@ export class SimDevice {
 
   get state(): BarrierState {
     return this.fsm.state;
+  }
+  /** Reboot the unit with the arm resting at a limit (or between limits -> UNKNOWN). */
+  bootAt(position: 'RAISED' | 'LOWERED' | 'UNKNOWN') {
+    if (position === 'UNKNOWN') {
+      this.rebootBetweenLimits();
+      return;
+    }
+    this.stopMotion();
+    if (this.motionTimer) clearTimeout(this.motionTimer);
+    this.motionTimer = null;
+    this.fsm = fsmInit(position === 'RAISED', position === 'LOWERED');
+    this.status.state = this.fsm.state;
+    this.status.fault = FaultReason.NONE;
+    this.status.lastResult = CmdResult.NONE;
+    this.markDirty();
   }
   /** Put the sim into UNKNOWN (e.g. after a power cut between limits). */
   rebootBetweenLimits() {
@@ -462,6 +489,7 @@ export class SimDevice {
     this.stopMotion();
     if (this.motionTimer) clearTimeout(this.motionTimer);
     if (this.notifyTimer) clearTimeout(this.notifyTimer);
+    if (this.sensorTimer) clearTimeout(this.sensorTimer);
     this.statusSubs.clear();
     this.dropSubs.clear();
     this.changeSubs.clear();
