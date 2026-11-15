@@ -1,10 +1,7 @@
-import { Screen, EmptyState } from '@/components';
+import { useRouter } from 'expo-router';
+import { HealthScreen } from '@/features/health/HealthScreen';
 
-// Placeholder: owned by a Phase 2 workstream.
-export default function Placeholder() {
-  return (
-    <Screen title="health">
-      <EmptyState icon="construct-outline" title="Coming soon" detail="This screen is built in Phase 2." />
-    </Screen>
-  );
+export default function HealthTab() {
+  const router = useRouter();
+  return <HealthScreen onConnect={() => router.push('/connect')} />;
 }
