@@ -24,7 +24,12 @@ export default function SettingsHome() {
             onChange={(k) => chooseTransport(k)}
             options={[
               { value: 'sim', label: 'Simulated' },
-              { value: 'ble', label: 'Bluetooth', disabled: !bleSupported },
+              {
+                value: 'ble',
+                label: 'Bluetooth',
+                disabled: !bleSupported,
+                note: 'Needs the Android app.',
+              },
             ]}
           />
         </Pad>
@@ -83,7 +88,7 @@ export default function SettingsHome() {
           <Row
             testID="row-presenter"
             icon="easel-outline"
-            iconBg="positiveFill"
+            iconBg="tintFill"
             title="Presenter mode"
             chevron
             onPress={() => router.push('/presenter')}

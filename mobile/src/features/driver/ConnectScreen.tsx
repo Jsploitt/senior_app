@@ -11,7 +11,7 @@ import { space } from '@/theme/tokens';
 import { TransportError, type DiscoveredDevice, type TransportErrorCode } from '@/transport/types';
 import { notify } from '@/utils/haptics';
 import { AuthLatencyBadge } from './ControlParts';
-import { DeviceRow, PairingCard, StepList } from './ConnectParts';
+import { DeviceRow, ListHeader, PairingCard, StepList } from './ConnectParts';
 import { connectFailureCopy, connectSteps, stepIndexOf } from './logic';
 
 const SUCCESS_HOLD_MS = 1400;
@@ -113,10 +113,12 @@ export default function ConnectScreen() {
 
   const header = (
     <View style={styles.header}>
-      <Text variant="largeTitle" accessibilityRole="header" style={{ flex: 1 }}>
+      <View style={styles.closeRow}>
+        <Button title="Close" variant="plain" size="small" onPress={leave} testID="btn-close" />
+      </View>
+      <Text variant="largeTitle" accessibilityRole="header">
         Find barrier
       </Text>
-      <Button title="Close" variant="plain" size="small" onPress={leave} testID="btn-close" />
     </View>
   );
 
@@ -124,12 +126,30 @@ export default function ConnectScreen() {
   if (selected) {
     const steps = connectSteps(snap.phase, failedAt);
     const copy = failure ? connectFailureCopy(failure) : null;
+    const active = steps.find((s) => s.state === 'active');
+    const status = failure
+      ? 'Could not connect'
+      : done
+        ? 'Connected'
+        : active
+          ? `${active.label}...`
+          : 'Starting...';
     body = (
       <View testID="connect-progress">
         <Card>
-          <Text variant="title3" style={{ marginBottom: space.l }}>
-            {selected.name}
-          </Text>
+          <View style={styles.selHead} accessible accessibilityLabel={`${selected.name}. ${status}`}>
+            <View style={{ flex: 1 }}>
+              <Text variant="title3">{selected.name}</Text>
+              <Text
+                variant="subheadline"
+                color={failure ? 'critical' : done ? 'positive' : 'secondaryLabel'}
+                testID="connect-status"
+              >
+                {status}
+              </Text>
+            </View>
+            {!failure && !done ? <ActivityIndicator color={t.c.tint} /> : null}
+          </View>
           <StepList steps={steps} />
         </Card>
         {snap.phase === 'pairing' && !failure ? <PairingCard /> : null}
@@ -205,11 +225,22 @@ export default function ConnectScreen() {
     );
   } else if (scanning && devices.length === 0) {
     body = (
-      <View style={styles.scanning} accessible accessibilityLabel="Searching for barriers" testID="scanning">
-        <ActivityIndicator color={t.c.tint} />
-        <Text variant="subheadline" color="secondaryLabel">
-          Searching for barriers nearby
-        </Text>
+      <View testID="scanning">
+        <ListHeader title="Nearby barriers" busy />
+        <Card>
+          <View
+            style={styles.scanning}
+            accessible
+            accessibilityLabel="Searching for your barrier"
+            accessibilityLiveRegion="polite"
+          >
+            <ActivityIndicator color={t.c.tint} size="large" />
+            <Text variant="headline">Searching for your barrier...</Text>
+            <Text variant="subheadline" color="secondaryLabel" align="center">
+              Keep your phone close to the barrier. This takes a few seconds.
+            </Text>
+          </View>
+        </Card>
       </View>
     );
   } else if (devices.length === 0) {
@@ -223,22 +254,26 @@ export default function ConnectScreen() {
     );
   } else {
     body = (
-      <View style={{ gap: space.m }} testID="device-list">
-        {devices.map((d) => (
-          <DeviceRow
-            key={d.id}
-            testID={`device-${d.id}`}
-            name={d.name}
-            rssi={d.rssi}
-            known={settings.lastDeviceId === d.id}
-            onPress={() => void connect(d)}
-          />
-        ))}
-        <View style={{ marginTop: space.s }}>
+      <View testID="device-list">
+        <ListHeader title="Nearby barriers" busy={scanning} />
+        <View style={{ gap: space.m }}>
+          {devices.map((d) => (
+            <DeviceRow
+              key={d.id}
+              testID={`device-${d.id}`}
+              name={d.name}
+              rssi={d.rssi}
+              known={settings.lastDeviceId === d.id}
+              onPress={() => void connect(d)}
+            />
+          ))}
+        </View>
+        <View style={{ marginTop: space.s, alignItems: 'center' }}>
           <Button
             title={scanning ? 'Scanning...' : 'Scan again'}
-            variant="gray"
-            loading={scanning}
+            variant="plain"
+            size="small"
+            disabled={scanning}
             onPress={retry}
             testID="btn-scan-again"
           />
@@ -268,6 +303,8 @@ export default function ConnectScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: space.l, gap: space.m },
-  scanning: { alignItems: 'center', gap: space.m, paddingVertical: space.huge },
+  header: { marginBottom: space.l },
+  closeRow: { flexDirection: 'row', justifyContent: 'flex-end', minHeight: 44, alignItems: 'center' },
+  selHead: { flexDirection: 'row', alignItems: 'center', gap: space.m, marginBottom: space.l },
+  scanning: { alignItems: 'center', gap: space.s, paddingVertical: space.xl },
 });

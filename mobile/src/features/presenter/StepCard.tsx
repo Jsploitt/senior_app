@@ -52,28 +52,18 @@ export function StepCard({ scenario, index, result, running, reviewing, booting 
       <Text variant="body" color="secondaryLabel" style={styles.narration}>
         {step.narration}
       </Text>
-      <View style={styles.rows}>
-        {step.fsmRows.length ? (
-          step.fsmRows.map((r) => <Pill key={r} label={`FSM row ${r}`} tone="tint" />)
-        ) : (
-          <Pill label="Before the FSM table" tone="neutral" />
-        )}
-      </View>
       {reviewing ? (
         <Text variant="footnote" color="warning" style={styles.review}>
           Reviewing an earlier step. The barrier has already moved on; Next steps forward.
         </Text>
       ) : null}
       {result ? <Outcome result={result} /> : null}
-      {next ? (
-        <Text variant="footnote" color="secondaryLabel" style={styles.next}>
-          Up next: {next.title}
-        </Text>
-      ) : (
-        <Text variant="footnote" color="secondaryLabel" style={styles.next}>
-          Last step
-        </Text>
-      )}
+      <View style={styles.rows}>
+        <Pill label={step.fsmRows.length ? `FSM rows ${step.fsmRows.join(', ')}` : 'Before the FSM table'} />
+      </View>
+      <Text variant="footnote" color="secondaryLabel" style={styles.next}>
+        {next ? `Up next: ${next.title}` : 'Last step'}
+      </Text>
     </Card>
   );
 }
@@ -111,7 +101,7 @@ function Outcome({ result }: { result: StepResult }) {
       ))}
       {result.evidence.map((e, i) => (
         <View key={`${e.label}-${i}`} style={styles.evidence}>
-          <Text variant="caption1" color="secondaryLabel" style={styles.upper}>
+          <Text variant="footnote" color="secondaryLabel" style={styles.upper}>
             {e.label}
           </Text>
           <Text variant={e.mono ? 'footnote' : 'subheadline'} mono={e.mono} selectable style={styles.evValue}>
@@ -179,10 +169,10 @@ const styles = StyleSheet.create({
   upper: { textTransform: 'uppercase', letterSpacing: 0.4 },
   title: { marginTop: space.s },
   narration: { marginTop: space.s },
-  rows: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s, marginTop: space.m },
+  rows: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s, marginTop: space.l },
   review: { marginTop: space.m },
   outcome: {
-    marginTop: space.l,
+    marginTop: space.m,
     paddingTop: space.m,
     borderTopWidth: StyleSheet.hairlineWidth,
     gap: space.m,
@@ -192,8 +182,8 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   evidence: { gap: 2 },
   evValue: { flexShrink: 1 },
-  next: { marginTop: space.l },
-  progress: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s, marginTop: space.m },
+  next: { marginTop: space.s },
+  progress: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s },
   dot: {
     minWidth: hit,
     minHeight: hit,

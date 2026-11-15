@@ -34,14 +34,14 @@ export function Illustration({ icon, badge }: { icon: IconName; badge?: IconName
   const t = useTheme();
   return (
     <View
-      style={[styles.tile, { backgroundColor: t.c.tintWash, borderRadius: radius.xxl + 12 }]}
+      style={[styles.tile, { backgroundColor: t.c.tintWash, borderRadius: radius.xxl }]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      <Icon name={icon} size={84} color="tint" />
+      <Icon name={icon} size={60} color="tint" />
       {badge ? (
         <View style={[styles.badge, { backgroundColor: t.c.positiveFill, borderColor: t.c.background }]}>
-          <Icon name={badge} size={22} color="onPositive" />
+          <Icon name={badge} size={18} color="onPositive" />
         </View>
       ) : null}
     </View>
@@ -80,7 +80,7 @@ export function OnboardingPage({
         {onBack ? (
           <Button title="Back" variant="plain" size="small" icon="chevron-back" onPress={onBack} />
         ) : (
-          <View style={{ height: 44 }} />
+          <View style={{ height: 40 }} />
         )}
       </View>
       <ScrollView
@@ -88,7 +88,7 @@ export function OnboardingPage({
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {illustration ? <View style={{ marginBottom: space.xxl }}>{illustration}</View> : null}
+        {illustration ? <View style={{ marginBottom: space.xl }}>{illustration}</View> : null}
         <Text variant="largeTitle" align="center" accessibilityRole="header">
           {title}
         </Text>
@@ -104,7 +104,9 @@ export function OnboardingPage({
         ) : null}
         {children ? <View style={styles.extra}>{children}</View> : null}
       </ScrollView>
-      <View style={[styles.footer, { paddingBottom: insets.bottom + space.l }]}>
+      <View
+        style={[styles.footer, { paddingBottom: insets.bottom + space.l, borderTopColor: t.c.separator }]}
+      >
         <ProgressDots index={step.index} total={step.total} />
         <Button
           title={primary.title}
@@ -138,22 +140,29 @@ const styles = StyleSheet.create({
   scroll: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     paddingHorizontal: space.xxl,
-    paddingVertical: space.l,
+    paddingTop: space.xl,
+    paddingBottom: space.xl,
   },
-  extra: { alignSelf: 'stretch', marginTop: space.xxl, maxWidth: 520, width: '100%', alignItems: 'center' },
-  footer: { paddingHorizontal: space.xxl, alignItems: 'center', gap: space.s },
+  extra: { alignSelf: 'stretch', marginTop: space.xl, maxWidth: 520, width: '100%', alignItems: 'center' },
+  footer: {
+    paddingHorizontal: space.xxl,
+    paddingTop: space.s,
+    alignItems: 'center',
+    gap: space.s,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
   cta: { alignSelf: 'stretch', maxWidth: 520, width: '100%' },
   dots: { flexDirection: 'row', gap: 6, alignItems: 'center', height: 24, marginBottom: space.s },
-  tile: { width: 168, height: 168, alignItems: 'center', justifyContent: 'center' },
+  tile: { width: 120, height: 120, alignItems: 'center', justifyContent: 'center' },
   badge: {
     position: 'absolute',
     right: -6,
     bottom: -6,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     borderWidth: 4,
     alignItems: 'center',
     justifyContent: 'center',

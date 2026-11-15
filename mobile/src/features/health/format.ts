@@ -39,12 +39,39 @@ export const RESULT_TITLES: Record<CmdResult, string> = {
 const title = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
 
 export const stateLabel = (s: BarrierState) => (STATE_NAMES[s] ? title(STATE_NAMES[s]) : 'Unknown status');
-export const resultLabel = (r: CmdResult) =>
-  RESULT_TITLES[r] ? `${RESULT_TITLES[r]} (${RESULT_NAMES[r]})` : `Unknown (${r})`;
-export const faultLabel = (f: FaultReason) =>
-  FAULT_NAMES[f]
-    ? `${FAULT_TITLES[f]}${f === FaultReason.NONE ? '' : ` (${FAULT_NAMES[f]})`}`
-    : `Unknown (${f})`;
+/** Plain-language result; the firmware enum name stays in the CSV export only. */
+export const resultLabel = (r: CmdResult) => RESULT_TITLES[r] ?? `Unknown (${r})`;
+export const faultLabel = (f: FaultReason) => FAULT_TITLES[f] ?? `Unknown (${f})`;
+
+const TITLE_BY_NAME: Record<string, string> = {};
+for (const k of Object.keys(RESULT_NAMES)) {
+  const r = Number(k) as CmdResult;
+  TITLE_BY_NAME[RESULT_NAMES[r]] = RESULT_TITLES[r];
+}
+const FAULT_BY_NAME: Record<string, string> = {};
+for (const k of Object.keys(FAULT_NAMES)) {
+  const f = Number(k) as FaultReason;
+  FAULT_BY_NAME[FAULT_NAMES[f]] = FAULT_TITLES[f];
+}
+
+/** Plain title for a firmware result name such as "REJECTED_GUARD"; unknown names pass through. */
+export const resultTitleFromName = (name: string) => TITLE_BY_NAME[name] ?? name;
+export const faultTitleFromName = (name: string) => FAULT_BY_NAME[name] ?? name;
+
+const OPCODE_WORDS: Record<string, string> = { RAISE: 'Raise', LOWER: 'Lower', STOP: 'Stop' };
+
+const stateWord = (w: string) => ((Object.values(STATE_NAMES) as string[]).includes(w) ? title(w) : w);
+
+/** Replace raw enum names inside a log message with plain words. */
+export function humanizeMessage(msg: string): string {
+  return msg
+    .replace(' -> ', ': ')
+    .replace(
+      /\b[A-Z][A-Z_]{3,}\b/g,
+      (w) => TITLE_BY_NAME[w] ?? FAULT_BY_NAME[w] ?? OPCODE_WORDS[w] ?? stateWord(w),
+    );
+}
+export const opcodeLabel = (op: string) => OPCODE_WORDS[op] ?? op;
 
 export type BatteryBand = 'critical' | 'low' | 'healthy' | 'implausible';
 export function batteryBand(mv: number): BatteryBand {

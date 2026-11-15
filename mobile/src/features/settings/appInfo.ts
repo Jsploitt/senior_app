@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 
-export const CONTRACT_VERSION = 'INTERFACES.md as of 2026-11-15';
+export const CONTRACT_VERSION = 'November 2026 contract';
 export const APP_NAME = 'M010 Barrier';
 export const TEAM_LINE = 'TEAM M010 · KFUPM Senior Design';
 

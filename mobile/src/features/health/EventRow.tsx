@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { Icon, Pill, Text, type IconName } from '../../components';
 import type { LogEntry, LogKind } from '../../transport/types';
 import { space } from '../../theme/tokens';
-import { clockTime } from './format';
+import { clockTime, faultTitleFromName, humanizeMessage, opcodeLabel, resultTitleFromName } from './format';
 
 const KIND_ICON: Record<LogKind, { icon: IconName; label: string }> = {
   connect: { icon: 'link', label: 'Connection' },
@@ -25,13 +25,12 @@ function resultTone(result: string): ChipTone {
 
 export function entryChips(e: LogEntry): { label: string; tone: ChipTone }[] {
   const chips: { label: string; tone: ChipTone }[] = [];
-  if (e.opcode) chips.push({ label: e.opcode, tone: 'tint' });
+  if (e.opcode) chips.push({ label: opcodeLabel(e.opcode), tone: 'tint' });
   if (e.counter !== undefined) chips.push({ label: `#${e.counter}`, tone: 'neutral' });
-  if (e.result) chips.push({ label: e.result, tone: resultTone(e.result) });
-  if (e.guardFailMask)
-    chips.push({ label: `mask 0x${e.guardFailMask.toString(16).padStart(2, '0')}`, tone: 'warning' });
+  if (e.result) chips.push({ label: resultTitleFromName(e.result), tone: resultTone(e.result) });
+  if (e.guardFailMask) chips.push({ label: 'Safety check blocked', tone: 'warning' });
   if (e.latencyMs !== undefined) chips.push({ label: `${e.latencyMs} ms`, tone: 'neutral' });
-  if (e.fault && e.fault !== 'NONE') chips.push({ label: e.fault, tone: 'critical' });
+  if (e.fault && e.fault !== 'NONE') chips.push({ label: faultTitleFromName(e.fault), tone: 'critical' });
   return chips;
 }
 
@@ -52,7 +51,7 @@ export function EventRow({ entry }: { entry: LogEntry }) {
         <Icon name={k.icon} size={18} color={tone} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text variant="body">{entry.message}</Text>
+        <Text variant="body">{humanizeMessage(entry.message)}</Text>
         <Text variant="caption1" color="secondaryLabel" tabular style={{ marginTop: space.xxs }}>
           {clockTime(entry.t)} {entry.transport === 'sim' ? 'simulated' : 'Bluetooth'}
         </Text>

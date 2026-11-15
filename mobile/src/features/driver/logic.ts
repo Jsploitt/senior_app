@@ -43,11 +43,11 @@ export const isMoving = (s: BarrierState | null) => s === BarrierState.RAISING |
 export function controlEnablement(state: BarrierState | null, connected: boolean): Enablement {
   const off = (reason: string): ButtonRule => ({ enabled: false, reason });
   if (!connected || state === null) {
-    const r = off('Connect to the barrier first');
+    const r = off('Not connected. Reconnect to control the barrier.');
     return { lower: r, raise: r, stop: r, stopProminent: false };
   }
   const stop: ButtonRule = { enabled: true };
-  const moving = off('The barrier is already moving. Use Stop.');
+  const moving = off('Arm is moving. Use Stop.');
   switch (state) {
     case BarrierState.UNKNOWN:
       return {
@@ -59,13 +59,13 @@ export function controlEnablement(state: BarrierState | null, connected: boolean
     case BarrierState.RAISED:
       return {
         lower: { enabled: true },
-        raise: off('The barrier is already raised'),
+        raise: off('Already raised.'),
         stop,
         stopProminent: false,
       };
     case BarrierState.LOWERED:
       return {
-        lower: off('The barrier is already lowered'),
+        lower: off('Already lowered.'),
         raise: { enabled: true },
         stop,
         stopProminent: false,
@@ -76,7 +76,7 @@ export function controlEnablement(state: BarrierState | null, connected: boolean
     case BarrierState.LOWERING:
       return { lower: moving, raise: moving, stop, stopProminent: true };
     case BarrierState.FAULT: {
-      const r = off('Locked by a fault. It needs an on-site reset.');
+      const r = off('Fault latched: needs on-site reset');
       return { lower: r, raise: r, stop, stopProminent: false };
     }
     default: {
@@ -215,8 +215,8 @@ export function connectionPill(
       return { label: 'Checking owner', tone: 'tint' };
     case 'ready':
       return ownerConnected === false
-        ? { label: 'Connected - not owner', tone: 'warning' }
-        : { label: 'Connected - owner', tone: 'positive' };
+        ? { label: 'Not an owner', tone: 'warning' }
+        : { label: 'Connected', tone: 'positive' };
     case 'disconnected':
       return {
         label: linkLost ? 'Connection lost' : 'Disconnected',

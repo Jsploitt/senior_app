@@ -15,6 +15,8 @@ import { controlEnablement, GUARD_PRIORITY } from './logic';
 interface Check {
   bit: GuardBit;
   name: string;
+  /** row title when the check fails (states the failure, never the passing name) */
+  failName: string;
   ok: boolean;
   value: string;
 }
@@ -26,26 +28,31 @@ export function evaluateChecks(s: BarrierStatus): Check[] {
   const byBit: Record<GuardBit, Omit<Check, 'bit'>> = {
     [GuardBit.FAULT_LATCHED]: {
       name: 'No fault latched',
+      failName: 'Fault latched',
       ok: s.state !== BarrierState.FAULT,
       value: s.state === BarrierState.FAULT ? 'Fault latched' : 'No fault',
     },
     [GuardBit.ZONE_NOT_CLEAR]: {
       name: 'Zone clear',
+      failName: 'Zone blocked',
       ok: s.zoneClear,
-      value: s.zoneClear ? 'Clear' : 'Something detected',
+      value: s.zoneClear ? 'Clear' : 'Something is in the way',
     },
     [GuardBit.SENSORS_INVALID]: {
       name: 'Sensors valid',
+      failName: 'Sensors invalid',
       ok: s.sensorsValid,
       value: s.sensorsValid ? 'Valid' : 'Not valid',
     },
     [GuardBit.POWER_UNHEALTHY]: {
       name: 'Battery healthy',
+      failName: 'Battery low',
       ok: s.batteryMv >= BATTERY_HEALTHY_MIN_MV,
       value: `${formatBattery(s.batteryMv)} (needs ${formatBattery(BATTERY_HEALTHY_MIN_MV)})`,
     },
     [GuardBit.INVALID_POSITION]: {
       name: 'Position allows the move',
+      failName: 'Position blocks the move',
       ok: posOk,
       value: posOk
         ? [en.raise.enabled ? 'Raise' : null, en.lower.enabled ? 'Lower' : null]
@@ -55,11 +62,13 @@ export function evaluateChecks(s: BarrierStatus): Check[] {
     },
     [GuardBit.NOT_AUTHORIZED]: {
       name: 'Owner phone connected',
+      failName: 'Not an owner',
       ok: s.ownerConnected,
       value: s.ownerConnected ? 'Owner' : 'Not an owner',
     },
     [GuardBit.STALE_COMMAND]: {
       name: 'Command fresh',
+      failName: 'Command stale',
       ok: true,
       value: 'Checked on every command',
     },
@@ -78,13 +87,13 @@ export default function GuardDetailsScreen() {
     <View style={[styles.flex, { backgroundColor: t.c.background }]} testID="guard-details">
       <ScrollView
         contentContainerStyle={{
-          paddingTop: space.l,
+          paddingTop: space.m,
           paddingHorizontal: space.l,
           paddingBottom: insets.bottom + space.xxxl,
         }}
       >
         <View style={styles.header}>
-          <Text variant="title1" accessibilityRole="header" style={{ flex: 1 }}>
+          <Text variant="title2" accessibilityRole="header" style={{ flex: 1 }}>
             Safety checks
           </Text>
           <Button title="Done" variant="plain" size="small" onPress={close} testID="btn-done" />
@@ -114,7 +123,7 @@ export default function GuardDetailsScreen() {
                     testID={`check-${c.bit}`}
                     accessible
                     accessibilityLabel={[
-                      c.name,
+                      c.ok ? c.name : c.failName,
                       c.ok ? 'passing' : 'blocking',
                       c.value,
                       blockedLast ? 'Blocked your last command' : null,
@@ -122,13 +131,7 @@ export default function GuardDetailsScreen() {
                     ]
                       .filter(Boolean)
                       .join('. ')}
-                    style={[
-                      styles.check,
-                      i < arr.length - 1 && {
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        borderBottomColor: t.c.separator,
-                      },
-                    ]}
+                    style={styles.check}
                   >
                     <Icon
                       name={c.ok ? 'checkmark-circle' : 'alert-circle'}
@@ -137,7 +140,7 @@ export default function GuardDetailsScreen() {
                     />
                     <View style={{ flex: 1 }}>
                       <Text variant="body" weight="600">
-                        {c.name}
+                        {c.ok ? c.name : c.failName}
                       </Text>
                       <Text variant="subheadline" color="secondaryLabel" tabular>
                         {c.value}
@@ -153,6 +156,12 @@ export default function GuardDetailsScreen() {
                         </Text>
                       ) : null}
                     </View>
+                    {i < arr.length - 1 ? (
+                      <View
+                        style={[styles.sep, { backgroundColor: t.c.separator }]}
+                        importantForAccessibility="no"
+                      />
+                    ) : null}
                   </View>
                 );
               })}
@@ -168,4 +177,6 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   header: { flexDirection: 'row', alignItems: 'center', marginBottom: space.m, gap: space.m },
   check: { flexDirection: 'row', gap: space.m, padding: space.l },
+  // inset hairline starting at the text column (padding 16 + icon 24 + gap 12)
+  sep: { position: 'absolute', left: 52, right: 0, bottom: 0, height: StyleSheet.hairlineWidth },
 });

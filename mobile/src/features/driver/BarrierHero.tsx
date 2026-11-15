@@ -16,7 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { ClipPath, Defs, G, Polygon, Rect, Circle } from 'react-native-svg';
 import { Icon, Text } from '@/components';
-import { BarrierState, type FaultReason } from '@/protocol/constants';
+import { BarrierState, MOTION_NOMINAL_MS, type FaultReason } from '@/protocol/constants';
 import { FAULT_TEXT, STATE_TEXT } from '@/protocol/messages';
 import { useTheme } from '@/theme/ThemeProvider';
 import { radius, space } from '@/theme/tokens';
@@ -40,7 +40,7 @@ export interface BarrierHeroProps {
   /** compact variant for presenter / small layouts */
   compact?: boolean;
   testID?: string;
-  /** dim the illustration (e.g. link lost: last known state) */
+  /** link lost: show the last known state dimmed, neutral and frozen (never as live motion) */
   stale?: boolean;
   /** override the one-line detail (defaults to STATE_TEXT) */
   detail?: string;
@@ -48,12 +48,14 @@ export interface BarrierHeroProps {
 
 /* Canvas geometry (units = pt at scale 1). */
 // Tall enough that the arm at ARM_MAX_DEG (80 deg) stays inside the canvas:
-// PIVOT_Y - ARM_LEN * sin(80 deg) - ARM_H / 2 = 186 - 167 - 9 = 10 > 0.
+// PIVOT_Y - ARM_LEN * sin(80 deg) - ARM_H / 2 = 182 - 167 - 9 = 6 > 0.
 const W = 320;
-const H = 240;
-const GROUND_Y = 220;
+const H = 216;
+const GROUND_Y = 202;
 const PIVOT_X = 58;
-const PIVOT_Y = 186;
+const PIVOT_Y = 182;
+/** the scene is drawn at 320x216 and shown at this fraction: ~230x155 pt keeps the card near 250 pt */
+const SCENE_SCALE = 0.72;
 const ARM_LEN = 170;
 const ARM_H = 18;
 const HOUSING = { x: 28, y: PIVOT_Y - 12, w: 60, h: GROUND_Y - (PIVOT_Y - 12) };
@@ -115,17 +117,35 @@ function ElapsedLine({ startedAt, color }: { startedAt: number; color: 'secondar
     const id = setTimeout(() => setNow(Date.now()), 200);
     return () => clearTimeout(id);
   }, [now]);
-  const e = elapsedText(Math.max(0, now - startedAt));
+  const t = useTheme();
+  const elapsed = Math.max(0, now - startedAt);
+  const e = elapsedText(elapsed);
+  const frac = Math.min(0.95, elapsed / MOTION_NOMINAL_MS);
   return (
-    <Text
-      variant="footnote"
-      color={e.slow ? 'warning' : color}
-      tabular
-      align="center"
-      style={{ marginTop: space.xs }}
-    >
-      {e.text}
-    </Text>
+    <View style={{ alignItems: 'center', marginTop: space.xs }}>
+      <Text variant="footnote" color={e.slow ? 'warning' : color} tabular align="center">
+        {e.text}
+      </Text>
+      <View
+        style={{
+          width: 160,
+          height: 4,
+          borderRadius: 2,
+          marginTop: space.xs,
+          backgroundColor: t.c.fill,
+          overflow: 'hidden',
+        }}
+        testID="motion-progress"
+      >
+        <View
+          style={{
+            width: `${frac * 100}%`,
+            height: '100%',
+            backgroundColor: e.slow ? t.c.warning : t.c.moving,
+          }}
+        />
+      </View>
+    </View>
   );
 }
 
@@ -133,11 +153,11 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
   const t = useTheme();
   const reduce = useReduceMotion();
   const { width: winW } = useWindowDimensions();
-  const role = colorRole(state);
+  const role = stale ? 'neutral' : colorRole(state);
   const fg = ROLE_FG[role];
   const wash = state === null || role === 'neutral' ? t.c.surface : t.c[ROLE_WASH[role]];
 
-  const scale = Math.min(1, (winW - 2 * space.l - 2 * space.l) / W) * (compact ? 0.72 : 1);
+  const scale = Math.min(SCENE_SCALE, (winW - 4 * space.l) / W) * (compact ? 0.78 : 1);
   const cw = W * scale;
   const ch = H * scale;
 
@@ -153,7 +173,10 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
     if (before !== state) setMovingSince(dir ? Date.now() : null);
 
     cancelAnimation(progress);
-    if (dir) {
+    if (stale) {
+      // link lost: the arm freezes where it is; a moving state is only the last known one
+      if (before === null) progress.value = dir ? 0.5 : restProgress(state);
+    } else if (dir) {
       if (reduce) {
         progress.value = 0.5; // static mid-travel arm, no looping
       } else {
@@ -170,7 +193,7 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
     } else {
       progress.value = withTiming(restProgress(state), { duration: 320, easing: Easing.out(Easing.cubic) });
     }
-  }, [state, reduce, progress]);
+  }, [state, reduce, progress, stale]);
 
   const armStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${-progress.value * ARM_MAX_DEG}deg` }],
@@ -192,14 +215,17 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
 
   const text = state === null ? null : STATE_TEXT[state];
   const faultTitle = state === BarrierState.FAULT && fault ? FAULT_TEXT[fault].title : undefined;
-  const label = state === null ? 'Not connected' : (faultTitle ?? text!.label);
+  const base = state === null ? 'Not connected' : (faultTitle ?? text!.label);
+  const label = stale && state !== null ? `Last known: ${base}` : base;
   const sub =
     detail ??
     (state === null
       ? 'Connect to see the arm.'
-      : state === BarrierState.FAULT
-        ? 'Needs on-site reset: hold the unit button for 8 seconds.'
-        : text!.detail);
+      : stale
+        ? 'Not live. Reconnect to update.'
+        : state === BarrierState.FAULT
+          ? 'Locked until it is reset on site.'
+          : text!.detail);
   const ghost = state === null || state === BarrierState.UNKNOWN;
 
   const washStyle = useAnimatedStyle(
@@ -212,15 +238,19 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
       testID={testID}
       accessible
       accessibilityRole="summary"
-      accessibilityLabel={heroAccessibilityLabel(state, text?.label ?? '', faultTitle)}
+      accessibilityLabel={
+        stale && state !== null
+          ? `Barrier, last known ${(text?.label ?? '').toLowerCase()}, not live`
+          : heroAccessibilityLabel(state, text?.label ?? '', faultTitle)
+      }
       accessibilityLiveRegion="polite"
       style={[
         styles.card,
-        { borderRadius: radius.xxl, paddingVertical: compact ? space.m : space.xl },
+        { borderRadius: radius.xxl, paddingTop: space.m, paddingBottom: space.m },
         washStyle,
       ]}
     >
-      <View style={{ width: cw, height: ch, opacity: stale ? 0.45 : 1 }}>
+      <View style={{ width: cw, height: ch, opacity: stale ? 0.5 : 1 }}>
         {/* scene: everything drawn at scale 1 then scaled from the top-left corner */}
         <View
           style={{
@@ -235,8 +265,8 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
             <Rect x={0} y={GROUND_Y} width={W} height={H - GROUND_Y} rx={6} fill={t.c.ground} />
             <Rect x={0} y={GROUND_Y} width={W} height={3} fill={t.c.separator} />
             {/* parking space lines */}
-            <Rect x={150} y={GROUND_Y + 8} width={4} height={12} rx={2} fill={t.c.separator} />
-            <Rect x={290} y={GROUND_Y + 8} width={4} height={12} rx={2} fill={t.c.separator} />
+            <Rect x={150} y={GROUND_Y + 5} width={4} height={7} rx={2} fill={t.c.separator} />
+            <Rect x={290} y={GROUND_Y + 5} width={4} height={7} rx={2} fill={t.c.separator} />
             {/* housing */}
             <Rect x={HOUSING.x} y={HOUSING.y} width={HOUSING.w} height={HOUSING.h} rx={12} fill={t.c.post} />
             <Rect
@@ -284,42 +314,33 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
           {/* glyphs */}
           {state === BarrierState.UNKNOWN ? (
             <View
-              style={[styles.glyph, { left: 150, top: 18 }]}
+              style={[styles.glyph, { left: 146, top: 12 }]}
               accessibilityElementsHidden
               importantForAccessibility="no-hide-descendants"
             >
-              <Text variant="title1" color={fg} weight="700">
-                ?
-              </Text>
-            </View>
-          ) : null}
-          {state === BarrierState.FAULT ? (
-            <View
-              style={[styles.glyph, { left: 146, top: 16 }]}
-              accessibilityElementsHidden
-              importantForAccessibility="no-hide-descendants"
-            >
-              <Icon name="warning" size={34} color="critical" />
+              <Icon name="help-circle-outline" size={34} color={fg} />
             </View>
           ) : null}
         </View>
       </View>
 
-      <View
-        style={{ marginTop: compact ? space.s : space.l, paddingHorizontal: space.l, alignItems: 'center' }}
-      >
-        <Text
-          variant={compact ? 'title2' : 'title1'}
-          color={fg}
-          align="center"
-          testID={testID ? `${testID}-label` : undefined}
-        >
-          {label}
-        </Text>
+      <View style={{ marginTop: space.s, paddingHorizontal: space.l, alignItems: 'center' }}>
+        <View style={styles.labelRow}>
+          {state === BarrierState.FAULT && !stale ? <Icon name="warning" size={24} color="critical" /> : null}
+          <Text
+            variant="title2"
+            color={fg}
+            align="center"
+            style={{ flexShrink: 1 }}
+            testID={testID ? `${testID}-label` : undefined}
+          >
+            {label}
+          </Text>
+        </View>
         <Text variant="subheadline" color="secondaryLabel" align="center" style={{ marginTop: space.xs }}>
           {sub}
         </Text>
-        {isMoving(state) && !reduce && movingSince !== null ? (
+        {isMoving(state) && !stale && !reduce && movingSince !== null ? (
           <ElapsedLine startedAt={movingSince} color="secondaryLabel" />
         ) : null}
       </View>
@@ -329,5 +350,6 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
 
 const styles = StyleSheet.create({
   card: { alignItems: 'center', overflow: 'hidden' },
-  glyph: { position: 'absolute', width: 28, alignItems: 'center' },
+  glyph: { position: 'absolute', width: 34, alignItems: 'center' },
+  labelRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.s },
 });

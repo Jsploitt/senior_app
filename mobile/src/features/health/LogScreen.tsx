@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Banner, Button, EmptyState, Row, Section, Segmented, Text } from '../../components';
+import { Banner, Button, Card, EmptyState, Icon, Row, Segmented, Text } from '../../components';
 import { SPEC5_AUTH_MAX_MS } from '../../protocol/constants';
 import { clearLog, useEventLog } from '../../store/eventLog';
 import type { LogEntry } from '../../transport/types';
@@ -10,7 +10,7 @@ import { radius, shadow, space } from '../../theme/tokens';
 import { confirmDestructive } from './confirm';
 import { EventRow } from './EventRow';
 import { exportCsv } from './exportCsv';
-import { percent, seconds } from './format';
+import { percent, resultTitleFromName, seconds } from './format';
 import { initLogPersistence } from './logPersistence';
 import { LOG_FILTERS, authStats, commandTallies, visibleEntries, type LogFilter } from './stats';
 
@@ -21,6 +21,7 @@ export function LogScreen() {
   const insets = useSafeAreaInsets();
   const { entries } = useEventLog();
   const [filter, setFilter] = useState<LogFilter>('all');
+  const [open, setOpen] = useState(false);
   const [notice, setNotice] = useState<{ tone: 'positive' | 'critical'; text: string } | null>(null);
 
   useEffect(() => {
@@ -30,6 +31,13 @@ export function LogScreen() {
   const shown = useMemo(() => visibleEntries(entries, filter), [entries, filter]);
   const auth = useMemo(() => authStats(entries), [entries]);
   const tallies = useMemo(() => commandTallies(entries), [entries]);
+
+  const breakdown = useMemo(() => Object.entries(tallies.byResult), [tallies]);
+  const headline =
+    entries.length === 0
+      ? 'Nothing recorded yet'
+      : `${tallies.sent} command${tallies.sent === 1 ? '' : 's'}: ${tallies.accepted} accepted, ${tallies.rejected} rejected` +
+        (auth.p50 === null ? '' : `. Median sign-in ${seconds(auth.p50)}`);
 
   const share = useCallback(async () => {
     const r = await exportCsv(entries);
@@ -62,12 +70,19 @@ export function LogScreen() {
       <Text variant="largeTitle" accessibilityRole="header" style={{ marginBottom: space.l }}>
         Log
       </Text>
-      <View style={{ flexDirection: 'row', gap: space.m }}>
+      <Segmented
+        value={filter}
+        options={LOG_FILTERS}
+        onChange={setFilter}
+        accessibilityLabel="Filter events"
+      />
+      <View style={{ flexDirection: 'row', gap: space.m, marginTop: space.m }}>
         <Button
           title="Share CSV"
           icon="share-outline"
           variant="tinted"
           size="small"
+          style={{ flex: 1 }}
           disabled={entries.length === 0}
           onPress={share}
           accessibilityHint="Exports the whole log as a CSV file"
@@ -76,8 +91,9 @@ export function LogScreen() {
         <Button
           title="Clear log"
           icon="trash-outline"
-          variant="plain"
+          variant="destructive"
           size="small"
+          style={{ flex: 1 }}
           disabled={entries.length === 0}
           onPress={clear}
           testID="clear-log"
@@ -91,41 +107,45 @@ export function LogScreen() {
         />
       ) : null}
 
-      <Section
-        title="S5 summary"
-        footer={`Phone-measured auth latency against the ${seconds(SPEC5_AUTH_MAX_MS)} reference. Not a verdict.`}
-      >
-        <Row title="Auth events" value={String(auth.count)} testID="s5-count" />
-        <Row title="p50" value={ms(auth.p50)} testID="s5-p50" />
-        <Row title="p95" value={ms(auth.p95)} testID="s5-p95" />
-        <Row
-          title={`At or under ${seconds(SPEC5_AUTH_MAX_MS)}`}
-          value={auth.withinSpec === null ? 'n/a' : percent(auth.withinSpec)}
-          last
-          testID="s5-within"
-        />
-      </Section>
-
-      <Section title="S6 tallies" footer="Phone-observed; official S6 score from log_parser.py s6.">
-        <Row title="Accepted" value={String(tallies.accepted)} testID="s6-accepted" />
-        <Row
-          title="Rejected"
-          value={String(tallies.rejected)}
-          testID="s6-rejected"
-          last={Object.keys(tallies.byResult).length === 0}
-        />
-        {Object.entries(tallies.byResult).map(([result, n], i, all) => (
-          <Row key={result} title={result} value={String(n)} last={i === all.length - 1} />
-        ))}
-      </Section>
-
-      <View style={{ marginTop: space.xxl, marginBottom: space.m }}>
-        <Segmented
-          value={filter}
-          options={LOG_FILTERS}
-          onChange={setFilter}
-          accessibilityLabel="Filter events"
-        />
+      <View style={{ marginTop: space.l, marginBottom: space.l }}>
+        <Card padded={false} testID="evidence-summary">
+          <Pressable
+            onPress={() => setOpen((o) => !o)}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: open }}
+            accessibilityLabel={`Evidence summary. ${headline}`}
+            testID="evidence-toggle"
+            style={{ flexDirection: 'row', alignItems: 'center', padding: space.l, gap: space.m }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text variant="headline">Evidence summary</Text>
+              <Text variant="footnote" color="secondaryLabel" style={{ marginTop: space.xxs }}>
+                {headline}
+              </Text>
+            </View>
+            <Icon name={open ? 'chevron-up' : 'chevron-down'} size={18} color="tertiaryLabel" />
+          </Pressable>
+          {open ? (
+            <View style={{ borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: t.c.separator }}>
+              <Row title="Sign-ins measured" value={String(auth.count)} testID="s5-count" />
+              <Row title="Median sign-in time" value={ms(auth.p50)} testID="s5-p50" />
+              <Row title="Slowest 5% took" value={ms(auth.p95)} testID="s5-p95" />
+              <Row
+                title={`Signed in within ${seconds(SPEC5_AUTH_MAX_MS)}`}
+                value={auth.withinSpec === null ? 'n/a' : percent(auth.withinSpec)}
+                testID="s5-within"
+              />
+              <Row title="Commands sent" value={String(tallies.sent)} testID="s6-sent" />
+              {breakdown.map(([name, n]) => (
+                <Row key={name} title={resultTitleFromName(name)} value={String(n)} />
+              ))}
+              <Text variant="footnote" color="secondaryLabel" style={{ padding: space.l }}>
+                Counted on this phone, not a verdict. The official accuracy score is computed on the bench
+                from the barrier&apos;s log.
+              </Text>
+            </View>
+          ) : null}
+        </Card>
       </View>
     </View>
   );

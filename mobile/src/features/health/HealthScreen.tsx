@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import { Button, EmptyState, Icon, Pill, Row, Screen, Section, Text } from '../../components';
+import { Button, EmptyState, Icon, LocalOnlyChip, Pill, Row, Screen, Section, Text } from '../../components';
 import {
   BarrierState,
   CmdResult,
@@ -13,13 +13,13 @@ import { useEventLog } from '../../store/eventLog';
 import { useTransport, useTransportSnapshot } from '../../store/transport';
 import { space } from '../../theme/tokens';
 import { BatteryGauge } from './BatteryGauge';
-import { LocalOnlyChip } from './LocalOnlyChip';
 import {
   ageLabel,
   batteryBand,
   faultLabel,
   percent,
   resultLabel,
+  resultTitleFromName,
   seconds,
   stateLabel,
   volts,
@@ -93,7 +93,12 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
   return (
     <Screen
       title="Health"
-      right={<LocalOnlyChip />}
+      right={
+        <View style={{ flexDirection: 'row', gap: space.s, alignItems: 'center', paddingBottom: space.xs }}>
+          <Pill label={status ? 'Connected' : 'Not connected'} tone={status ? 'positive' : 'neutral'} />
+          <LocalOnlyChip compact />
+        </View>
+      }
       onRefresh={status ? refresh : undefined}
       refreshing={refreshing}
       testID="health-screen"
@@ -105,9 +110,8 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
             <Row title="Last result" value={resultLabel(status.lastResult)} />
             {status.lastResult === CmdResult.REJECTED_GUARD ? (
               <Row
-                title="Guard mask"
-                value={`0x${status.guardFailMask.toString(16).padStart(2, '0')}`}
-                subtitle="Only meaningful while the last result is a guard rejection."
+                title="Why it couldn't move"
+                subtitle="A safety check blocked the last command. The Barrier tab lists which one."
               />
             ) : null}
             <Row
@@ -138,12 +142,12 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
             />
             <Row
               title="Movement guard"
-              subtitle="MotionAllowed = OwnerAuthorized AND FreshCommand AND ValidPosition AND SensorsValid AND ZoneClear AND PowerHealthy AND NOT FaultLatched"
+              subtitle="The arm only moves when you are authorized, the command is fresh, the position is known, sensors are valid, the zone is clear, power is healthy and no fault is latched."
               last
             />
           </Section>
 
-          <Section title="Power" footer="LiFePO4 4S, thresholds TBD-EE">
+          <Section title="Power" footer="LiFePO4 4S battery. Band thresholds are provisional.">
             <View style={{ padding: space.l }}>
               <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}>
                 <Text variant="display" tabular testID="battery-volts">
@@ -192,9 +196,9 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
             footer="Counted from this phone's event log since this connection. Phone-observed."
           >
             <Row
-              title="Auth latency"
+              title="Sign-in time"
               value={authMs === null ? 'n/a' : seconds(authMs)}
-              subtitle={`Phone-measured. Spec 5 reference is ${seconds(SPEC5_AUTH_MAX_MS)}.`}
+              subtitle={`Measured by the phone. Target is ${seconds(SPEC5_AUTH_MAX_MS)}.`}
             />
             <Row title="Commands sent" value={String(tallies.sent)} testID="session-sent" />
             <Row title="Accepted" value={String(tallies.accepted)} testID="session-accepted" />
@@ -205,7 +209,12 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
               last={rejectedReasons.length === 0}
             />
             {rejectedReasons.map(([reason, n], i) => (
-              <Row key={reason} title={reason} value={String(n)} last={i === rejectedReasons.length - 1} />
+              <Row
+                key={reason}
+                title={resultTitleFromName(reason)}
+                value={String(n)}
+                last={i === rejectedReasons.length - 1}
+              />
             ))}
           </Section>
         </>
@@ -233,23 +242,20 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
       >
         <Row
           title="C4 Control loop 150 ms"
-          subtitle="Measured on the board from UART logs, not by the phone."
-          value="Board"
+          subtitle="Board: measured on the barrier from its own logs, not by the phone."
         />
-        <Row title="C5 Local only" subtitle="This app makes no network requests." value="By design" />
+        <Row title="C5 Local only" subtitle="By design: this app makes no network requests." />
         <Row
           title="S5 Auth within 2 s"
           subtitle={
             allAuth.count
-              ? `Phone proxy: ${allAuth.count} auth events, ${percent(allAuth.withinSpec ?? 0)} at or under 2.0 s.`
-              : 'Phone proxy: no auth events recorded yet.'
+              ? `Phone estimate: ${allAuth.count} sign-ins, ${percent(allAuth.withinSpec ?? 0)} within 2.0 s.`
+              : 'Phone estimate: no sign-ins recorded yet.'
           }
-          value="Phone proxy"
         />
         <Row
           title="S6 Accuracy 90% or more"
-          subtitle="Scored on the bench with tools/log_parser.py s6 from labelled trials."
-          value="Bench"
+          subtitle="Bench: the official accuracy score is computed from the barrier's log."
           last
         />
       </Section>

@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Button, Text } from '@/components';
 import { CountdownRing } from '@/features/onboarding/CountdownRing';
 import { EnrollStep } from '@/features/onboarding/EnrollSteps';
-import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
+import { Illustration, OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { useEnrollTimer } from '@/features/onboarding/useEnrollTimer';
 import { useOnboardingNav } from '@/features/onboarding/useOnboardingNav';
 import { ENROLL_BUTTON_HOLD_MS, ENROLL_WINDOW_MS, MAX_OWNERS } from '@/protocol/constants';
@@ -35,7 +35,8 @@ export default function Enroll() {
     <OnboardingPage
       testID="onboarding-enroll"
       title="Pair your phone"
-      body={`A barrier accepts new owners only for ${WINDOW_S} seconds after you press its button.`}
+      body={`A barrier accepts new owners for ${WINDOW_S} seconds after you hold its button.`}
+      illustration={<Illustration icon="link" />}
       step={nav.step}
       onBack={nav.back}
       primary={{
@@ -46,16 +47,13 @@ export default function Enroll() {
       secondary={{ title: 'Skip for now', onPress: nav.skip }}
     >
       <View style={{ gap: space.m, alignSelf: 'stretch' }}>
-        <EnrollStep
-          n={1}
-          icon="hand-left-outline"
-          title={`On the barrier, hold the enrollment button for ${HOLD_S} seconds.`}
-        />
+        <EnrollStep n={1} icon="hand-left-outline" title={`Hold its button for ${HOLD_S} seconds.`} />
         <EnrollStep n={2} icon="timer-outline" title={`You now have ${WINDOW_S} seconds.`} active={running}>
           <CountdownRing
             totalMs={timer.totalMs}
             startedAt={timer.startedAt}
             now={timer.now}
+            size={120}
             label={expired ? 'Window closed' : 'to pair'}
           />
           <Button

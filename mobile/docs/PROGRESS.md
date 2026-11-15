@@ -92,3 +92,16 @@ Result: no matches (grep exit 1). Dependencies matching
 ESLint enforces it: `no-restricted-globals: fetch`, `no-restricted-imports: axios` (eslint.config.js).
 Release builds block `android.permission.INTERNET` (`app.config.ts` blockedPermissions; confirmed with
 `npx expo config --type introspect`).
+
+### Phase 3 iteration 1: fresh reviewer (Opus, no code access)
+
+Input: 58 screenshots (29 screens x light/dark, 390x844 @2x) from `qa/shoot.mjs`, DESIGN.md, 7-criterion rubric.
+Output: `qa/review.json`, `qa/review.md`. Result: **2 / 58 rows >= 4 on every criterion** (onboarding-welcome light
+and dark). Main issues: pinned control pad hides result banner / latency badge; oversized hero; faded disabled
+buttons (~1.6-2:1); header chip row wraps; state contradictions (link lost still "Raising"); Log leads with tables;
+connect flow shows no progress; inconsistent badges; dark segmented thumb inverted; back link below title on pushed
+settings pages; raw engineering strings in user UI.
+
+Fixes: shared components first (commit 0c7bbf6: one LocalOnlyChip/SimulatedBadge, StackHeader, neutral disabled
+Button, dark `segmentThumb`), then four parallel fix agents by folder (driver, health/log, settings/onboarding,
+presenter). Earlier fixes before this review (commit 6ece0f7): title wrap, raised arm clipped, presenter drawer.

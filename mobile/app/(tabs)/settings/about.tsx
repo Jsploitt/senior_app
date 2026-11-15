@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
-import { Gap, Row, Screen, Section, Text } from '@/components';
+import { Row, Screen, Section, Text } from '@/components';
+import { StackHeader } from '@/components/StackHeader';
 import { APP_NAME, appVersionInfo, CONTRACT_VERSION, TEAM_LINE } from '@/features/settings/appInfo';
-import { BackBar } from '@/features/settings/BackBar';
 import { LogoTile } from '@/features/settings/LogoTile';
 import { useSecretTap } from '@/features/settings/secretTap';
 import { updateSettings, useSettings } from '@/store/settings';
@@ -17,9 +17,8 @@ export default function About() {
   }, []);
   const onLogo = useSecretTap(unlock);
   return (
-    <Screen title="About" testID="about-screen">
-      <BackBar />
-      <Gap h={space.s} />
+    <Screen testID="about-screen">
+      <StackHeader backLabel="Settings" title="About" />
       <LogoTile onPress={onLogo} />
       <Text variant="title2" align="center" style={{ marginTop: space.m }}>
         {APP_NAME}
@@ -30,7 +29,7 @@ export default function About() {
 
       <Section>
         <Row title="Version" value={`${version} (${build})`} />
-        <Row title="Contract" value={CONTRACT_VERSION} last />
+        <Row title="Firmware interface" value={CONTRACT_VERSION} last />
       </Section>
 
       <Section
@@ -40,10 +39,13 @@ export default function About() {
         <Row title="100% local" subtitle="This app makes no network requests." last />
       </Section>
 
-      <Section title="What this app is">
+      <Section
+        title="What this app is"
+        footer="The registered, distance-aware vehicle authentication in the project's final design review (slide 15) is a separate part of the system. This app does not provide it."
+      >
         <Row
           title="Phone authorization"
-          subtitle="Any owner phone enrolled on the barrier can lower, raise or stop it. The registered, distance-aware vehicle authentication in the project's final design review (slide 15) is a separate part of the system that this app does not provide."
+          subtitle="Any owner phone enrolled on the barrier can lower, raise or stop it."
           last
         />
       </Section>
@@ -60,7 +62,7 @@ export default function About() {
           <Row
             testID="row-presenter-about"
             icon="easel-outline"
-            iconBg="positiveFill"
+            iconBg="tintFill"
             title="Presenter mode"
             chevron
             last

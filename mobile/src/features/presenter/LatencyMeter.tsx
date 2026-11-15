@@ -15,7 +15,7 @@ export interface LatencyMeterProps {
 
 const BIN_MS = 250;
 const BINS = 10; // 0 .. 2.5 s, plus one overflow bin
-const BAR_H = 72;
+const BAR_H = 40;
 
 /** Last value, p50 / p95, and a histogram against the spec line. */
 export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
@@ -36,13 +36,13 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
           <Text variant="caption1" color="secondaryLabel">
             Auth latency, last
           </Text>
-          <Text variant="display" tabular style={styles.big}>
+          <Text variant="title1" tabular style={styles.big}>
             {formatSeconds(sum.last)}
           </Text>
         </View>
         <View style={styles.stat}>
           <Text variant="caption1" color="secondaryLabel">
-            p50
+            Median
           </Text>
           <Text variant="title3" tabular>
             {formatSeconds(sum.p50)}
@@ -50,7 +50,7 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
         </View>
         <View style={styles.stat}>
           <Text variant="caption1" color="secondaryLabel">
-            p95
+            95th pct
           </Text>
           <Text variant="title3" tabular color={sum.p95 !== null && sum.p95 > specMs ? 'critical' : 'label'}>
             {formatSeconds(sum.p95)}
@@ -90,21 +90,26 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
       </View>
       <View style={styles.axis}>
         <View style={[styles.axisLeft, { flex: specMs / BIN_MS }]}>
-          <Text variant="caption2" color="secondaryLabel">
+          <Text variant="caption1" color="secondaryLabel">
             0
           </Text>
-          <Text variant="caption2" color="critical" weight="700">
+          <Text variant="caption1" color="critical" weight="700">
             {formatSeconds(specMs, 1)} spec
           </Text>
         </View>
         <View style={[styles.axisRight, { flex: Math.max(1, slots - specMs / BIN_MS) }]}>
-          <Text variant="caption2" color="secondaryLabel">
+          <Text variant="caption1" color="secondaryLabel">
             2.5 s+
           </Text>
         </View>
       </View>
       <Text variant="footnote" color="secondaryLabel" style={styles.caption}>
         {label}
+      </Text>
+      <Text variant="caption1" color="secondaryLabel">
+        {sum.count < 5
+          ? `Only ${sum.count} connect${sum.count === 1 ? '' : 's'} so far. Bar height is relative to the busiest bin.`
+          : `Bar height is relative to the busiest bin (${maxCount} connects).`}
       </Text>
     </View>
   );
@@ -114,8 +119,8 @@ const styles = StyleSheet.create({
   wrap: { gap: space.s },
   flex: { flex: 1 },
   top: { flexDirection: 'row', alignItems: 'flex-end', gap: space.l },
-  big: { marginTop: -2 },
-  stat: { alignItems: 'flex-start', minWidth: 52 },
+  big: { marginTop: 0 },
+  stat: { alignItems: 'flex-start', minWidth: 60 },
   chart: { position: 'relative' },
   bars: { flexDirection: 'row', alignItems: 'flex-end', gap: 3, height: BAR_H + 4 },
   slot: { flex: 1, justifyContent: 'flex-end' },

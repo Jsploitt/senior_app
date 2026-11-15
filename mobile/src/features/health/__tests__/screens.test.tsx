@@ -53,12 +53,13 @@ describe('HealthScreen', () => {
     const onConnect = jest.fn();
     await render(wrap(<HealthScreen onConnect={onConnect} />));
     expect(screen.getByText('Health')).toBeTruthy();
-    expect(screen.getByText('Local only')).toBeTruthy();
-    expect(screen.getByText('Not connected')).toBeTruthy();
+    expect(screen.getByTestId('local-only-chip')).toBeTruthy();
+    expect(screen.getAllByText('Not connected').length).toBeGreaterThan(0);
     expect(screen.queryByText('Power')).toBeNull();
     // requirements stay visible, with honest wording
-    expect(screen.getByText(/Measured on the board from UART logs, not by the phone/)).toBeTruthy();
-    expect(screen.getByText(/tools\/log_parser.py s6/)).toBeTruthy();
+    expect(screen.getByText(/measured on the barrier from its own logs, not by the phone/)).toBeTruthy();
+    expect(screen.getByText(/official accuracy score is computed from the barrier's log/)).toBeTruthy();
+    expect(screen.queryByText(/log_parser|INTERFACES/)).toBeNull();
     expect(screen.queryByText(/passed/i)).toBeNull();
     await fireEvent.press(screen.getByTestId('health-connect'));
     expect(onConnect).toHaveBeenCalledTimes(1);
@@ -75,16 +76,17 @@ describe('HealthScreen', () => {
     }
     expect(screen.getByText('Zone clear')).toBeTruthy();
     expect(screen.getByText('Sensors valid')).toBeTruthy();
-    expect(screen.getByText(/MotionAllowed = OwnerAuthorized AND FreshCommand/)).toBeTruthy();
-    expect(screen.getByText('LiFePO4 4S, thresholds TBD-EE')).toBeTruthy();
+    expect(screen.getByText(/The arm only moves when you are authorized/)).toBeTruthy();
+    expect(screen.getByText(/LiFePO4 4S battery/)).toBeTruthy();
     expect(screen.getByTestId('battery-gauge')).toBeTruthy();
     expect(screen.getByTestId('battery-volts').props.children).toMatch(/^\d+\.\d\d V$/);
     expect(screen.getByText('Owner connected')).toBeTruthy();
     expect(screen.getByText('Simulated')).toBeTruthy();
-    expect(screen.getByText(/Phone-measured\. Spec 5 reference is 2\.00 s/)).toBeTruthy();
+    expect(screen.getByText(/Measured by the phone\. Target is 2\.00 s/)).toBeTruthy();
     expect(screen.getByText((session.authLatencyMs / 1000).toFixed(2) + ' s')).toBeTruthy();
     expect(screen.queryByText(/passed/i)).toBeNull();
     expect(screen.queryByText('Not connected')).toBeNull();
+    expect(screen.queryByText(/MotionAllowed|COMPLETED|ACCEPTED/)).toBeNull();
 
     // heartbeat age ticks up
     expect(screen.getByText(/s ago$/)).toBeTruthy();
@@ -113,9 +115,8 @@ describe('LogScreen', () => {
     await render(wrap(<LogScreen />));
     expect(screen.getByText('No events yet')).toBeTruthy();
     expect(screen.getByTestId('share-csv').props.accessibilityState.disabled).toBe(true);
-    expect(screen.getByText('S5 summary')).toBeTruthy();
-    expect(screen.getByText('S6 tallies')).toBeTruthy();
-    expect(screen.getByText(/Phone-observed; official S6 score from log_parser\.py s6\./)).toBeTruthy();
+    expect(screen.getByText('Evidence summary')).toBeTruthy();
+    expect(screen.getByText('Nothing recorded yet')).toBeTruthy();
   });
 
   it('lists entries newest first, filters, and shows summaries', async () => {
@@ -144,16 +145,18 @@ describe('LogScreen', () => {
     await render(wrap(<LogScreen />));
 
     expect(screen.getByText('Owner authorized in 700 ms')).toBeTruthy();
-    expect(screen.getByText('mask 0x10')).toBeTruthy();
+    expect(screen.getByText('Safety check blocked')).toBeTruthy();
+    expect(screen.queryByText(/ACCEPTED|REJECTED_GUARD/)).toBeNull();
+    await fireEvent.press(screen.getByTestId('evidence-toggle'));
     expect(screen.getByTestId('s5-count').props.accessibilityLabel).toContain('1');
     expect(screen.getByTestId('s5-p50').props.accessibilityLabel).toContain('0.70 s');
     expect(screen.getByTestId('s5-within').props.accessibilityLabel).toContain('100%');
-    expect(screen.getByTestId('s6-accepted').props.accessibilityLabel).toContain('1');
-    expect(screen.getByTestId('s6-rejected').props.accessibilityLabel).toContain('1');
+    expect(screen.getByTestId('s6-sent').props.accessibilityLabel).toContain('2');
+    expect(screen.getByText('2 commands: 1 accepted, 1 rejected. Median sign-in 0.70 s')).toBeTruthy();
 
     await fireEvent.press(screen.getByRole('radio', { name: 'Auth' }));
     expect(screen.getByText('Owner authorized in 700 ms')).toBeTruthy();
-    expect(screen.queryByText('RAISE -> ACCEPTED')).toBeNull();
+    expect(screen.queryByText('Raise: Moving')).toBeNull();
 
     await fireEvent.press(screen.getByRole('radio', { name: 'Faults' }));
     expect(screen.getByText('No matching events')).toBeTruthy();

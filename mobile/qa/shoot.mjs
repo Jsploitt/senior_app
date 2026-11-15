@@ -115,7 +115,20 @@ const SHOTS = [
     route: '/guard-details',
     setup: [connectSim, sim(() => window.__m010.getSim().device.setSensors({ zoneClear: false })), cmd(1)],
   },
-  { name: 'connect-pairing', route: '/connect', settings: { ...ONBOARDED, lastDeviceId: null }, settle: 1200 },
+  {
+    name: 'connect-pairing',
+    route: '/connect',
+    settings: { ...ONBOARDED, lastDeviceId: null },
+    setup: [
+      // slow the simulated Session read so the pairing step is on screen when captured
+      sim(() => {
+        window.__m010.getSim().device.timings.sessionMs = 8000;
+      }),
+      async (p) => p.waitForTimeout(1500),
+      async (p) => p.getByText('M010-Barrier').first().click(),
+    ],
+    settle: 900,
+  },
   { name: 'presenter-obstruction-start', route: '/presenter/obstruction', settle: 1200 },
   { name: 'presenter-obstruction-step3', route: '/presenter/obstruction', setup: [clickText(/^Next/, 3, 2500)] },
   { name: 'presenter-limit-conflict', route: '/presenter/limit-conflict', setup: [clickText(/^Next/, 3, 5000)] },

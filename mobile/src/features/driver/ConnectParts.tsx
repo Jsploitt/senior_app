@@ -18,7 +18,7 @@ export function SignalBars({ rssi }: { rssi: number | null }) {
             width: 4,
             height: 4 + i * 4,
             borderRadius: 2,
-            backgroundColor: i <= n ? t.c.label : t.c.fill,
+            backgroundColor: i <= n ? t.c.secondaryLabel : t.c.fill,
           }}
         />
       ))}
@@ -62,6 +62,24 @@ export function DeviceRow({
       <SignalBars rssi={rssi} />
       <Icon name="chevron-forward" size={18} color="tertiaryLabel" />
     </Pressable>
+  );
+}
+
+/** Section header over the device list: caption + live activity indicator while scanning. */
+export function ListHeader({ title, busy, trailing }: { title: string; busy: boolean; trailing?: string }) {
+  const t = useTheme();
+  return (
+    <View style={styles.listHeader} accessible accessibilityRole="header" accessibilityLabel={title}>
+      <Text variant="footnote" weight="600" color="secondaryLabel" style={{ letterSpacing: 0.4 }}>
+        {title.toUpperCase()}
+      </Text>
+      {busy ? <ActivityIndicator size="small" color={t.c.tint} testID="scan-spinner" /> : null}
+      {trailing ? (
+        <Text variant="footnote" color="secondaryLabel">
+          {trailing}
+        </Text>
+      ) : null}
+    </View>
   );
 }
 
@@ -109,7 +127,7 @@ export function PairingCard() {
     <Card tone="tint" testID="pairing-card" style={{ marginTop: space.l }}>
       <View
         accessible
-        accessibilityLabel="Your phone will ask for a 6-digit code. Enter the passkey on the barrier's label."
+        accessibilityLabel="Your phone will ask for a 6-digit code. Enter the passkey printed on the barrier's label."
         style={{ gap: space.m }}
       >
         <View style={{ flexDirection: 'row', gap: space.m }}>
@@ -119,7 +137,8 @@ export function PairingCard() {
           </Text>
         </View>
         <Text variant="subheadline">
-          Your phone will ask for a 6-digit code. Enter the passkey on the barrier&apos;s label.
+          Your phone will ask for a 6-digit code. Enter the passkey printed on the barrier&apos;s label in the
+          Android pairing dialog.
         </Text>
         {/* stylised system prompt */}
         <View
@@ -152,6 +171,13 @@ const styles = StyleSheet.create({
     gap: space.m,
     padding: space.l,
     minHeight: 64,
+  },
+  listHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.s,
+    paddingHorizontal: space.xs,
+    marginBottom: space.s,
   },
   deviceIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   step: { flexDirection: 'row', alignItems: 'center', gap: space.m, minHeight: 32 },

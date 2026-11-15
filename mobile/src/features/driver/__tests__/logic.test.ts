@@ -103,8 +103,8 @@ describe('connection pill', () => {
     expect(connectionPill('idle', null, false).label).toBe('Disconnected');
     expect(connectionPill('connecting', null, false).label).toBe('Connecting');
     expect(connectionPill('pairing', null, false).label).toBe('Pairing');
-    expect(connectionPill('ready', true, false)).toEqual({ label: 'Connected - owner', tone: 'positive' });
-    expect(connectionPill('ready', false, false).label).toBe('Connected - not owner');
+    expect(connectionPill('ready', true, false)).toEqual({ label: 'Connected', tone: 'positive' });
+    expect(connectionPill('ready', false, false).label).toBe('Not an owner');
     expect(connectionPill('disconnected', null, true)).toEqual({
       label: 'Connection lost',
       tone: 'critical',

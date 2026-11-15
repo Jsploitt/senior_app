@@ -93,6 +93,9 @@ describe('Control screen: button enablement per state', () => {
     expect(screen.getByTestId('hero')).toBeTruthy();
     expect(screen.getByTestId('footnote')).toBeTruthy();
     // disabled buttons carry the reason as an accessibility hint
+    // a one-line reason caption is always shown above the pad when a command is disabled
+    if (!raise || !lower) expect(screen.getByTestId('pad-hint')).toBeTruthy();
+    else expect(screen.queryByTestId('pad-hint')).toBeNull();
     if (!raise) expect(screen.getByTestId('btn-raise').props.accessibilityHint).toBeTruthy();
     if (!lower) expect(screen.getByTestId('btn-lower').props.accessibilityHint).toBeTruthy();
     if (state === BarrierState.FAULT) expect(screen.getByTestId('fault-card')).toBeTruthy();
@@ -153,7 +156,7 @@ describe('Control screen: commands and banners', () => {
     });
     await advance(300);
     expect(screen.getByText('Position sensors disagree')).toBeTruthy();
-    expect(screen.getByText(/On-site reset: hold the unit button for 8 seconds/)).toBeTruthy();
+    expect(screen.getByText(/Hold the unit button for 8 seconds/)).toBeTruthy();
     expect(haptics.notify).toHaveBeenCalledWith('error');
     expect(enabled('btn-stop')).toBe(true);
   });
@@ -199,6 +202,10 @@ describe('Control screen: link lost', () => {
     expect(screen.getByTestId('link-lost-banner')).toBeTruthy();
     expect(enabled('btn-stop')).toBe(false);
     expect(enabled('btn-raise')).toBe(false);
+    // stale hero: last known state, neutral, with a reason caption above the pad
+    expect(screen.getByTestId('hero-label').props.children).toMatch(/^Last known: /);
+    expect(screen.getByTestId('hero').props.accessibilityLabel).toMatch(/not live/);
+    expect(screen.getByTestId('pad-hint').props.children).toMatch(/Not connected/);
     await fireEvent.press(screen.getByTestId('btn-reconnect'));
     await drive(Promise.resolve(), 10, 10);
     await advance(3000);

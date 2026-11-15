@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Switch, View } from 'react-native';
-import { Text } from '../../components';
+import { Icon, Text } from '../../components';
 import { useTheme } from '../../theme/ThemeProvider';
 import { hit, radius, shadow, space } from '../../theme/tokens';
 import { tap } from '../../utils/haptics';
@@ -13,7 +13,7 @@ export function SegmentedPicker<T extends string>({
   testID,
 }: {
   value: T;
-  options: { value: T; label: string; disabled?: boolean }[];
+  options: { value: T; label: string; disabled?: boolean; note?: string }[];
   onChange: (v: T) => void;
   accessibilityLabel: string;
   testID?: string;
@@ -34,21 +34,24 @@ export function SegmentedPicker<T extends string>({
             testID={`${testID ?? 'seg'}-${o.value}`}
             accessibilityRole="radio"
             accessibilityState={{ checked: sel, disabled: !!o.disabled }}
-            accessibilityLabel={o.label}
+            accessibilityLabel={o.disabled && o.note ? `${o.label}, unavailable. ${o.note}` : o.label}
             disabled={o.disabled}
             onPress={() => {
               tap();
               onChange(o.value);
             }}
-            style={[
-              styles.segItem,
-              { opacity: o.disabled ? 0.4 : 1 },
-              sel && [{ backgroundColor: t.c.surface }, shadow(t.dark)],
-            ]}
+            style={[styles.segItem, sel && [{ backgroundColor: t.c.segmentThumb }, shadow(t.dark)]]}
           >
-            <Text variant="subheadline" weight={sel ? '600' : '400'}>
-              {o.label}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
+              {o.disabled ? <Icon name="lock-closed" size={13} color="secondaryLabel" /> : null}
+              <Text
+                variant="subheadline"
+                weight={sel ? '600' : '400'}
+                color={o.disabled ? 'secondaryLabel' : 'label'}
+              >
+                {o.label}
+              </Text>
+            </View>
           </Pressable>
         );
       })}
@@ -77,8 +80,7 @@ export function SwitchRow({
     <Pressable
       testID={testID}
       accessibilityRole="switch"
-      accessibilityLabel={title}
-      accessibilityHint={subtitle}
+      accessibilityLabel={subtitle ? `${title}, ${subtitle}` : title}
       accessibilityState={{ checked: value }}
       onPress={() => onChange(!value)}
       style={[

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Banner, Button, EmptyState, Text } from '@/components';
-import { BarrierState, CmdResult, Opcode } from '@/protocol/constants';
+import { BarrierState, CmdResult, Opcode, SPEC5_AUTH_MAX_MS } from '@/protocol/constants';
 import { useSettings } from '@/store/settings';
 import { useTransport, useTransportSnapshot } from '@/store/transport';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -20,7 +20,6 @@ import { TransportError } from '@/transport/types';
 import { impact, notify } from '@/utils/haptics';
 import { BarrierHero } from './BarrierHero';
 import {
-  AuthLatencyBadge,
   ConnectionPill,
   ControlPad,
   FaultCard,
@@ -33,6 +32,8 @@ import {
   connectFailureCopy,
   connectionPill,
   FEED_RESULTS,
+  formatLatency,
+  latencyLabel,
   resultHaptic,
   resultNotice,
   statusKey,
@@ -61,7 +62,9 @@ export default function ControlScreen() {
   const linkLost = snap.phase === 'disconnected' && snap.error?.code === 'LINK_LOST';
   const showDevice = status !== null && (connected || snap.phase === 'disconnected');
   const connecting = snap.phase === 'connecting' || snap.phase === 'pairing' || snap.phase === 'authorizing';
-  const title = snap.session?.deviceName ?? settings.lastDeviceName ?? 'Barrier';
+  const deviceName = snap.session?.deviceName ?? settings.lastDeviceName ?? null;
+  const latency = snap.session?.authLatencyMs ?? null;
+  const [padH, setPadH] = useState(0);
 
   /* ---------- result notices ---------- */
   const [notice, setNotice] = useState<ResultNotice | null>(null);
@@ -203,9 +206,10 @@ export default function ControlScreen() {
       <ScrollView
         style={styles.flex}
         contentContainerStyle={{
+          flexGrow: 1,
           paddingTop: insets.top + space.s,
           paddingHorizontal: space.l,
-          paddingBottom: space.xl,
+          paddingBottom: showDevice ? padH + space.l : space.xl,
         }}
         refreshControl={
           connected ? (
@@ -213,22 +217,34 @@ export default function ControlScreen() {
           ) : undefined
         }
       >
-        <View style={styles.header}>
-          <Text
-            variant="largeTitle"
-            accessibilityRole="header"
-            style={{ flex: 1 }}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.7}
-            testID="control-title"
-          >
-            {title}
+        <Text variant="largeTitle" accessibilityRole="header" numberOfLines={1} testID="control-title">
+          Barrier
+        </Text>
+        {deviceName ? (
+          <View style={styles.sub}>
+            <Text variant="subheadline" color="secondaryLabel" numberOfLines={1} testID="control-device">
+              {deviceName}
+            </Text>
+            {latency !== null && connected ? (
+              <Text variant="subheadline" color="tertiaryLabel" accessibilityElementsHidden>
+                ·
+              </Text>
+            ) : null}
+            {latency !== null && connected ? (
+              <Text variant="subheadline" color="secondaryLabel" tabular testID="auth-latency">
+                {latencyLabel(latency)}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
+        {latency !== null && connected ? (
+          <Text variant="caption1" color="secondaryLabel" testID="auth-latency-note">
+            {`Phone-measured${snap.kind === 'sim' ? ', simulated' : ''}. Reference: ${formatLatency(SPEC5_AUTH_MAX_MS)}`}
           </Text>
-        </View>
+        ) : null}
         <View style={styles.chips}>
           <ConnectionPill spec={pill} onPress={connected ? undefined : openFinder} />
-          <LocalOnlyChip />
+          <LocalOnlyChip compact />
           {snap.kind === 'sim' ? <SimulatedBadge /> : null}
         </View>
 
@@ -256,7 +272,7 @@ export default function ControlScreen() {
 
         {showDevice && status ? (
           <>
-            <View style={{ marginTop: space.l }}>
+            <View style={{ marginTop: space.m }}>
               <BarrierHero
                 state={status.state}
                 fault={status.fault}
@@ -265,7 +281,7 @@ export default function ControlScreen() {
                 testID="hero"
               />
             </View>
-            <View style={{ marginTop: space.l }}>
+            <View style={{ marginTop: space.m }}>
               <GuardChips
                 zoneClear={status.zoneClear}
                 sensorsValid={status.sensorsValid}
@@ -274,19 +290,15 @@ export default function ControlScreen() {
               />
             </View>
             {status.state === BarrierState.FAULT ? (
-              <FaultCard fault={status.fault} heading="Needs on-site reset" />
+              <FaultCard fault={status.fault} heading="Needs on-site reset" compact />
             ) : null}
-            {notice && !(notice.result === CmdResult.FAULT) ? (
-              <ResultBanner notice={notice} onDismiss={() => setNotice(null)} />
-            ) : null}
-            <AuthLatencyBadge ms={snap.session?.authLatencyMs ?? null} source={snap.kind} />
             <Text variant="caption1" color="secondaryLabel" style={{ marginTop: space.l }} testID="footnote">
               An accepted command starts a monitored movement; the barrier confirms arrival with its end-limit
               switch.
             </Text>
           </>
         ) : (
-          <>
+          <View style={styles.empty}>
             <EmptyState
               icon="bluetooth-outline"
               title={connecting ? 'Connecting to your barrier' : 'Find your barrier'}
@@ -295,15 +307,14 @@ export default function ControlScreen() {
                   ? 'Hang on while your phone connects and checks that you are an owner.'
                   : 'Connect your phone to the barrier over Bluetooth. Everything stays between your phone and the barrier.'
               }
-              action={
-                <Button
-                  title={connecting ? 'View progress' : 'Find barrier'}
-                  icon="search"
-                  size="large"
-                  onPress={openFinder}
-                  testID="btn-find"
-                />
-              }
+            />
+            <Button
+              title={connecting ? 'View progress' : 'Find barrier'}
+              icon="search"
+              size="large"
+              onPress={openFinder}
+              testID="btn-find"
+              style={{ alignSelf: 'stretch', marginTop: space.l }}
             />
             {snap.phase === 'error' && snap.error ? (
               <Banner
@@ -314,11 +325,21 @@ export default function ControlScreen() {
                 testID="error-banner"
               />
             ) : null}
-          </>
+          </View>
         )}
       </ScrollView>
       {showDevice ? (
-        <ControlPad state={status?.state ?? null} connected={connected} onCommand={onCommand} />
+        <ControlPad
+          state={status?.state ?? null}
+          connected={connected}
+          onCommand={onCommand}
+          onHeight={setPadH}
+          banner={
+            notice && notice.result !== CmdResult.FAULT ? (
+              <ResultBanner notice={notice} onDismiss={() => setNotice(null)} />
+            ) : null
+          }
+        />
       ) : null}
     </View>
   );
@@ -326,6 +347,7 @@ export default function ControlScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  header: { flexDirection: 'row', alignItems: 'center', gap: space.m },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s, marginTop: space.s },
+  sub: { flexDirection: 'row', alignItems: 'center', gap: space.s, flexWrap: 'wrap' },
+  chips: { flexDirection: 'row', alignItems: 'center', gap: space.s, marginTop: space.s },
+  empty: { flex: 1, justifyContent: 'center', paddingBottom: space.huge },
 });

@@ -181,6 +181,12 @@ session, and the caption "Phone-measured, simulated" or "Phone-measured, BLE".
 
 ### 4.1 Color (all text/fill pairs checked for WCAG AA >= 4.5:1; computed 2026-11-15)
 
+> **As built (authoritative):** `src/theme/tokens.ts`, contrast enforced by `src/__tests__/tokens.test.ts` (36 pairs,
+> light and dark). Differences from the research table below: filled buttons in dark mode use deep fills with white
+> labels (`tintFill #1A73E8`, `positiveFill #1A7A35`, `criticalFill #D11A2A`, `warningFill #B35200`, all >= 4.5:1 with
+> `#FFFFFF`) instead of light fills with black labels; dark tint text is `#4DA3FF`; the selected segment in dark mode is
+> `segmentThumb #636366` on a `#2C2C2E` track; disabled controls use one neutral style (`fill` + `secondaryLabel`).
+
 | Token               | Light     | Dark      | Use                                           |
 | ------------------- | --------- | --------- | --------------------------------------------- |
 | `bg`                | `#F2F2F7` | `#000000` | grouped background                            |

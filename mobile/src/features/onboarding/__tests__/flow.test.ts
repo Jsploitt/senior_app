@@ -37,6 +37,7 @@ describe('onboarding flow', () => {
   it('done copy shows phone-measured auth time when known', () => {
     expect(doneCopy(1234).body).toContain('1.23 s');
     expect(doneCopy(null).title).toBe("You're all set.");
+    expect(doneCopy(null, 'sim').body).toContain('simulator');
   });
 });
 

@@ -1,6 +1,7 @@
 import { router, type Href } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Button, Card, Icon, Pill, Screen, Text } from '@/components';
+import { StackHeader } from '@/components/StackHeader';
 import { SCENARIO_GROUPS, SCENARIOS } from '@/features/presenter/scenarios';
 import { exitPresenter } from '@/features/presenter/exit';
 import { SimulatedBadge } from '@/features/presenter/SimulatedBadge';
@@ -13,9 +14,6 @@ export default function PresenterIndex() {
   return (
     <Screen
       testID="presenter-index"
-      title="Presenter"
-      subtitle="FPR scenarios on a simulated barrier"
-      right={<SimulatedBadge />}
       footer={
         <View style={[styles.footer, { backgroundColor: t.c.background, borderTopColor: t.c.separator }]}>
           <Button
@@ -30,6 +28,13 @@ export default function PresenterIndex() {
       }
     >
       <View style={styles.column}>
+        <StackHeader
+          backLabel="Settings"
+          title="Presenter"
+          subtitle="FPR scenarios on a simulated barrier"
+          right={<SimulatedBadge />}
+          onBack={exitPresenter}
+        />
         {SCENARIO_GROUPS.map((g) => (
           <View key={g.id} style={styles.group}>
             <Text
@@ -68,7 +73,7 @@ export default function PresenterIndex() {
                     <View style={styles.pills}>
                       <Pill label={`${s.steps.length} steps`} />
                       {rowsOf(s.steps).length ? (
-                        <Pill label={`FSM rows ${rowsOf(s.steps).join(', ')}`} tone="tint" />
+                        <Pill label={`FSM rows ${rowsOf(s.steps).join(', ')}`} />
                       ) : null}
                     </View>
                   </View>
@@ -93,7 +98,7 @@ function rowsOf(steps: { fsmRows: number[] }[]): number[] {
 
 const styles = StyleSheet.create({
   column: { width: '100%', maxWidth: 760, alignSelf: 'center' },
-  group: { marginTop: space.xl },
+  group: { marginTop: space.l },
   groupTitle: { textTransform: 'uppercase', marginLeft: space.l, marginBottom: space.s },
   row: {
     minHeight: hit + 24,

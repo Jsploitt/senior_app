@@ -1,5 +1,4 @@
 import { View } from 'react-native';
-import { Text } from '@/components';
 import { modeOptions } from '@/features/onboarding/flow';
 import { ModeCard } from '@/features/onboarding/ModeCard';
 import { Illustration, OnboardingPage } from '@/features/onboarding/OnboardingPage';
@@ -31,7 +30,7 @@ export default function Mode() {
           title="I have the barrier here"
           detail="Connect over Bluetooth to a real M010 barrier."
           selected={transport === 'ble'}
-          disabled={bleOff}
+          unavailable={bleOff ? 'Needs the Android app. Web only supports the simulator.' : undefined}
           onPress={() => chooseTransport('ble')}
         />
         <ModeCard
@@ -42,11 +41,6 @@ export default function Mode() {
           selected={transport === 'sim'}
           onPress={() => chooseTransport('sim')}
         />
-        {bleOff ? (
-          <Text variant="footnote" color="secondaryLabel" testID="mode-ble-unavailable">
-            Bluetooth needs the Android app. In a web browser only the simulator is available.
-          </Text>
-        ) : null}
       </View>
     </OnboardingPage>
   );

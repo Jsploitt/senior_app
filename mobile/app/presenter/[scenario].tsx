@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, EmptyState, Text } from '@/components';
 import { exitPresenter } from '@/features/presenter/exit';
 import { useDeviceTick, useHandleSnapshot, useRunnerSnapshot } from '@/features/presenter/hooks';
-import { LiveReadout } from '@/features/presenter/LiveReadout';
+import { LiveHero, LiveReadout } from '@/features/presenter/LiveReadout';
 import { ScenarioRunner } from '@/features/presenter/runner';
 import { ScenarioDrawer } from '@/features/presenter/ScenarioDrawer';
 import { findScenario } from '@/features/presenter/scenarios';
@@ -48,6 +48,7 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
   const insets = useSafeAreaInsets();
   const wide = useWindowDimensions().width >= 900;
   const snap = useRunnerSnapshot(runner);
+  const [drawerOpen, setDrawerOpen] = useState(runner.scenario.id === 'auth-latency');
   const phone = useHandleSnapshot(snap.handle);
   useDeviceTick(snap.handle?.device ?? null);
   const sc = runner.scenario;
@@ -58,6 +59,38 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
   const canNext = reviewing || !done;
   const passed = snap.results.filter((r) => r?.status === 'pass').length;
   const bad = snap.results.filter((r) => r && r.status !== 'pass').length;
+  /* The drawer's expanded panel needs the room on a phone: the hero steps aside, the step card stays. */
+  const hero = drawerOpen && !wide ? null : <LiveHero snap={phone} />;
+  const readout = (
+    <View>
+      <LiveReadout snap={phone} device={snap.handle?.device ?? null} />
+      {snap.bootError ? (
+        <Text variant="callout" color="critical" style={styles.summary}>
+          Could not connect the simulated owner phone: {snap.bootError}
+        </Text>
+      ) : null}
+    </View>
+  );
+  const stepArea = (
+    <View style={styles.stack}>
+      <StepProgress
+        scenario={sc}
+        results={snap.results}
+        view={snap.view}
+        frontier={snap.frontier}
+        runningIndex={snap.runningIndex}
+        onSelect={(i) => runner.goTo(i)}
+      />
+      <StepCard
+        scenario={sc}
+        index={snap.view}
+        result={snap.results[snap.view] ?? null}
+        running={snap.runningIndex === snap.view}
+        reviewing={reviewing}
+        booting={snap.booting}
+      />
+    </View>
+  );
   return (
     <View style={[styles.flex, { backgroundColor: t.c.background }]} testID="presenter-runner">
       <Stack.Screen options={{ title: sc.title }} />
@@ -77,42 +110,29 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
       </View>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.column}>
-          <Text variant="title1" accessibilityRole="header">
+          <Text variant="title2" accessibilityRole="header" numberOfLines={1} style={styles.title}>
             {sc.title}
           </Text>
-          <Text variant="subheadline" color="secondaryLabel" style={styles.summary}>
-            {sc.summary}
-          </Text>
-          <View style={wide ? styles.cols : undefined}>
-            <View style={wide ? styles.col : undefined}>
-              <LiveReadout snap={phone} device={snap.handle?.device ?? null} />
-              {snap.bootError ? (
-                <Text variant="callout" color="critical" style={styles.summary}>
-                  Could not connect the simulated owner phone: {snap.bootError}
-                </Text>
-              ) : null}
-            </View>
-            <View style={wide ? styles.col : undefined}>
-              <StepProgress
-                scenario={sc}
-                results={snap.results}
-                view={snap.view}
-                frontier={snap.frontier}
-                runningIndex={snap.runningIndex}
-                onSelect={(i) => runner.goTo(i)}
-              />
-              <View style={styles.card}>
-                <StepCard
-                  scenario={sc}
-                  index={snap.view}
-                  result={snap.results[snap.view] ?? null}
-                  running={snap.runningIndex === snap.view}
-                  reviewing={reviewing}
-                  booting={snap.booting}
-                />
+          {snap.frontier === 0 ? (
+            <Text variant="subheadline" color="secondaryLabel" style={styles.summary}>
+              {sc.summary}
+            </Text>
+          ) : null}
+          {wide ? (
+            <View style={styles.cols}>
+              <View style={styles.col}>
+                {hero}
+                {readout}
               </View>
+              <View style={styles.col}>{stepArea}</View>
             </View>
-          </View>
+          ) : (
+            <View style={styles.stack}>
+              {hero}
+              {stepArea}
+              {readout}
+            </View>
+          )}
           {done ? (
             <Text
               testID="run-summary"
@@ -134,6 +154,8 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
           <ScenarioDrawer
             scenario={sc}
             stepIndex={snap.frontier}
+            viewIndex={snap.view}
+            onOpenChange={setDrawerOpen}
             onNext={() => void runner.next()}
             onPrev={() => runner.prev()}
             onAuto={() => (snap.auto ? runner.stopAuto() : void runner.autoPlay())}
@@ -158,10 +180,11 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   missing: { flex: 1, justifyContent: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.m, paddingBottom: space.xs },
-  content: { paddingHorizontal: space.l, paddingBottom: space.xl },
+  content: { paddingHorizontal: space.l, paddingBottom: space.xl, gap: space.xs },
   column: { width: '100%', maxWidth: 1200, alignSelf: 'center' },
   cols: { flexDirection: 'row', gap: space.xl, alignItems: 'flex-start' },
   col: { flex: 1 },
   summary: { marginTop: space.xs, marginBottom: space.s },
-  card: { marginTop: space.m },
+  stack: { gap: space.m },
+  title: { marginBottom: space.s },
 });

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Banner, Button, Gap, Row, Screen, Section } from '@/components';
-import { BackBar } from '@/features/settings/BackBar';
+import { Banner, Button, Row, Screen, Section } from '@/components';
+import { StackHeader } from '@/components/StackHeader';
 import { FORGET_INSTRUCTIONS, forgetBarrier } from '@/features/settings/actions';
 import { useSettings } from '@/store/settings';
 import { useTransport, useTransportSnapshot } from '@/store/transport';
@@ -19,10 +19,10 @@ export default function DevicePage() {
   const num = (n: number | null | undefined) => (n == null ? 'Not available' : String(n));
 
   return (
-    <Screen title="Barrier" testID="device-screen">
-      <BackBar />
+    <Screen testID="device-screen">
+      <StackHeader backLabel="Settings" title="This barrier" />
       <Section
-        title="This barrier"
+        title="Details"
         footer="Counters stop replayed commands. The local counter is stored on this phone; the barrier reports its own when connected."
       >
         <Row title="Name" value={name ?? 'None yet'} />
@@ -36,16 +36,23 @@ export default function DevicePage() {
         />
       </Section>
 
-      <Gap h={space.xxl} />
       {phase === 'idle' ? (
-        <Button
-          testID="forget-button"
-          title="Forget this barrier"
-          variant="destructive"
-          disabled={!id}
-          onPress={() => setPhase('confirm')}
-          accessibilityHint="Asks for confirmation first"
-        />
+        <Section
+          footer={
+            id
+              ? 'Clears the saved barrier and its command counter on this phone. You will have to enroll again to control it.'
+              : 'No barrier is saved on this phone yet.'
+          }
+        >
+          <Row
+            testID="forget-button"
+            title="Forget this barrier"
+            destructive={!!id}
+            last
+            onPress={id ? () => setPhase('confirm') : undefined}
+            accessibilityHint="Asks for confirmation first"
+          />
+        </Section>
       ) : null}
       {phase === 'confirm' ? (
         <Banner

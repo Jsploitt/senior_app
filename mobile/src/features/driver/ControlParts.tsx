@@ -1,6 +1,7 @@
 /** Presentational parts of the Control screen. Colors come from useTheme() tokens only. */
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { Card, Icon, Pill, Text, type IconName } from '@/components';
+import type { ReactNode } from 'react';
+import { Button, Card, Icon, Pill, Text, type IconName } from '@/components';
 import {
   BATTERY_CRITICAL_MV,
   BATTERY_HEALTHY_MIN_MV,
@@ -58,9 +59,11 @@ function Chip({
   tone,
   onPress,
   testID,
+  a11yLabel,
 }: {
   icon: IconName;
   label: string;
+  a11yLabel?: string;
   tone: 'positive' | 'warning' | 'critical';
   onPress?: () => void;
   testID?: string;
@@ -72,7 +75,7 @@ function Chip({
       testID={testID}
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={a11yLabel ?? label}
       accessibilityHint="Shows all safety checks"
       hitSlop={{ top: 6, bottom: 6 }}
       style={({ pressed }) => [styles.chip, { backgroundColor: wash, opacity: pressed ? 0.7 : 1 }]}
@@ -114,14 +117,15 @@ export function GuardChips({
       <Chip
         testID="chip-sensors"
         icon={sensorsValid ? 'checkmark-circle' : 'alert-circle'}
-        label={sensorsValid ? 'Sensors valid' : 'Sensors invalid'}
+        label={sensorsValid ? 'Sensors OK' : 'Sensors invalid'}
         tone={sensorsValid ? 'positive' : 'warning'}
         onPress={onPress}
       />
       <Chip
         testID="chip-battery"
         icon={battTone === 'positive' ? 'battery-full' : 'battery-dead'}
-        label={`Battery ${formatBattery(batteryMv)}`}
+        label={formatBattery(batteryMv)}
+        a11yLabel={`Battery ${formatBattery(batteryMv)}`}
         tone={battTone}
         onPress={onPress}
       />
@@ -131,91 +135,86 @@ export function GuardChips({
 
 /* ---------------- control pad ---------------- */
 
-function ControlButton({
-  kind,
+/** STOP: filled danger while moving, tinted danger otherwise, one neutral style when disabled. */
+function StopButton({
   rule,
   prominent,
   onPress,
 }: {
-  kind: 'raise' | 'lower' | 'stop';
   rule: ButtonRule;
   prominent?: boolean;
   onPress: () => void;
 }) {
   const t = useTheme();
-  const title = kind === 'raise' ? 'Raise' : kind === 'lower' ? 'Lower' : 'Stop';
-  const icon: IconName = kind === 'raise' ? 'arrow-up' : kind === 'lower' ? 'arrow-down' : 'stop';
-  let bg: string;
-  let fg: keyof Palette;
-  if (kind === 'stop') {
-    bg = prominent ? t.c.criticalFill : t.c.criticalWash;
-    fg = prominent ? 'onCritical' : 'critical';
-  } else if (kind === 'raise') {
-    bg = t.c.tintFill;
-    fg = 'onTint';
-  } else {
-    bg = t.c.positiveFill;
-    fg = 'onPositive';
-  }
-  const tall = kind !== 'stop';
+  const on = rule.enabled;
+  const bg = !on ? t.c.fill : prominent ? t.c.criticalFill : t.c.criticalWash;
+  const fg: keyof Palette = !on ? 'secondaryLabel' : prominent ? 'onCritical' : 'critical';
   return (
     <Pressable
-      testID={`btn-${kind}`}
+      testID="btn-stop"
       onPress={onPress}
-      disabled={!rule.enabled}
+      disabled={!on}
       accessibilityRole="button"
-      accessibilityLabel={`${title} barrier`}
-      accessibilityHint={rule.enabled ? undefined : rule.reason}
-      accessibilityState={{ disabled: !rule.enabled }}
+      accessibilityLabel="Stop barrier"
+      accessibilityHint={on ? undefined : rule.reason}
+      accessibilityState={{ disabled: !on }}
       style={({ pressed }) => [
         styles.ctl,
         {
           backgroundColor: bg,
-          minHeight: tall ? 72 : 64,
-          opacity: rule.enabled ? (pressed ? 0.8 : 1) : 0.4,
-          transform: [{ scale: pressed && rule.enabled ? 0.98 : 1 }],
+          minHeight: 60,
+          opacity: pressed && on ? 0.8 : 1,
+          transform: [{ scale: pressed && on ? 0.98 : 1 }],
         },
       ]}
     >
-      <Icon name={icon} size={tall ? 26 : 22} color={fg} />
-      <Text variant={tall ? 'title3' : 'headline'} color={fg} weight="700" numberOfLines={1}>
-        {title.toUpperCase()}
+      <Icon name="stop" size={22} color={fg} />
+      <Text variant="headline" color={fg} weight="700" numberOfLines={1}>
+        STOP
       </Text>
     </Pressable>
   );
+}
+
+/** One-line reason shown above the pad whenever a command is unavailable. */
+export function padCaption(en: ReturnType<typeof controlEnablement>, connected: boolean): string | undefined {
+  if (!connected) return en.lower.reason;
+  return en.lower.reason ?? en.raise.reason;
 }
 
 export function ControlPad({
   state,
   connected,
   onCommand,
+  banner,
+  onHeight,
 }: {
   state: BarrierState | null;
   connected: boolean;
   onCommand: (op: Opcode) => void;
+  /** transient result (guard-reject reasons, Done, ...) pinned directly above the buttons */
+  banner?: ReactNode;
+  /** measured height, so the scroll content can reserve exactly this much bottom space */
+  onHeight?: (h: number) => void;
 }) {
   const t = useTheme();
   const { fontScale } = useWindowDimensions();
   const en = controlEnablement(state, connected);
   const stacked = fontScale >= 1.4;
-  // only explain rules the user cannot infer ("already raised" is obvious)
-  const hint =
-    connected && state !== null && (state === BarrierState.UNKNOWN || state === BarrierState.FAULT)
-      ? state === 0
-        ? en.raise.reason
-        : en.lower.reason
-      : undefined;
+  const hint = padCaption(en, connected);
   return (
     <View
       testID="control-pad"
+      onLayout={(e) => onHeight?.(e.nativeEvent.layout.height)}
       style={[styles.pad, { backgroundColor: t.c.background, borderTopColor: t.c.separator }]}
     >
+      {banner}
       {hint ? (
         <Text
           variant="footnote"
           color="secondaryLabel"
           align="center"
-          style={{ marginBottom: space.s }}
+          style={{ marginBottom: space.s, marginTop: banner ? space.s : 0 }}
           testID="pad-hint"
         >
           {hint}
@@ -223,19 +222,36 @@ export function ControlPad({
       ) : null}
       <View style={{ flexDirection: stacked ? 'column' : 'row', gap: space.m }}>
         <View style={stacked ? undefined : { flex: 1 }}>
-          <ControlButton kind="lower" rule={en.lower} onPress={() => void onCommand(Opcode.LOWER)} />
+          <Button
+            title="Lower"
+            icon="arrow-down"
+            size="hero"
+            variant="positive"
+            haptic={false}
+            disabled={!en.lower.enabled}
+            accessibilityLabel="Lower barrier"
+            accessibilityHint={en.lower.enabled ? undefined : en.lower.reason}
+            onPress={() => void onCommand(Opcode.LOWER)}
+            testID="btn-lower"
+          />
         </View>
         <View style={stacked ? undefined : { flex: 1 }}>
-          <ControlButton kind="raise" rule={en.raise} onPress={() => void onCommand(Opcode.RAISE)} />
+          <Button
+            title="Raise"
+            icon="arrow-up"
+            size="hero"
+            variant="filled"
+            haptic={false}
+            disabled={!en.raise.enabled}
+            accessibilityLabel="Raise barrier"
+            accessibilityHint={en.raise.enabled ? undefined : en.raise.reason}
+            onPress={() => void onCommand(Opcode.RAISE)}
+            testID="btn-raise"
+          />
         </View>
       </View>
       <View style={{ marginTop: space.m }}>
-        <ControlButton
-          kind="stop"
-          rule={en.stop}
-          prominent={en.stopProminent}
-          onPress={() => void onCommand(Opcode.STOP)}
-        />
+        <StopButton rule={en.stop} prominent={en.stopProminent} onPress={() => void onCommand(Opcode.STOP)} />
       </View>
     </View>
   );
@@ -249,7 +265,7 @@ export function ResultBanner({ notice, onDismiss }: { notice: ResultNotice; onDi
     .filter(Boolean)
     .join('. ');
   return (
-    <Card tone={notice.tone} testID="result-banner" style={{ marginTop: space.m }}>
+    <Card tone={notice.tone} testID="result-banner" style={{ marginBottom: space.s }}>
       <View style={{ flexDirection: 'row', gap: space.m }}>
         <View
           style={{ flex: 1, flexDirection: 'row', gap: space.m }}
@@ -309,7 +325,16 @@ export function ResultBanner({ notice, onDismiss }: { notice: ResultNotice; onDi
 
 /* ---------------- fault card ---------------- */
 
-export function FaultCard({ fault, heading }: { fault: FaultReason; heading?: string }) {
+export function FaultCard({
+  fault,
+  heading,
+  compact,
+}: {
+  fault: FaultReason;
+  heading?: string;
+  /** Control screen: heading + cause + one reset line (the hero already names the fault) */
+  compact?: boolean;
+}) {
   const text = FAULT_TEXT[fault === FaultReason.NONE ? FaultReason.INTERNAL : fault];
   return (
     <Card tone="critical" testID="fault-card" style={{ marginTop: space.m }}>
@@ -327,13 +352,15 @@ export function FaultCard({ fault, heading }: { fault: FaultReason; heading?: st
           <Text variant="subheadline" style={{ marginTop: space.xxs }}>
             {text.detail}
           </Text>
-          {text.action ? (
+          {text.action && !compact ? (
             <Text variant="subheadline" style={{ marginTop: space.xs }}>
               {text.action}
             </Text>
           ) : null}
           <Text variant="footnote" color="secondaryLabel" style={{ marginTop: space.s }}>
-            On-site reset: hold the unit button for 8 seconds. The app cannot clear a fault.
+            {compact
+              ? 'Hold the unit button for 8 seconds. The app cannot clear a fault.'
+              : 'On-site reset: hold the unit button for 8 seconds. The app cannot clear a fault.'}
           </Text>
         </View>
       </View>
@@ -379,13 +406,13 @@ export function AuthLatencyBadge({ ms, source }: { ms: number | null; source: 'b
 }
 
 const styles = StyleSheet.create({
-  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s },
+  chipRow: { flexDirection: 'row', gap: space.s },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.xs,
-    paddingHorizontal: space.m,
-    paddingVertical: space.s - 1,
+    paddingHorizontal: space.s + 2,
+    paddingVertical: space.xs,
     borderRadius: radius.pill,
     minHeight: 32,
   },
@@ -398,6 +425,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.l,
   },
   pad: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     paddingHorizontal: space.l,
     paddingTop: space.m,
     paddingBottom: space.m,

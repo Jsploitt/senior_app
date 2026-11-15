@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Pressable, StyleSheet, Switch, useWindowDimensions, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Switch, useWindowDimensions, View } from 'react-native';
 import { Button } from '../../components/Button';
 import { Icon, type IconName } from '../../components/Icon';
 import { Segmented } from '../../components/Layout';
@@ -32,6 +32,10 @@ export interface ScenarioDrawerProps {
   scenario: Scenario;
   /** number of steps already run */
   stepIndex: number;
+  /** step currently shown in the step card (0-based) */
+  viewIndex?: number;
+  /** tells the screen whether the panel is expanded (the hero steps aside on phones) */
+  onOpenChange?(open: boolean): void;
   onNext(): void;
   onPrev(): void;
   onAuto(): void;
@@ -54,6 +58,10 @@ export function ScenarioDrawer(p: ScenarioDrawerProps) {
   const [panel, setPanel] = useState<Panel>(p.scenario.id === 'auth-latency' ? 'latency' : 'interlocks');
   const { height } = useWindowDimensions();
   const [open, setOpen] = useState(height >= 1000 || p.scenario.id === 'auth-latency');
+  const { onOpenChange } = p;
+  useEffect(() => onOpenChange?.(open), [open, onOpenChange]);
+  const view = Math.min(p.viewIndex ?? p.stepIndex, p.scenario.steps.length - 1);
+  const stepTitle = p.scenario.steps[view]?.title ?? '';
   const spread = SPREADS.find((s) => s.sigma === p.params.latencySigma)?.value ?? 'typical';
   const isLatency = p.scenario.id === 'auth-latency';
   return (
@@ -84,83 +92,106 @@ export function ScenarioDrawer(p: ScenarioDrawerProps) {
         />
       </View>
 
-      {!open ? null : panel === 'interlocks' ? (
-        <View style={styles.toggles}>
-          {TOGGLES.map((tg) => {
-            const on = p.toggles[tg.key];
-            return (
-              <Pressable
-                key={tg.key}
-                testID={`toggle-${tg.key}`}
-                accessibilityRole="switch"
-                accessibilityLabel={tg.label}
-                accessibilityHint={tg.hint}
-                accessibilityState={{ checked: on }}
-                onPress={() => p.onToggle(tg.key, !on)}
-                style={[styles.toggle, { backgroundColor: t.c.fill }]}
-              >
-                <Text variant="callout" weight="600" style={styles.flex} numberOfLines={2}>
-                  {tg.label}
-                </Text>
-                <Switch
-                  value={on}
-                  onValueChange={(v) => p.onToggle(tg.key, v)}
-                  accessible={false}
-                  importantForAccessibility="no-hide-descendants"
-                  trackColor={{ false: t.c.separator, true: t.c.positiveFill }}
-                  thumbColor={t.c.onTint}
-                />
-              </Pressable>
-            );
-          })}
-        </View>
-      ) : (
-        <View style={styles.latency}>
-          <LatencyMeter samples={p.samples} specMs={SPEC5_AUTH_MAX_MS} label="Phone-measured, simulated" />
-          {isLatency ? (
-            <View style={styles.params}>
-              <View style={styles.stepper}>
-                <Button
-                  title="-100 ms"
-                  accessibilityLabel="Decrease median latency by 100 milliseconds"
-                  variant="gray"
-                  size="small"
-                  onPress={() =>
-                    p.onParams({ latencyMedianMs: Math.max(200, p.params.latencyMedianMs - 100) })
-                  }
-                />
-                <View style={styles.flex}>
-                  <Text variant="caption1" color="secondaryLabel" align="center">
-                    Median per connect
-                  </Text>
-                  <Text variant="title3" align="center" tabular>
-                    {(p.params.latencyMedianMs / 1000).toFixed(2)} s
+      {!open ? null : (
+        <ScrollView
+          style={{ maxHeight: Math.max(160, height * 0.4) }}
+          contentContainerStyle={styles.panel}
+          showsVerticalScrollIndicator
+        >
+          {panel === 'interlocks' ? (
+            <View style={styles.toggles}>
+              {TOGGLES.map((tg) => {
+                const on = p.toggles[tg.key];
+                return (
+                  <Pressable
+                    key={tg.key}
+                    testID={`toggle-${tg.key}`}
+                    accessibilityRole="switch"
+                    accessibilityLabel={tg.label}
+                    accessibilityHint={tg.hint}
+                    accessibilityState={{ checked: on }}
+                    onPress={() => p.onToggle(tg.key, !on)}
+                    style={[styles.toggle, { backgroundColor: t.c.fill }]}
+                  >
+                    <Text variant="callout" weight="600" style={styles.flex} numberOfLines={2}>
+                      {tg.label}
+                    </Text>
+                    <Switch
+                      value={on}
+                      onValueChange={(v) => p.onToggle(tg.key, v)}
+                      accessible={false}
+                      importantForAccessibility="no-hide-descendants"
+                      trackColor={{ false: t.c.separator, true: t.c.positiveFill }}
+                      thumbColor={t.c.onTint}
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : (
+            <View style={styles.latency}>
+              <LatencyMeter
+                samples={p.samples}
+                specMs={SPEC5_AUTH_MAX_MS}
+                label="Phone-measured, simulated"
+              />
+              {isLatency ? (
+                <View style={styles.params}>
+                  <View style={styles.stepper}>
+                    <Button
+                      title="-100 ms"
+                      accessibilityLabel="Decrease median latency by 100 milliseconds"
+                      variant="gray"
+                      size="small"
+                      style={styles.step}
+                      onPress={() =>
+                        p.onParams({ latencyMedianMs: Math.max(200, p.params.latencyMedianMs - 100) })
+                      }
+                    />
+                    <View style={styles.flex}>
+                      <Text variant="footnote" color="secondaryLabel" align="center">
+                        Simulated median (next run)
+                      </Text>
+                      <Text variant="title3" align="center" tabular>
+                        {(p.params.latencyMedianMs / 1000).toFixed(2)} s
+                      </Text>
+                    </View>
+                    <Button
+                      title="+100 ms"
+                      accessibilityLabel="Increase median latency by 100 milliseconds"
+                      variant="gray"
+                      size="small"
+                      style={styles.step}
+                      onPress={() =>
+                        p.onParams({ latencyMedianMs: Math.min(3000, p.params.latencyMedianMs + 100) })
+                      }
+                    />
+                  </View>
+                  <Segmented
+                    accessibilityLabel="Latency spread"
+                    value={spread}
+                    onChange={(v) => p.onParams({ latencySigma: SPREADS.find((s) => s.value === v)!.sigma })}
+                    options={SPREADS.map((s) => ({ value: s.value, label: s.label }))}
+                  />
+                  <Text variant="footnote" color="secondaryLabel">
+                    Applies to the next run of &quot;Repeated connects&quot;. Reset to start over.
                   </Text>
                 </View>
-                <Button
-                  title="+100 ms"
-                  accessibilityLabel="Increase median latency by 100 milliseconds"
-                  variant="gray"
-                  size="small"
-                  onPress={() =>
-                    p.onParams({ latencyMedianMs: Math.min(3000, p.params.latencyMedianMs + 100) })
-                  }
-                />
-              </View>
-              <Segmented
-                accessibilityLabel="Latency spread"
-                value={spread}
-                onChange={(v) => p.onParams({ latencySigma: SPREADS.find((s) => s.value === v)!.sigma })}
-                options={SPREADS.map((s) => ({ value: s.value, label: s.label }))}
-              />
-              <Text variant="footnote" color="secondaryLabel">
-                Applies to the next run of &quot;Repeated connects&quot;. Reset to start over.
-              </Text>
+              ) : null}
             </View>
-          ) : null}
-        </View>
+          )}
+        </ScrollView>
       )}
 
+      <Text
+        variant="subheadline"
+        weight="600"
+        numberOfLines={1}
+        testID="drawer-step-caption"
+        accessibilityLabel={`Step ${view + 1} of ${p.scenario.steps.length}: ${stepTitle}`}
+      >
+        {`Step ${view + 1} of ${p.scenario.steps.length}: ${stepTitle}`}
+      </Text>
       <View style={styles.controls}>
         <IconButton
           testID="btn-prev"
@@ -247,7 +278,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.l,
     paddingTop: space.m,
     paddingBottom: space.m,
-    gap: space.m,
+    gap: space.s,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
   flex: { flex: 1 },
@@ -263,6 +294,8 @@ const styles = StyleSheet.create({
     paddingRight: space.s,
     borderRadius: radius.m,
   },
+  panel: { gap: space.m },
+  step: { minWidth: 88, minHeight: hit },
   latency: { gap: space.m },
   params: { gap: space.s },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: space.s },
