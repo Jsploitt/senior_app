@@ -1,10 +1,5 @@
-import { Screen, EmptyState } from '@/components';
+import { LogScreen } from '@/features/health/LogScreen';
 
-// Placeholder: owned by a Phase 2 workstream.
-export default function Placeholder() {
-  return (
-    <Screen title="log">
-      <EmptyState icon="construct-outline" title="Coming soon" detail="This screen is built in Phase 2." />
-    </Screen>
-  );
+export default function LogTab() {
+  return <LogScreen />;
 }
