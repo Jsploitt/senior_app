@@ -237,10 +237,10 @@ export function ControlPad({
       ) : null}
       <View style={{ flexDirection: stacked ? 'column' : 'row', gap: space.m }}>
         <View style={stacked ? undefined : { flex: 1 }}>
-          <ControlButton kind="lower" rule={en.lower} onPress={() => onCommand(Opcode.LOWER)} />
+          <ControlButton kind="lower" rule={en.lower} onPress={() => void onCommand(Opcode.LOWER)} />
         </View>
         <View style={stacked ? undefined : { flex: 1 }}>
-          <ControlButton kind="raise" rule={en.raise} onPress={() => onCommand(Opcode.RAISE)} />
+          <ControlButton kind="raise" rule={en.raise} onPress={() => void onCommand(Opcode.RAISE)} />
         </View>
       </View>
       <View style={{ marginTop: space.m }}>
@@ -248,7 +248,7 @@ export function ControlPad({
           kind="stop"
           rule={en.stop}
           prominent={en.stopProminent}
-          onPress={() => onCommand(Opcode.STOP)}
+          onPress={() => void onCommand(Opcode.STOP)}
         />
       </View>
     </View>
@@ -323,7 +323,7 @@ export function ResultBanner({ notice, onDismiss }: { notice: ResultNotice; onDi
 
 /* ---------------- fault card ---------------- */
 
-export function FaultCard({ fault }: { fault: FaultReason }) {
+export function FaultCard({ fault, heading }: { fault: FaultReason; heading?: string }) {
   const text = FAULT_TEXT[fault === FaultReason.NONE ? FaultReason.INTERNAL : fault];
   return (
     <Card tone="critical" testID="fault-card" style={{ marginTop: space.m }}>
@@ -336,7 +336,7 @@ export function FaultCard({ fault }: { fault: FaultReason }) {
         <Icon name="warning" size={24} color="critical" />
         <View style={{ flex: 1 }}>
           <Text variant="headline" color="critical">
-            {text.title}
+            {heading ?? text.title}
           </Text>
           <Text variant="subheadline" style={{ marginTop: space.xxs }}>
             {text.detail}

@@ -265,7 +265,9 @@ export default function ControlScreen() {
                 onPress={() => router.push('/guard-details')}
               />
             </View>
-            {status.state === BarrierState.FAULT ? <FaultCard fault={status.fault} /> : null}
+            {status.state === BarrierState.FAULT ? (
+              <FaultCard fault={status.fault} heading="Needs on-site reset" />
+            ) : null}
             {notice && !(notice.result === CmdResult.FAULT) ? (
               <ResultBanner notice={notice} onDismiss={() => setNotice(null)} />
             ) : null}

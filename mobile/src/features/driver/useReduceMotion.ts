@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AccessibilityInfo } from 'react-native';
 
-/** Live "Reduce Motion" setting (iOS) / "Remove animations" (Android); false where unsupported. */
+/** Live "Remove animations" (Android) / reduce-motion setting; false where unsupported. */
 export function useReduceMotion(): boolean {
   const [reduce, setReduce] = useState(false);
   useEffect(() => {

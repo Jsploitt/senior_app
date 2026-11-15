@@ -110,9 +110,9 @@ function ArmArt({
 function ElapsedLine({ startedAt, color }: { startedAt: number; color: 'secondaryLabel' | 'warning' }) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 200);
-    return () => clearInterval(id);
-  }, []);
+    const id = setTimeout(() => setNow(Date.now()), 200);
+    return () => clearTimeout(id);
+  }, [now]);
   const e = elapsedText(Math.max(0, now - startedAt));
   return (
     <Text

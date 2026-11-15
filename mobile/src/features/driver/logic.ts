@@ -329,7 +329,8 @@ export function connectFailureCopy(code: TransportErrorCode): FailureCopy {
       return {
         title: "Pairing didn't complete",
         detail: "Pairing didn't complete. Check the 6-digit code on the label and try again.",
-        action: 'On iPhone, if it keeps failing, remove the barrier in Settings > Bluetooth, then retry.',
+        action:
+          'If it keeps failing, remove the barrier in the phone Bluetooth settings (Forget), then retry.',
       };
     case 'NOT_AUTHORIZED':
       return {
