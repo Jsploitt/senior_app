@@ -116,7 +116,7 @@ describe('connection pill', () => {
     expect(connectionPill('ready', true, false)).toEqual({ label: 'Connected', tone: 'positive' });
     expect(connectionPill('ready', false, false).label).toBe('Not an owner');
     expect(connectionPill('disconnected', null, true)).toEqual({
-      label: 'Connection lost',
+      label: 'Offline',
       tone: 'critical',
     });
   });

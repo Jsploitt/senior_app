@@ -221,8 +221,8 @@ describe('Control screen: link lost', () => {
     expect(screen.getByTestId('hero-label').props.children).toMatch(/^Last known: /);
     expect(screen.getByTestId('hero').props.accessibilityLabel).toMatch(/not live/);
     expect(screen.getByTestId('pad-hint').props.children).toMatch(/offline/);
-    // last-known chips are neutral and flagged as not live
-    expect(screen.getByTestId('chip-zone').props.accessibilityLabel).toMatch(/last known/);
+    // offline: stale interlock chips are hidden (QA review 5)
+    expect(screen.queryByTestId('chip-zone')).toBeNull();
     await fireEvent.press(screen.getByTestId('btn-reconnect'));
     await drive(Promise.resolve(), 10, 10);
     await advance(3000);

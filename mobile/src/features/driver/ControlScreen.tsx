@@ -268,16 +268,19 @@ export default function ControlScreen() {
                 testID="hero"
               />
             </View>
-            <View style={{ marginTop: space.m }}>
-              <GuardChips
-                zoneClear={status.zoneClear}
-                sensorsValid={status.sensorsValid}
-                batteryMv={status.batteryMv}
-                live={connected}
-                faulted={faulted}
-                onPress={() => router.push('/guard-details')}
-              />
-            </View>
+            {/* Offline: stale interlock values are hidden rather than shown half-under the dock (QA review 5). */}
+            {connected ? (
+              <View style={{ marginTop: space.m }}>
+                <GuardChips
+                  zoneClear={status.zoneClear}
+                  sensorsValid={status.sensorsValid}
+                  batteryMv={status.batteryMv}
+                  live={connected}
+                  faulted={faulted}
+                  onPress={() => router.push('/guard-details')}
+                />
+              </View>
+            ) : null}
             {status.state === BarrierState.FAULT ? (
               <FaultCard fault={status.fault} heading="Needs on-site reset" compact />
             ) : null}

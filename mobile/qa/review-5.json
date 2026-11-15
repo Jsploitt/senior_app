@@ -1,0 +1,1117 @@
+[
+  {
+    "screen": "onboarding-welcome",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Clear single message: app icon, large title, three benefit rows, one primary CTA.",
+      "Full-width hairline above the footer (page dots + CTA) reads more web/Material than Apple onboarding; drop it or use a fade.",
+      "Hero glyph is a car, not the barrier; fine, but the About app icon uses an 'M010 + striped arm' mark, so the brand mark differs between the two places.",
+      "Large empty band between benefits and footer (~200 pt); acceptable for onboarding."
+    ]
+  },
+  {
+    "screen": "control-disconnected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Empty state is clear: Bluetooth glyph, title, one-sentence explanation, full-width primary 'Connect to barrier'.",
+      "Empty state + CTA use a different composition from Health's disconnected state (centered-low with full-width button here, top-aligned with hugging button on Health). Pick one empty-state component.",
+      "Status chips sit under the large title here but inline with the title on Health; header layout is inconsistent between the two tabs."
+    ]
+  },
+  {
+    "screen": "control-lowered",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "State reads instantly: green hero tint, flat arm, 'Lowered' + 'Arm is flat. You can drive in.'",
+      "Lower disabled with 'Already lowered.' hint; Raise primary. Good affordance.",
+      "Thumb-zone action dock (hint line, Lower/Raise, full-width STOP) is good; arrows + words, not color-only.",
+      "Header subtitle 'M010-Barrier · Signed in 0.53 s · phone-measured' is engineering copy on the driver screen, and the two middle-dot separators are spaced differently.",
+      "Roughly 150 pt of dead background between the status chips and the action dock; the screen feels top-heavy. Consider anchoring chips to the dock or giving the hero a little more height.",
+      "Idle STOP is a pale red tinted pill that is visually close to a disabled control; make it clear STOP is always live (e.g. outline + solid icon) or explain that it only matters while moving."
+    ]
+  },
+  {
+    "screen": "control-raising",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Best state on the screen set: blue hero, angled arm, 'Raising', elapsed '0.8 s of about 4.0 s' + progress bar; STOP becomes solid red and Lower/Raise lock with 'Arm is moving. Use Stop.'",
+      "Dead band between chips and the dock still present (see control-lowered).",
+      "Header subtitle is engineering copy (see control-lowered)."
+    ]
+  },
+  {
+    "screen": "control-raised",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "State clear: vertical arm, 'Raised', 'Arm is up. Your space is reserved.' Lower becomes green primary, Raise disabled with 'Already raised.'",
+      "Thumb-zone action dock (hint line, Lower/Raise, full-width STOP) is good; arrows + words, not color-only.",
+      "Header subtitle 'M010-Barrier · Signed in 0.53 s · phone-measured' is engineering copy on the driver screen, and the two middle-dot separators are spaced differently.",
+      "Roughly 150 pt of dead background between the status chips and the action dock; the screen feels top-heavy. Consider anchoring chips to the dock or giving the hero a little more height.",
+      "Idle STOP is a pale red tinted pill that is visually close to a disabled control; make it clear STOP is always live (e.g. outline + solid icon) or explain that it only matters while moving."
+    ]
+  },
+  {
+    "screen": "control-stopped",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Amber hero, mid-angle arm, 'Stopped' + 'Raise or lower to continue.'; both directions enabled. Clear.",
+      "No hint line above the buttons in this state (other states have one), so the dock top edge jumps; keep a one-line hint slot for a stable layout.",
+      "Header subtitle 'M010-Barrier · Signed in 0.53 s · phone-measured' is engineering copy on the driver screen, and the two middle-dot separators are spaced differently.",
+      "Roughly 150 pt of dead background between the status chips and the action dock; the screen feels top-heavy. Consider anchoring chips to the dock or giving the hero a little more height.",
+      "Idle STOP is a pale red tinted pill that is visually close to a disabled control; make it clear STOP is always live (e.g. outline + solid icon) or explain that it only matters while moving."
+    ]
+  },
+  {
+    "screen": "control-guard-reject",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Refusal banner is plain-language ('Something is in the way' + how to fix) with a 'Safety checks' drill-in and a dismiss X; the 'Zone blocked' chip carries an icon, not color only.",
+      "Banner sits 8 pt above Lower/Raise while the rest of the screen uses 24 pt rhythm; the dock feels cramped. Add 16 pt below the banner.",
+      "Hero still says 'Lowered / Arm is flat. You can drive in.' in green while the zone is blocked; this is literally true but reads optimistic next to an amber refusal. Consider a secondary line on the hero ('Zone blocked') when a guard is active.",
+      "'Safety checks >' link is ~17 pt text; make sure the hit area spans the full banner width or at least 44 pt tall."
+    ]
+  },
+  {
+    "screen": "control-fault",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Fault is unmistakable: red hero, warning glyph + 'Fault', dashed ghost arm, 'Sensors: see fault' chip, and a 'Needs on-site reset' card with the exact recovery action ('Hold the unit button for 8 seconds').",
+      "'Controls locked.' hint but STOP looks identical to idle STOP; say explicitly whether STOP still works in FAULT (the presenter scenario says it does).",
+      "Fault card body uses label color at body size while the hero subtitle uses secondary; minor type-weight inconsistency."
+    ]
+  },
+  {
+    "screen": "control-unknown",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Neutral white hero, dashed ghost arm, 'Position unknown' + 'Lower it to home the barrier.'; Lower is the only enabled direction. Clear.",
+      "Small '?' glyph floats alone at the top of the hero above the arm; it looks like a tappable help icon. Either make it a real help button or move it next to the title like the Fault glyph.",
+      "Hint 'Lower first to confirm position' lacks the trailing period used by the other hints ('Already lowered.').",
+      "Header subtitle 'M010-Barrier · Signed in 0.53 s · phone-measured' is engineering copy on the driver screen, and the two middle-dot separators are spaced differently.",
+      "Roughly 150 pt of dead background between the status chips and the action dock; the screen feels top-heavy. Consider anchoring chips to the dock or giving the hero a little more height."
+    ]
+  },
+  {
+    "screen": "control-link-lost",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 3
+    },
+    "notes": [
+      "Connection-lost banner with a primary Reconnect, a greyed 'Last known: Raising / Not live.' hero and clock-badged stale chips: the offline state is clear and actionable.",
+      "BUG: the stale chips row (Zone clear / Sensors OK / 12.90 V) is cut through the middle by the action-dock top edge in the first viewport. Reserve space so the chips fit above the dock, or drop them in this state.",
+      "'Connection lost' appears twice (red chip and banner title) within 100 pt; let the chip say 'Offline' or hide it while the banner is shown.",
+      "STOP is fully disabled here; correct for an offline phone, and the hint 'Controls are off while offline.' explains it."
+    ]
+  },
+  {
+    "screen": "connect-modal",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 5
+    },
+    "notes": [
+      "Native sheet: Close at top right, large title, grouped 'NEARBY BARRIERS' row with BT avatar, 'Previously paired' pill, signal bars and chevron; 'Scan again' text button; local-only footnote.",
+      "Signal-strength bars have no text equivalent visible (add an accessibility label such as 'Strong signal').",
+      "Only the found-device state is captured; no scanning or 'none found' state to judge."
+    ]
+  },
+  {
+    "screen": "health-connected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 5,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Grouped inset lists (Barrier / Safety interlocks / Power) with section headers; values right-aligned; check icons + words for interlocks.",
+      "'Barrier's last counter' is protocol jargon for a driver-facing tab; move to This barrier/advanced or explain it.",
+      "Header chips inline with the large title here, under the title on Barrier: inconsistent header pattern between sibling tabs.",
+      "Power card's '12900 mV' line is cut by the tab bar at the fold; fine since it scrolls, but the hero 12.90 V reads as one big number with no label until you scroll."
+    ]
+  },
+  {
+    "screen": "health-disconnected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Clear empty state with icon, title, explanation and CTA.",
+      "CTA is a hugging button here but full-width on the Barrier tab; empty state sits high here but low on Barrier. Unify the empty-state component."
+    ]
+  },
+  {
+    "screen": "log",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Segmented filter (All / Commands / Auth / Faults), collapsible evidence summary, grouped list with icons; destructive 'Clear log' in red at the end.",
+      "'Share CSV' is a large tinted pill in the large-title row; an Apple-native pattern would be a share icon in the nav bar. It also pulls focus from the title.",
+      "Row metadata ('00:59:26.188 · Lower · #3 · 70 ms · simulated') is dense and repeats 'simulated' on every row; consider showing that once in the summary.",
+      "Event titles mix styles: 'Lower: Moving' vs 'State Lowering' (no colon) vs 'Owner authorized in 543 ms'. Pick one pattern.",
+      "Evidence summary wraps leaving '0.54 s' orphaned on its own line.",
+      "No empty state captured (e.g. a filter with no events)."
+    ]
+  },
+  {
+    "screen": "settings",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Classic grouped settings: Connection segmented with locked Bluetooth + explanation, This barrier row, Appearance segmented, Haptics switch, General nav rows with tinted icon tiles.",
+      "Segmented controls are wrapped inside a white card with its own padding (card-in-card); on iOS a segmented control sits directly in the group or as the row itself. Removes ~30 pt of chrome per section.",
+      "The lock glyph on 'Bluetooth' is good; the disabled reason is explained in the footer."
+    ]
+  },
+  {
+    "screen": "presenter",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Scenario list grouped by Motion / Safety interlocks with step count and FSM row chips; Exit presenter pinned at the bottom.",
+      "Back label '< Settings' is tight to the chevron here but '<  Back' on onboarding has a much wider gap; unify the back-button component.",
+      "Cards with multi-line body + chips + chevron are dense; acceptable for a presenter tool."
+    ]
+  },
+  {
+    "screen": "onboarding-mode",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Two radio-style cards; unavailable Bluetooth option is dimmed with a lock and the reason inline; selected card has accent border + check. Clear.",
+      "Back button: chevron-to-label gap (~18 pt) is much wider than the '< Settings' back buttons elsewhere.",
+      "Unavailable card keeps a grey 1 pt border while the rest of the app is borderless; consider dropping it."
+    ]
+  },
+  {
+    "screen": "onboarding-bluetooth",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Standard pre-permission prompt: icon tile, title, why-copy, primary 'Allow Bluetooth' and secondary 'Not now'.",
+      "Back button spacing inconsistency as on onboarding-mode.",
+      "~330 pt of empty space between copy and footer; acceptable for a permission primer."
+    ]
+  },
+  {
+    "screen": "onboarding-enroll",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Three numbered step cards with a 1:00 'not started' ring and a primary 'Start 60 s timer'.",
+      "Step 1 says 'Tap Start' but the button says 'Start 60 s timer', and step 3 says 'Tap Connect' but no Connect control exists on this screen yet; align copy with the actual controls.",
+      "Step 3 trailing icon is a keypad, which suggests entering a code rather than connecting.",
+      "Step text is set in a medium/semibold weight at body size, which reads heavy next to the regular-weight subtitle."
+    ]
+  },
+  {
+    "screen": "onboarding-done",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Success tile, 'You're all set.', next-step guidance, single CTA.",
+      "'Connect to barrier' inside the sentence is not distinguished (quote or bold it) so the instruction is easy to miss.",
+      "Large empty band above the footer; acceptable."
+    ]
+  },
+  {
+    "screen": "settings-device",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 5
+    },
+    "notes": [
+      "Grouped details list, explanatory footer, separate destructive 'Forget this barrier' group with consequence text. Textbook iOS.",
+      "Two counter rows are protocol details; acceptable here because the footer explains them, but they could live under a disclosure."
+    ]
+  },
+  {
+    "screen": "settings-about",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "App icon, name, team line, version, privacy group: clean.",
+      "User-facing copy references 'the project's final design review (slide 15)' and 'Firmware interface: November 2026 contract'; this is course/engineering language, not product copy. Rephrase or move to a presenter-only area."
+    ]
+  },
+  {
+    "screen": "guard-details",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Sheet with 'Done', explanatory header, grouped checklist with icons + text per check; the failing check is amber with cause, fix and 'Blocked your last command'.",
+      "The failing check is listed second; sort failing checks to the top so the reason is the first thing read.",
+      "Subtitles often restate the title ('No fault latched / No fault', 'Sensors valid / Valid', 'Owner phone connected / Owner'); drop or make them informative."
+    ]
+  },
+  {
+    "screen": "connect-pairing",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Step list (Connected / Securing (pairing) / Checking owner / Ready) with check, spinner and empty circles; clear progress.",
+      "Passkey explainer card with a mock of the Android dialog is helpful and clearly labelled as an example.",
+      "Subtitle 'Securing (pairing)...' repeats the active step right below it; use the subtitle for something else (e.g. elapsed time) or drop it."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-start",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Step card (STEP 1 OF 6, LOWER, expectation, 'Up next'), live hero showing Raised, toolbar Prev/Next/Auto/Reset/Settings. Clear for a projector.",
+      "Live status table puts values in a left-aligned second column that does not line up with any other grid in the app.",
+      "Step pills are left-aligned with a ragged right edge; center them or let them stretch.",
+      "Chip text 'FSM rows 7' / 'FSM rows 11' should be singular when one row is listed.",
+      "Bottom toolbar has two icon-only buttons (reset, sliders); give them accessibility labels (acceptable for presenter use)."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-step3",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "'As expected' badge, checklist of result/state/guard mask, what the driver sees. Good evidence layout.",
+      "The live barrier hero is pushed below the fold and only a coloured sliver peeks above the toolbar; on a projector the audience loses the visual. Consider a compact sticky mini-hero or collapsing the step body.",
+      "Step pills are left-aligned with a ragged right edge; center them or let them stretch.",
+      "Chip text 'FSM rows 7' / 'FSM rows 11' should be singular when one row is listed."
+    ]
+  },
+  {
+    "screen": "presenter-limit-conflict",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Clear FAULT/lockout evidence and recovery hint ('Up next: STOP still works in FAULT').",
+      "'APP TELLS THE DRIVER: Not allowed from this position / Fault is latched' uses a slash; show the two messages as two lines.",
+      "Hero again only peeks above the toolbar (dashed arm tip visible); same fix as obstruction-step3.",
+      "Step pills are left-aligned with a ragged right edge; center them or let them stretch.",
+      "Chip text 'FSM rows 7' / 'FSM rows 11' should be singular when one row is listed."
+    ]
+  },
+  {
+    "screen": "presenter-replayed-command",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Replay rejection with result, reason, unchanged state, and the frame hex in monospace. Good for the audience.",
+      "Hero only partly visible above the toolbar (arm tip peeking).",
+      "Step body repeats REJECTED_STALE (REPLAY) which is also in the checklist right below.",
+      "Step pills are left-aligned with a ragged right edge; center them or let them stretch."
+    ]
+  },
+  {
+    "screen": "presenter-auth-latency",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Latency stats, histogram with 2.0 s spec line, adjust buttons and Tight/Typical/Wide segmented, then live status and chips. Readable after the intended scroll.",
+      "Histogram x-axis has only '0', '2.0 s spec' and '2.5 s+'; the single bar's bin value is hard to read. Add a tick or label the bar.",
+      "Live status mixes title-case values with ALL-CAPS footer ('LOWERED / NONE / no fault') and redundant 'None' sublabels under 'No command yet' / 'No fault'.",
+      "Chip row wraps with 'Next counter 1' ending ~4 pt from the card margin; fine but tight."
+    ]
+  },
+  {
+    "screen": "onboarding-welcome",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Clear single message: app icon, large title, three benefit rows, one primary CTA.",
+      "Full-width hairline above the footer (page dots + CTA) reads more web/Material than Apple onboarding; drop it or use a fade.",
+      "Hero glyph is a car, not the barrier; fine, but the About app icon uses an 'M010 + striped arm' mark, so the brand mark differs between the two places.",
+      "Large empty band between benefits and footer (~200 pt); acceptable for onboarding.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-disconnected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Empty state is clear: Bluetooth glyph, title, one-sentence explanation, full-width primary 'Connect to barrier'.",
+      "Empty state + CTA use a different composition from Health's disconnected state (centered-low with full-width button here, top-aligned with hugging button on Health). Pick one empty-state component.",
+      "Status chips sit under the large title here but inline with the title on Health; header layout is inconsistent between the two tabs.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-lowered",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "State reads instantly: green hero tint, flat arm, 'Lowered' + 'Arm is flat. You can drive in.'",
+      "Lower disabled with 'Already lowered.' hint; Raise primary. Good affordance.",
+      "Thumb-zone action dock (hint line, Lower/Raise, full-width STOP) is good; arrows + words, not color-only.",
+      "Header subtitle 'M010-Barrier · Signed in 0.53 s · phone-measured' is engineering copy on the driver screen, and the two middle-dot separators are spaced differently.",
+      "Roughly 150 pt of dead background between the status chips and the action dock; the screen feels top-heavy. Consider anchoring chips to the dock or giving the hero a little more height.",
+      "Idle STOP is a pale red tinted pill that is visually close to a disabled control; make it clear STOP is always live (e.g. outline + solid icon) or explain that it only matters while moving.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-raising",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Best state on the screen set: blue hero, angled arm, 'Raising', elapsed '0.8 s of about 4.0 s' + progress bar; STOP becomes solid red and Lower/Raise lock with 'Arm is moving. Use Stop.'",
+      "Dead band between chips and the dock still present (see control-lowered).",
+      "Header subtitle is engineering copy (see control-lowered).",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-raised",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "State clear: vertical arm, 'Raised', 'Arm is up. Your space is reserved.' Lower becomes green primary, Raise disabled with 'Already raised.'",
+      "Thumb-zone action dock (hint line, Lower/Raise, full-width STOP) is good; arrows + words, not color-only.",
+      "Header subtitle 'M010-Barrier · Signed in 0.53 s · phone-measured' is engineering copy on the driver screen, and the two middle-dot separators are spaced differently.",
+      "Roughly 150 pt of dead background between the status chips and the action dock; the screen feels top-heavy. Consider anchoring chips to the dock or giving the hero a little more height.",
+      "Idle STOP is a pale red tinted pill that is visually close to a disabled control; make it clear STOP is always live (e.g. outline + solid icon) or explain that it only matters while moving.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-stopped",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Amber hero, mid-angle arm, 'Stopped' + 'Raise or lower to continue.'; both directions enabled. Clear.",
+      "No hint line above the buttons in this state (other states have one), so the dock top edge jumps; keep a one-line hint slot for a stable layout.",
+      "Header subtitle 'M010-Barrier · Signed in 0.53 s · phone-measured' is engineering copy on the driver screen, and the two middle-dot separators are spaced differently.",
+      "Roughly 150 pt of dead background between the status chips and the action dock; the screen feels top-heavy. Consider anchoring chips to the dock or giving the hero a little more height.",
+      "Idle STOP is a pale red tinted pill that is visually close to a disabled control; make it clear STOP is always live (e.g. outline + solid icon) or explain that it only matters while moving.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-guard-reject",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Refusal banner is plain-language ('Something is in the way' + how to fix) with a 'Safety checks' drill-in and a dismiss X; the 'Zone blocked' chip carries an icon, not color only.",
+      "Banner sits 8 pt above Lower/Raise while the rest of the screen uses 24 pt rhythm; the dock feels cramped. Add 16 pt below the banner.",
+      "Hero still says 'Lowered / Arm is flat. You can drive in.' in green while the zone is blocked; this is literally true but reads optimistic next to an amber refusal. Consider a secondary line on the hero ('Zone blocked') when a guard is active.",
+      "'Safety checks >' link is ~17 pt text; make sure the hit area spans the full banner width or at least 44 pt tall.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-fault",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Fault is unmistakable: red hero, warning glyph + 'Fault', dashed ghost arm, 'Sensors: see fault' chip, and a 'Needs on-site reset' card with the exact recovery action ('Hold the unit button for 8 seconds').",
+      "'Controls locked.' hint but STOP looks identical to idle STOP; say explicitly whether STOP still works in FAULT (the presenter scenario says it does).",
+      "Fault card body uses label color at body size while the hero subtitle uses secondary; minor type-weight inconsistency.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-unknown",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Neutral white hero, dashed ghost arm, 'Position unknown' + 'Lower it to home the barrier.'; Lower is the only enabled direction. Clear.",
+      "Small '?' glyph floats alone at the top of the hero above the arm; it looks like a tappable help icon. Either make it a real help button or move it next to the title like the Fault glyph.",
+      "Hint 'Lower first to confirm position' lacks the trailing period used by the other hints ('Already lowered.').",
+      "Header subtitle 'M010-Barrier · Signed in 0.53 s · phone-measured' is engineering copy on the driver screen, and the two middle-dot separators are spaced differently.",
+      "Roughly 150 pt of dead background between the status chips and the action dock; the screen feels top-heavy. Consider anchoring chips to the dock or giving the hero a little more height.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "control-link-lost",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 3
+    },
+    "notes": [
+      "Connection-lost banner with a primary Reconnect, a greyed 'Last known: Raising / Not live.' hero and clock-badged stale chips: the offline state is clear and actionable.",
+      "BUG: the stale chips row (Zone clear / Sensors OK / 12.90 V) is cut through the middle by the action-dock top edge in the first viewport. Reserve space so the chips fit above the dock, or drop them in this state.",
+      "'Connection lost' appears twice (red chip and banner title) within 100 pt; let the chip say 'Offline' or hide it while the banner is shown.",
+      "STOP is fully disabled here; correct for an offline phone, and the hint 'Controls are off while offline.' explains it.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "connect-modal",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 5
+    },
+    "notes": [
+      "Native sheet: Close at top right, large title, grouped 'NEARBY BARRIERS' row with BT avatar, 'Previously paired' pill, signal bars and chevron; 'Scan again' text button; local-only footnote.",
+      "Signal-strength bars have no text equivalent visible (add an accessibility label such as 'Strong signal').",
+      "Only the found-device state is captured; no scanning or 'none found' state to judge.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "health-connected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 5,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Grouped inset lists (Barrier / Safety interlocks / Power) with section headers; values right-aligned; check icons + words for interlocks.",
+      "'Barrier's last counter' is protocol jargon for a driver-facing tab; move to This barrier/advanced or explain it.",
+      "Header chips inline with the large title here, under the title on Barrier: inconsistent header pattern between sibling tabs.",
+      "Power card's '12900 mV' line is cut by the tab bar at the fold; fine since it scrolls, but the hero 12.90 V reads as one big number with no label until you scroll.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "health-disconnected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Clear empty state with icon, title, explanation and CTA.",
+      "CTA is a hugging button here but full-width on the Barrier tab; empty state sits high here but low on Barrier. Unify the empty-state component.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "log",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Segmented filter (All / Commands / Auth / Faults), collapsible evidence summary, grouped list with icons; destructive 'Clear log' in red at the end.",
+      "'Share CSV' is a large tinted pill in the large-title row; an Apple-native pattern would be a share icon in the nav bar. It also pulls focus from the title.",
+      "Row metadata ('00:59:26.188 · Lower · #3 · 70 ms · simulated') is dense and repeats 'simulated' on every row; consider showing that once in the summary.",
+      "Event titles mix styles: 'Lower: Moving' vs 'State Lowering' (no colon) vs 'Owner authorized in 543 ms'. Pick one pattern.",
+      "Evidence summary wraps leaving '0.54 s' orphaned on its own line.",
+      "No empty state captured (e.g. a filter with no events).",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "settings",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Classic grouped settings: Connection segmented with locked Bluetooth + explanation, This barrier row, Appearance segmented, Haptics switch, General nav rows with tinted icon tiles.",
+      "Segmented controls are wrapped inside a white card with its own padding (card-in-card); on iOS a segmented control sits directly in the group or as the row itself. Removes ~30 pt of chrome per section.",
+      "The lock glyph on 'Bluetooth' is good; the disabled reason is explained in the footer.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "presenter",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Scenario list grouped by Motion / Safety interlocks with step count and FSM row chips; Exit presenter pinned at the bottom.",
+      "Back label '< Settings' is tight to the chevron here but '<  Back' on onboarding has a much wider gap; unify the back-button component.",
+      "Cards with multi-line body + chips + chevron are dense; acceptable for a presenter tool.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "onboarding-mode",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Two radio-style cards; unavailable Bluetooth option is dimmed with a lock and the reason inline; selected card has accent border + check. Clear.",
+      "Back button: chevron-to-label gap (~18 pt) is much wider than the '< Settings' back buttons elsewhere.",
+      "Unavailable card keeps a grey 1 pt border while the rest of the app is borderless; consider dropping it.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "onboarding-bluetooth",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Standard pre-permission prompt: icon tile, title, why-copy, primary 'Allow Bluetooth' and secondary 'Not now'.",
+      "Back button spacing inconsistency as on onboarding-mode.",
+      "~330 pt of empty space between copy and footer; acceptable for a permission primer.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "onboarding-enroll",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Three numbered step cards with a 1:00 'not started' ring and a primary 'Start 60 s timer'.",
+      "Step 1 says 'Tap Start' but the button says 'Start 60 s timer', and step 3 says 'Tap Connect' but no Connect control exists on this screen yet; align copy with the actual controls.",
+      "Step 3 trailing icon is a keypad, which suggests entering a code rather than connecting.",
+      "Step text is set in a medium/semibold weight at body size, which reads heavy next to the regular-weight subtitle.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "onboarding-done",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Success tile, 'You're all set.', next-step guidance, single CTA.",
+      "'Connect to barrier' inside the sentence is not distinguished (quote or bold it) so the instruction is easy to miss.",
+      "Large empty band above the footer; acceptable.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "settings-device",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 5
+    },
+    "notes": [
+      "Grouped details list, explanatory footer, separate destructive 'Forget this barrier' group with consequence text. Textbook iOS.",
+      "Two counter rows are protocol details; acceptable here because the footer explains them, but they could live under a disclosure.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "settings-about",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "App icon, name, team line, version, privacy group: clean.",
+      "User-facing copy references 'the project's final design review (slide 15)' and 'Firmware interface: November 2026 contract'; this is course/engineering language, not product copy. Rephrase or move to a presenter-only area.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "guard-details",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Sheet with 'Done', explanatory header, grouped checklist with icons + text per check; the failing check is amber with cause, fix and 'Blocked your last command'.",
+      "The failing check is listed second; sort failing checks to the top so the reason is the first thing read.",
+      "Subtitles often restate the title ('No fault latched / No fault', 'Sensors valid / Valid', 'Owner phone connected / Owner'); drop or make them informative.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "connect-pairing",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Step list (Connected / Securing (pairing) / Checking owner / Ready) with check, spinner and empty circles; clear progress.",
+      "Passkey explainer card with a mock of the Android dialog is helpful and clearly labelled as an example.",
+      "Subtitle 'Securing (pairing)...' repeats the active step right below it; use the subtitle for something else (e.g. elapsed time) or drop it.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-start",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Step card (STEP 1 OF 6, LOWER, expectation, 'Up next'), live hero showing Raised, toolbar Prev/Next/Auto/Reset/Settings. Clear for a projector.",
+      "Live status table puts values in a left-aligned second column that does not line up with any other grid in the app.",
+      "Step pills are left-aligned with a ragged right edge; center them or let them stretch.",
+      "Chip text 'FSM rows 7' / 'FSM rows 11' should be singular when one row is listed.",
+      "Bottom toolbar has two icon-only buttons (reset, sliders); give them accessibility labels (acceptable for presenter use).",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-step3",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "'As expected' badge, checklist of result/state/guard mask, what the driver sees. Good evidence layout.",
+      "The live barrier hero is pushed below the fold and only a coloured sliver peeks above the toolbar; on a projector the audience loses the visual. Consider a compact sticky mini-hero or collapsing the step body.",
+      "Step pills are left-aligned with a ragged right edge; center them or let them stretch.",
+      "Chip text 'FSM rows 7' / 'FSM rows 11' should be singular when one row is listed.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "presenter-limit-conflict",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Clear FAULT/lockout evidence and recovery hint ('Up next: STOP still works in FAULT').",
+      "'APP TELLS THE DRIVER: Not allowed from this position / Fault is latched' uses a slash; show the two messages as two lines.",
+      "Hero again only peeks above the toolbar (dashed arm tip visible); same fix as obstruction-step3.",
+      "Step pills are left-aligned with a ragged right edge; center them or let them stretch.",
+      "Chip text 'FSM rows 7' / 'FSM rows 11' should be singular when one row is listed.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "presenter-replayed-command",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Replay rejection with result, reason, unchanged state, and the frame hex in monospace. Good for the audience.",
+      "Hero only partly visible above the toolbar (arm tip peeking).",
+      "Step body repeats REJECTED_STALE (REPLAY) which is also in the checklist right below.",
+      "Step pills are left-aligned with a ragged right edge; center them or let them stretch.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  },
+  {
+    "screen": "presenter-auth-latency",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 5,
+      "polish": 4
+    },
+    "notes": [
+      "Latency stats, histogram with 2.0 s spec line, adjust buttons and Tight/Typical/Wide segmented, then live status and chips. Readable after the intended scroll.",
+      "Histogram x-axis has only '0', '2.0 s spec' and '2.5 s+'; the single bar's bin value is hard to read. Add a tick or label the bar.",
+      "Live status mixes title-case values with ALL-CAPS footer ('LOWERED / NONE / no fault') and redundant 'None' sublabels under 'No command yet' / 'No fault'.",
+      "Chip row wraps with 'Next counter 1' ending ~4 pt from the card margin; fine but tight.",
+      "Dark mode coherent: black grouped background, #1C1C1E/#2C2C2E surfaces, tinted fills and status colors adapt; no contrast regressions seen."
+    ]
+  }
+]
