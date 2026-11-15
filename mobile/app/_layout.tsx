@@ -40,6 +40,10 @@ function Root() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
         <Stack.Screen name="connect" options={{ presentation: 'modal' }} />
+        <Stack.Screen
+          name="guard-details"
+          options={{ presentation: 'formSheet', sheetAllowedDetents: [0.5, 1], sheetGrabberVisible: true }}
+        />
         <Stack.Screen name="presenter" options={{ presentation: 'fullScreenModal' }} />
       </Stack>
     </>
