@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { initLogPersistence } from '@/features/health/logPersistence';
 import { loadSettings, useSettings } from '@/store/settings';
 import { setTransportKind } from '@/store/transport';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
@@ -18,6 +19,7 @@ function Root() {
   const s = useSettings();
   useEffect(() => {
     void loadSettings();
+    void initLogPersistence();
   }, []);
   useEffect(() => {
     if (s.loaded) {
