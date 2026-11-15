@@ -4,9 +4,9 @@ Branch: `expo-rewrite` in `senior_app`. Firmware repo is read-only for this run.
 
 ## Current
 
-- Phase: 0, 1, 2 complete; Phase 3 (visual QA) starting
+- Phase: 0, 1, 2 complete; Phase 3 in progress (paused: usage limit)
 - Open failures: none
-- Next action: web screenshots, fresh reviewer, fix loop
+- Next action: rerun fresh reviewer on qa/out (58 shots taken, `node qa/shoot.mjs`), fix < 4 scores; then `npx eas-cli login` (human) and `eas build -p android --profile preview`
 
 ## Log
 
@@ -78,3 +78,17 @@ denied by the permission classifier. Workaround: moved the old folder to `senior
 (locally git-excluded), `npm ci` fresh. Re-ran: tsc 0, eslint 0, prettier clean, jest 18 suites / 409 tests,
 expo-doctor 20/20. Leftovers for the human to delete: `Term261/senior_app-wt/`, `senior_app/node_modules.locked-old/`
 and the stale node processes (jest ControlScreen, serve.js).
+
+### Constraint 5 evidence (no runtime network calls)
+
+Command (2026-11-15, commit eddc6b6):
+
+```
+grep -rnE "fetch\(|axios|XMLHttpRequest|WebSocket|EventSource|navigator\.sendBeacon|https?://" app src --include=*.ts --include=*.tsx | grep -v __tests__
+```
+
+Result: no matches (grep exit 1). Dependencies matching
+`analytics|sentry|firebase|amplitude|segment|mixpanel|bugsnag|datadog|posthog|expo-updates|expo-insights|axios`: `[]`.
+ESLint enforces it: `no-restricted-globals: fetch`, `no-restricted-imports: axios` (eslint.config.js).
+Release builds block `android.permission.INTERNET` (`app.config.ts` blockedPermissions; confirmed with
+`npx expo config --type introspect`).

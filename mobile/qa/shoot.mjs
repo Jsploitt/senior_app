@@ -58,6 +58,13 @@ const cmd = (op) => async (page) => {
   }, op);
 };
 const sim = (fn, arg) => async (page) => page.evaluate(fn, arg);
+const clickText = (re, times = 1, waitMs = 1500) => async (page) => {
+  for (let i = 0; i < times; i++) {
+    await page.getByRole('button', { name: re }).first().click();
+    await page.waitForTimeout(waitMs);
+  }
+};
+const NOT_ONBOARDED = { transport: 'sim', theme: 'system', onboarded: false, haptics: true, lastDeviceId: null, lastDeviceName: null, presenterUnlocked: false };
 
 /** name, route, settings, setup steps, settle ms */
 const SHOTS = [
@@ -97,6 +104,23 @@ const SHOTS = [
   { name: 'log', route: '/log', setup: [connectSim, cmd(1), cmd(3), cmd(2)], settle: 1500 },
   { name: 'settings', route: '/settings' },
   { name: 'presenter', route: '/presenter' },
+  { name: 'onboarding-mode', route: '/onboarding/mode', settings: NOT_ONBOARDED },
+  { name: 'onboarding-bluetooth', route: '/onboarding/bluetooth', settings: { ...NOT_ONBOARDED, transport: 'ble' } },
+  { name: 'onboarding-enroll', route: '/onboarding/enroll', settings: NOT_ONBOARDED },
+  { name: 'onboarding-done', route: '/onboarding/done', settings: NOT_ONBOARDED },
+  { name: 'settings-device', route: '/settings/device', setup: [connectSim] },
+  { name: 'settings-about', route: '/settings/about' },
+  {
+    name: 'guard-details',
+    route: '/guard-details',
+    setup: [connectSim, sim(() => window.__m010.getSim().device.setSensors({ zoneClear: false })), cmd(1)],
+  },
+  { name: 'connect-pairing', route: '/connect', settings: { ...ONBOARDED, lastDeviceId: null }, settle: 1200 },
+  { name: 'presenter-obstruction-start', route: '/presenter/obstruction', settle: 1200 },
+  { name: 'presenter-obstruction-step3', route: '/presenter/obstruction', setup: [clickText(/^Next/, 3, 2500)] },
+  { name: 'presenter-limit-conflict', route: '/presenter/limit-conflict', setup: [clickText(/^Next/, 3, 5000)] },
+  { name: 'presenter-replayed-command', route: '/presenter/replayed-command', setup: [clickText(/^Next/, 2, 2500)] },
+  { name: 'presenter-auth-latency', route: '/presenter/auth-latency', setup: [clickText(/^Next/, 1, 12000)] },
 ];
 
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
