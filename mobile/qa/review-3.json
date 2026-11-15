@@ -1,0 +1,1048 @@
+[
+  {
+    "screen": "onboarding-welcome",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear hero, title, value prop and single primary CTA; strong first impression.",
+      "Page indicator: dot 3 is rendered lighter than the others with no explanation (skipped step?); reads as a rendering glitch.",
+      "Large empty band between feature list and footer; acceptable for onboarding."
+    ]
+  },
+  {
+    "screen": "control-disconnected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Empty state is clear: icon, title, explanation, one primary 'Connect to barrier' action.",
+      "Content block floats mid-screen with ~200pt of dead space above it; anchor it higher (top third) like Apple Home empty states.",
+      "'Disconnected' chip is neutral grey; fine, but it duplicates the empty-state title."
+    ]
+  },
+  {
+    "screen": "control-lowered",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "State readable instantly: green tinted hero, flat arm, 'Lowered' + plain-language subtitle.",
+      "Header carries two lines of metrics (auth time, 'Phone-measured, simulated. Reference: 2.00 s') above the chips; dense for an end user, pushes the hero down.",
+      "Footnote 'An accepted command starts a monitored movement...' is engineering copy on the main control screen.",
+      "Disabled Lower uses the neutral style and the hint 'Already lowered.' explains why; good.",
+      "STOP at rest is tinted (not filled) while Raise is filled; hierarchy is correct."
+    ]
+  },
+  {
+    "screen": "control-raising",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Best state on the screen: angled arm, blue 'Raising', progress '0.8 s of about 4.0 s', filled red STOP, both directions disabled with 'Arm is moving. Use Stop.'",
+      "Progress bar is thin (about 4pt) and short; a touch more weight would help at arm's length."
+    ]
+  },
+  {
+    "screen": "control-raised",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Raised state reads clearly (blue hero, vertical arm).",
+      "Success toast 'Barrier is up' is green while the Raised state color is blue; two semantic colors for one event. Acceptable per tokens (success = completed) but slightly noisy.",
+      "Toast + hint 'Already raised.' + disabled Raise say the same thing three times."
+    ]
+  },
+  {
+    "screen": "control-stopped",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Amber hero with mid-angle arm and 'Raise or lower to continue' is clear and actionable.",
+      "Toast 'Stopped for safety' duplicates the hero and gives no cause while all chips are green; if the user pressed STOP, say 'Stopped' (or name the cause).",
+      "No hint line above the buttons here, unlike every other state; the button block shifts up."
+    ]
+  },
+  {
+    "screen": "control-guard-reject",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Warning banner 'Can't move right now' with cause and remedy is well written.",
+      "Raise remains the filled primary button directly under a banner saying motion was refused; mixed signal. Demote it (tinted) while zone is blocked, or keep enabled but add 'Try again' wording.",
+      "Hero stays green 'Lowered' with no hint of the block; only the amber 'Zone blocked' chip and banner carry it.",
+      "No visible entry to the Safety checks sheet from the banner (add 'Details' / chevron)."
+    ]
+  },
+  {
+    "screen": "control-fault",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Fault is unmistakable: red hero, warning glyph, 'Needs on-site reset' card with the exact recovery step and 'The app cannot clear a fault.'",
+      "Hero card collapses to about 70% of the height used by every other state and the arm/base illustration is drawn at a smaller scale; the whole screen jumps when entering FAULT.",
+      "Hero shows only the cause ('Position sensors disagree') with no state word; 'Fault' never appears as the state label.",
+      "'Sensors: see fault' chip is neutral grey instead of danger; weakest signal for the failing item.",
+      "STOP stays tinted/enabled while 'Controls locked.'; fine if intentional (STOP always reachable) but the hint should say 'Lower and Raise locked'."
+    ]
+  },
+  {
+    "screen": "control-unknown",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Neutral hero, dashed ghost arm, '?' glyph and 'Lower it to home the barrier' make the required action obvious; Lower is the only filled button.",
+      "The '?' glyph floats alone at the top of the hero; slightly disconnected from the title."
+    ]
+  },
+  {
+    "screen": "control-link-lost",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Connection-lost banner with inline Reconnect, 'Last known: Raising / Not live', clock-badged stale chips and disabled controls: very good offline treatment.",
+      "Hero illustration is drawn at a smaller scale than the live states (base narrower, arm shorter); visible size jump.",
+      "Header loses the auth subtitle and chips move up; layout shifts between connected and lost states.",
+      "Light: the dimmed arm renders as isolated pink stripes with the white segments invisible against the white card; it looks broken, not 'stale'. Use a grey outline or reduced-opacity full arm."
+    ]
+  },
+  {
+    "screen": "connect-modal",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clean modal: large title, section header, single inset row with 'Previously paired' pill, signal bars, chevron.",
+      "No scanning indicator or 'last scanned' time; 'Scan again' is the only clue a scan happened.",
+      "'Close' text button sits ~40pt below the top edge with nothing beside it; consider a grabber or standard sheet header."
+    ]
+  },
+  {
+    "screen": "health-connected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Grouped inset sections (Barrier, Safety interlocks, Power) feel native; big 12.90 V readout with 'Healthy' pill.",
+      "Circular cloud-slash button next to the 'Connected' chip has no label; meaning (local only?) is not obvious and it looks tappable.",
+      "State 'Raised' is plain grey value text with no state color/icon, unlike the rest of the app.",
+      "Movement guard row is a long paragraph inside a value list; better as footer text."
+    ]
+  },
+  {
+    "screen": "health-disconnected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Good empty state with Connect CTA.",
+      "Requirement codes (C4, C5, S5, S6) and 'Nothing here is a verdict' are project-review language on an end-user tab; move to Presenter or About."
+    ]
+  },
+  {
+    "screen": "log",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Full-width filled 'Share CSV' is the most prominent element on the screen; export is secondary. Use a share icon in the header (or a plain/tinted button below the summary).",
+      "Every row carries a status pill that repeats the row title ('State Stopped' + 'Stopped'); rows are ~100pt tall and only 5 fit. Fold status into the icon/title color and drop the pill.",
+      "Command rows and state rows interleave with identical weight; consider grouping state changes under their command.",
+      "Segmented filter and Evidence summary disclosure are good."
+    ]
+  },
+  {
+    "screen": "settings",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Textbook grouped settings: section headers, segmented controls, icon rows with chevrons, toggle.",
+      "Segmented controls are wrapped in their own white card; a plain segmented control on the grouped background (or in a row) is more native.",
+      "Locked 'Bluetooth' segment is explained by the footer; good."
+    ]
+  },
+  {
+    "screen": "presenter",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Scenario cards with title, description, step-count and FSM chips are scannable; SIMULATED badge always visible.",
+      "Bottom 'Exit presenter' bar cuts the next card mid-word; fine as scroll content but a fade/blur would look more finished."
+    ]
+  },
+  {
+    "screen": "onboarding-mode",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Two choice cards with selected state (blue border, tint, checkmark) are clear.",
+      "Unavailable 'I have the barrier here' card still looks like a selectable white card; dim the whole card (title/icon) more strongly."
+    ]
+  },
+  {
+    "screen": "onboarding-bluetooth",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear permission primer with primary 'Allow Bluetooth' and 'Not now'.",
+      "Large empty middle; a short 'what happens next' line or illustration would balance it."
+    ]
+  },
+  {
+    "screen": "onboarding-enroll",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 3,
+      "polish": 2
+    },
+    "notes": [
+      "Numbered step cards with trailing icons communicate the flow; 'Connect becomes available once the timer is running' explains the disabled path.",
+      "Timer ring: the '1:00' numerals are wider than the ring's inner diameter and overlap the ring stroke; 'not started' also crosses the stroke at the bottom. Visible overlap on the screen's focal element.",
+      "Footnote 'A barrier can have up to 2 owner phones.' sits directly on the footer divider (clipped/colliding); content needs bottom padding or must scroll above the footer.",
+      "Step 1 copy runs four lines in bold; shorten (e.g. 'Tap Start to open the 60 s pairing window.')."
+    ]
+  },
+  {
+    "screen": "onboarding-done",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear completion with single CTA.",
+      "Design intent calls for 'You're the owner' + 'Authenticated in X.XX s'; simulator copy is fine but the screen is mostly empty."
+    ]
+  },
+  {
+    "screen": "settings-device",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Native detail list with footers and a separate destructive 'Forget this barrier' row.",
+      "'Barrier's last counter 0' while Health shows 1 in the same capture set; make sure both read the same source or label one 'last reported'."
+    ]
+  },
+  {
+    "screen": "settings-about",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Polished: app icon, name, team line, version rows, privacy and scope notes.",
+      "No licenses row (listed in DESIGN 3.4)."
+    ]
+  },
+  {
+    "screen": "guard-details",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Checklist with icon + label + status, failing item expanded with cause, remedy and 'Blocked your last command'; excellent.",
+      "Secondary lines often restate the title ('Sensors valid / Valid', 'No fault latched / No fault').",
+      "Sheet header uses a medium title rather than the app's large-title pattern; acceptable for a sheet."
+    ]
+  },
+  {
+    "screen": "connect-pairing",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Step list (Connected / Securing / Checking owner / Ready) with spinner on the active step makes progress clear.",
+      "Subtitle 'Securing (pairing)...' repeats the active step label.",
+      "Passkey help card is useful; the mock Android dialog is low-contrast grey on tint (decorative, acceptable).",
+      "No explicit Cancel for the in-flight pairing besides 'Close'."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-start",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Hero + step pager + step card + live state table is a good projector layout.",
+      "State table has three columns with no headers ('State | Raised | Raised', 'Fault | No fault | None'); the duplicated right column is unexplained. Add 'Shown / Raw' headers or drop one.",
+      "Step 1 says 'LOWER: The arm starts down from RAISED' while hero shows idle Raised and status 'Ready'; fine, but label the action as pending ('Next: LOWER')."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-step3",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Step card with 'As expected', expectations checklist and REJECTED_GUARD / 0x10 secondary codes works well for the demo.",
+      "Current step circle combines blue ring with green 'done' fill; ambiguous whether it passed or is current."
+    ]
+  },
+  {
+    "screen": "presenter-limit-conflict",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Red fault hero with dashed arm and step evidence is clear.",
+      "Fault hero again shorter than other heroes (no subtitle line)."
+    ]
+  },
+  {
+    "screen": "presenter-replayed-command",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear step narrative; codes shown as secondary text as intended.",
+      "Step description is 4 lines of 17pt grey text; slightly heavy for a projector, consider a shorter lead plus the checklist."
+    ]
+  },
+  {
+    "screen": "presenter-auth-latency",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Capture starts mid-scroll (top card cut off, title not visible); first viewport could not be judged.",
+      "Stepper label 'Simulated median (next run)' wraps with an orphaned 'run)' between the -100/+100 buttons; shorten to 'Next-run median'.",
+      "Histogram with 2.0 s spec line, stats row and 'Phone-measured, simulated' caption is good.",
+      "Same headerless three-column state table ('Lowered | Lowered'); 'Guard: No block' value is dimmer than its siblings."
+    ]
+  },
+  {
+    "screen": "onboarding-welcome",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear hero, title, value prop and single primary CTA; strong first impression.",
+      "Page indicator: dot 3 is rendered lighter than the others with no explanation (skipped step?); reads as a rendering glitch.",
+      "Large empty band between feature list and footer; acceptable for onboarding.",
+      "Inactive page dots (#2C2C2E-ish on black) are nearly invisible; the lighter dot 3 disappears entirely."
+    ]
+  },
+  {
+    "screen": "control-disconnected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Empty state is clear: icon, title, explanation, one primary 'Connect to barrier' action.",
+      "Content block floats mid-screen with ~200pt of dead space above it; anchor it higher (top third) like Apple Home empty states.",
+      "'Disconnected' chip is neutral grey; fine, but it duplicates the empty-state title."
+    ]
+  },
+  {
+    "screen": "control-lowered",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "State readable instantly: green tinted hero, flat arm, 'Lowered' + plain-language subtitle.",
+      "Header carries two lines of metrics (auth time, 'Phone-measured, simulated. Reference: 2.00 s') above the chips; dense for an end user, pushes the hero down.",
+      "Footnote 'An accepted command starts a monitored movement...' is engineering copy on the main control screen.",
+      "Disabled Lower uses the neutral style and the hint 'Already lowered.' explains why; good.",
+      "STOP at rest is tinted (not filled) while Raise is filled; hierarchy is correct."
+    ]
+  },
+  {
+    "screen": "control-raising",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Best state on the screen: angled arm, blue 'Raising', progress '0.8 s of about 4.0 s', filled red STOP, both directions disabled with 'Arm is moving. Use Stop.'",
+      "Progress bar is thin (about 4pt) and short; a touch more weight would help at arm's length."
+    ]
+  },
+  {
+    "screen": "control-raised",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Raised state reads clearly (blue hero, vertical arm).",
+      "Success toast 'Barrier is up' is green while the Raised state color is blue; two semantic colors for one event. Acceptable per tokens (success = completed) but slightly noisy.",
+      "Toast + hint 'Already raised.' + disabled Raise say the same thing three times."
+    ]
+  },
+  {
+    "screen": "control-stopped",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Amber hero with mid-angle arm and 'Raise or lower to continue' is clear and actionable.",
+      "Toast 'Stopped for safety' duplicates the hero and gives no cause while all chips are green; if the user pressed STOP, say 'Stopped' (or name the cause).",
+      "No hint line above the buttons here, unlike every other state; the button block shifts up."
+    ]
+  },
+  {
+    "screen": "control-guard-reject",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Warning banner 'Can't move right now' with cause and remedy is well written.",
+      "Raise remains the filled primary button directly under a banner saying motion was refused; mixed signal. Demote it (tinted) while zone is blocked, or keep enabled but add 'Try again' wording.",
+      "Hero stays green 'Lowered' with no hint of the block; only the amber 'Zone blocked' chip and banner carry it.",
+      "No visible entry to the Safety checks sheet from the banner (add 'Details' / chevron)."
+    ]
+  },
+  {
+    "screen": "control-fault",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Fault is unmistakable: red hero, warning glyph, 'Needs on-site reset' card with the exact recovery step and 'The app cannot clear a fault.'",
+      "Hero card collapses to about 70% of the height used by every other state and the arm/base illustration is drawn at a smaller scale; the whole screen jumps when entering FAULT.",
+      "Hero shows only the cause ('Position sensors disagree') with no state word; 'Fault' never appears as the state label.",
+      "'Sensors: see fault' chip is neutral grey instead of danger; weakest signal for the failing item.",
+      "STOP stays tinted/enabled while 'Controls locked.'; fine if intentional (STOP always reachable) but the hint should say 'Lower and Raise locked'."
+    ]
+  },
+  {
+    "screen": "control-unknown",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Neutral hero, dashed ghost arm, '?' glyph and 'Lower it to home the barrier' make the required action obvious; Lower is the only filled button.",
+      "The '?' glyph floats alone at the top of the hero; slightly disconnected from the title."
+    ]
+  },
+  {
+    "screen": "control-link-lost",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Connection-lost banner with inline Reconnect, 'Last known: Raising / Not live', clock-badged stale chips and disabled controls: very good offline treatment.",
+      "Hero illustration is drawn at a smaller scale than the live states (base narrower, arm shorter); visible size jump.",
+      "Header loses the auth subtitle and chips move up; layout shifts between connected and lost states.",
+      "Dark: dimmed arm renders correctly as a muted full arm."
+    ]
+  },
+  {
+    "screen": "connect-modal",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clean modal: large title, section header, single inset row with 'Previously paired' pill, signal bars, chevron.",
+      "No scanning indicator or 'last scanned' time; 'Scan again' is the only clue a scan happened.",
+      "'Close' text button sits ~40pt below the top edge with nothing beside it; consider a grabber or standard sheet header."
+    ]
+  },
+  {
+    "screen": "health-connected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Grouped inset sections (Barrier, Safety interlocks, Power) feel native; big 12.90 V readout with 'Healthy' pill.",
+      "Circular cloud-slash button next to the 'Connected' chip has no label; meaning (local only?) is not obvious and it looks tappable.",
+      "State 'Raised' is plain grey value text with no state color/icon, unlike the rest of the app.",
+      "Movement guard row is a long paragraph inside a value list; better as footer text."
+    ]
+  },
+  {
+    "screen": "health-disconnected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Good empty state with Connect CTA.",
+      "Requirement codes (C4, C5, S5, S6) and 'Nothing here is a verdict' are project-review language on an end-user tab; move to Presenter or About."
+    ]
+  },
+  {
+    "screen": "log",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 3,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Full-width filled 'Share CSV' is the most prominent element on the screen; export is secondary. Use a share icon in the header (or a plain/tinted button below the summary).",
+      "Every row carries a status pill that repeats the row title ('State Stopped' + 'Stopped'); rows are ~100pt tall and only 5 fit. Fold status into the icon/title color and drop the pill.",
+      "Command rows and state rows interleave with identical weight; consider grouping state changes under their command.",
+      "Segmented filter and Evidence summary disclosure are good."
+    ]
+  },
+  {
+    "screen": "settings",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Textbook grouped settings: section headers, segmented controls, icon rows with chevrons, toggle.",
+      "Segmented controls are wrapped in their own white card; a plain segmented control on the grouped background (or in a row) is more native.",
+      "Locked 'Bluetooth' segment is explained by the footer; good."
+    ]
+  },
+  {
+    "screen": "presenter",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Scenario cards with title, description, step-count and FSM chips are scannable; SIMULATED badge always visible.",
+      "Bottom 'Exit presenter' bar cuts the next card mid-word; fine as scroll content but a fade/blur would look more finished."
+    ]
+  },
+  {
+    "screen": "onboarding-mode",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Two choice cards with selected state (blue border, tint, checkmark) are clear.",
+      "Unavailable 'I have the barrier here' card still looks like a selectable white card; dim the whole card (title/icon) more strongly."
+    ]
+  },
+  {
+    "screen": "onboarding-bluetooth",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear permission primer with primary 'Allow Bluetooth' and 'Not now'.",
+      "Large empty middle; a short 'what happens next' line or illustration would balance it."
+    ]
+  },
+  {
+    "screen": "onboarding-enroll",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 3,
+      "polish": 2
+    },
+    "notes": [
+      "Numbered step cards with trailing icons communicate the flow; 'Connect becomes available once the timer is running' explains the disabled path.",
+      "Timer ring: the '1:00' numerals are wider than the ring's inner diameter and overlap the ring stroke; 'not started' also crosses the stroke at the bottom. Visible overlap on the screen's focal element.",
+      "Footnote 'A barrier can have up to 2 owner phones.' sits directly on the footer divider (clipped/colliding); content needs bottom padding or must scroll above the footer.",
+      "Step 1 copy runs four lines in bold; shorten (e.g. 'Tap Start to open the 60 s pairing window.')."
+    ]
+  },
+  {
+    "screen": "onboarding-done",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear completion with single CTA.",
+      "Design intent calls for 'You're the owner' + 'Authenticated in X.XX s'; simulator copy is fine but the screen is mostly empty."
+    ]
+  },
+  {
+    "screen": "settings-device",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Native detail list with footers and a separate destructive 'Forget this barrier' row.",
+      "'Barrier's last counter 0' while Health shows 1 in the same capture set; make sure both read the same source or label one 'last reported'."
+    ]
+  },
+  {
+    "screen": "settings-about",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Polished: app icon, name, team line, version rows, privacy and scope notes.",
+      "No licenses row (listed in DESIGN 3.4)."
+    ]
+  },
+  {
+    "screen": "guard-details",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Checklist with icon + label + status, failing item expanded with cause, remedy and 'Blocked your last command'; excellent.",
+      "Secondary lines often restate the title ('Sensors valid / Valid', 'No fault latched / No fault').",
+      "Sheet header uses a medium title rather than the app's large-title pattern; acceptable for a sheet."
+    ]
+  },
+  {
+    "screen": "connect-pairing",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Step list (Connected / Securing / Checking owner / Ready) with spinner on the active step makes progress clear.",
+      "Subtitle 'Securing (pairing)...' repeats the active step label.",
+      "Passkey help card is useful; the mock Android dialog is low-contrast grey on tint (decorative, acceptable).",
+      "No explicit Cancel for the in-flight pairing besides 'Close'."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-start",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Hero + step pager + step card + live state table is a good projector layout.",
+      "State table has three columns with no headers ('State | Raised | Raised', 'Fault | No fault | None'); the duplicated right column is unexplained. Add 'Shown / Raw' headers or drop one.",
+      "Step 1 says 'LOWER: The arm starts down from RAISED' while hero shows idle Raised and status 'Ready'; fine, but label the action as pending ('Next: LOWER')."
+    ]
+  },
+  {
+    "screen": "presenter-obstruction-step3",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Step card with 'As expected', expectations checklist and REJECTED_GUARD / 0x10 secondary codes works well for the demo.",
+      "Current step circle combines blue ring with green 'done' fill; ambiguous whether it passed or is current.",
+      "Previous-step icon in the bottom bar renders with a coloured fringe in dark mode; check the glyph colour."
+    ]
+  },
+  {
+    "screen": "presenter-limit-conflict",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Red fault hero with dashed arm and step evidence is clear.",
+      "Fault hero again shorter than other heroes (no subtitle line).",
+      "Previous-step icon shows a coloured fringe in dark mode."
+    ]
+  },
+  {
+    "screen": "presenter-replayed-command",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear step narrative; codes shown as secondary text as intended.",
+      "Step description is 4 lines of 17pt grey text; slightly heavy for a projector, consider a shorter lead plus the checklist.",
+      "Previous-step icon shows a coloured fringe in dark mode."
+    ]
+  },
+  {
+    "screen": "presenter-auth-latency",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 3,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 3
+    },
+    "notes": [
+      "Capture starts mid-scroll (top card cut off, title not visible); first viewport could not be judged.",
+      "Stepper label 'Simulated median (next run)' wraps with an orphaned 'run)' between the -100/+100 buttons; shorten to 'Next-run median'.",
+      "Histogram with 2.0 s spec line, stats row and 'Phone-measured, simulated' caption is good.",
+      "Same headerless three-column state table ('Lowered | Lowered'); 'Guard: No block' value is dimmer than its siblings."
+    ]
+  }
+]

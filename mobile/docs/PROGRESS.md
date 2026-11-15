@@ -114,3 +114,11 @@ earlier reviews): `qa/review-2.json`, `qa/review-2.md`. Result: **34 / 58 rows >
 Failing: control-fault, control-link-lost, log, settings, onboarding-bluetooth, onboarding-enroll, connect-pairing,
 presenter-obstruction-start/step3, presenter-limit-conflict, presenter-replayed-command, presenter-auth-latency
 (each fails identically in light and dark). Round-2 fixes dispatched to four agents by folder.
+
+### Phase 3 iteration 3
+
+Fix commit 89794e3. Gates: tsc 0, eslint 0, prettier clean, jest 19 suites / 413 tests. Screenshots retaken (58).
+Fresh reviewer: `qa/review-3.json`, `qa/review-3.md`. Result: **45 / 58 rows >= 4 on every criterion** (2 -> 34 -> 45).
+Failing: onboarding-enroll (polish 2, a11y 3), control-guard-reject (hierarchy 3), control-fault (polish 3),
+control-link-lost light (polish 3), log (hierarchy 3, hig 3), presenter-obstruction-start (hierarchy 3),
+presenter-auth-latency (hierarchy 3, polish 3). Round-3 fixes dispatched to three agents.
