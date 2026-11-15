@@ -47,14 +47,16 @@ export interface BarrierHeroProps {
 }
 
 /* Canvas geometry (units = pt at scale 1). */
+// Tall enough that the arm at ARM_MAX_DEG (80 deg) stays inside the canvas:
+// PIVOT_Y - ARM_LEN * sin(80 deg) - ARM_H / 2 = 186 - 167 - 9 = 10 > 0.
 const W = 320;
-const H = 168;
-const GROUND_Y = 148;
+const H = 240;
+const GROUND_Y = 220;
 const PIVOT_X = 58;
-const PIVOT_Y = 112;
-const ARM_LEN = 220;
+const PIVOT_Y = 186;
+const ARM_LEN = 170;
 const ARM_H = 18;
-const HOUSING = { x: 28, y: 100, w: 60, h: GROUND_Y - 100 };
+const HOUSING = { x: 28, y: PIVOT_Y - 12, w: 60, h: GROUND_Y - (PIVOT_Y - 12) };
 
 function ArmArt({
   ghost,

@@ -214,12 +214,20 @@ export default function ControlScreen() {
         }
       >
         <View style={styles.header}>
-          <Text variant="largeTitle" accessibilityRole="header" style={{ flex: 1 }} testID="control-title">
+          <Text
+            variant="largeTitle"
+            accessibilityRole="header"
+            style={{ flex: 1 }}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.7}
+            testID="control-title"
+          >
             {title}
           </Text>
-          <ConnectionPill spec={pill} onPress={connected ? undefined : openFinder} />
         </View>
         <View style={styles.chips}>
+          <ConnectionPill spec={pill} onPress={connected ? undefined : openFinder} />
           <LocalOnlyChip />
           {snap.kind === 'sim' ? <SimulatedBadge /> : null}
         </View>

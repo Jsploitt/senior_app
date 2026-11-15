@@ -53,7 +53,7 @@ export function ScenarioDrawer(p: ScenarioDrawerProps) {
   const t = useTheme();
   const [panel, setPanel] = useState<Panel>(p.scenario.id === 'auth-latency' ? 'latency' : 'interlocks');
   const { height } = useWindowDimensions();
-  const [open, setOpen] = useState(height >= 820 || p.scenario.id === 'auth-latency');
+  const [open, setOpen] = useState(height >= 1000 || p.scenario.id === 'auth-latency');
   const spread = SPREADS.find((s) => s.sigma === p.params.latencySigma)?.value ?? 'typical';
   const isLatency = p.scenario.id === 'auth-latency';
   return (
