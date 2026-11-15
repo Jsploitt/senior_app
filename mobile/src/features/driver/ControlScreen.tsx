@@ -263,7 +263,7 @@ export default function ControlScreen() {
               <BarrierHero
                 state={status.state}
                 fault={status.fault}
-                warning={guardWarning}
+                warning={undefined /* the banner explains the block (QA review 4) */}
                 stale={!connected}
                 testID="hero"
               />

@@ -98,7 +98,7 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
       right={
         <View style={{ flexDirection: 'row', gap: space.s, alignItems: 'center', paddingBottom: space.xs }}>
           <Pill label={status ? 'Connected' : 'Not connected'} tone={status ? 'positive' : 'neutral'} />
-          <LocalOnlyChip compact />
+          <LocalOnlyChip />
         </View>
       }
       onRefresh={status ? refresh : undefined}
@@ -243,38 +243,43 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
         </View>
       )}
 
-      <Section
-        title="Requirements"
-        footer="Nothing here is a verdict. Verification status is defined by the bench procedures, not by this app."
-      >
-        <Row
-          title="C4 Control loop 150 ms"
-          subtitle="Board: measured on the barrier from its own logs, not by the phone."
-        />
-        <Row title="C5 Local only" subtitle="By design: this app makes no network requests." />
-        <Row
-          title="S5 Auth within 2 s"
-          subtitle={
-            allAuth.count
-              ? `Phone estimate: ${allAuth.count} sign-ins, ${percent(allAuth.withinSpec ?? 0)} within 2.0 s.`
-              : 'Phone estimate: no sign-ins recorded yet.'
-          }
-        />
-        <Row
-          title="S6 Accuracy 90% or more"
-          subtitle="Bench: the official accuracy score is computed from the barrier's log."
-          last
-        />
-      </Section>
+      {/* Requirements and firmware notes only with live data; the empty state stays the focus (QA review 4). */}
+      {status ? (
+        <>
+          <Section
+            title="Requirements"
+            footer="Nothing here is a verdict. Verification status is defined by the bench procedures, not by this app."
+          >
+            <Row
+              title="C4 Control loop 150 ms"
+              subtitle="Board: measured on the barrier from its own logs, not by the phone."
+            />
+            <Row title="C5 Local only" subtitle="By design: this app makes no network requests." />
+            <Row
+              title="S5 Auth within 2 s"
+              subtitle={
+                allAuth.count
+                  ? `Phone estimate: ${allAuth.count} sign-ins, ${percent(allAuth.withinSpec ?? 0)} within 2.0 s.`
+                  : 'Phone estimate: no sign-ins recorded yet.'
+              }
+            />
+            <Row
+              title="S6 Accuracy 90% or more"
+              subtitle="Bench: the official accuracy score is computed from the barrier's log."
+              last
+            />
+          </Section>
 
-      <Text
-        variant="footnote"
-        color="secondaryLabel"
-        style={{ marginHorizontal: space.l, marginTop: space.l }}
-      >
-        Owner list and revoke are not available over Bluetooth. The barrier exposes none; removing an owner
-        phone is done on-site only.
-      </Text>
+          <Text
+            variant="footnote"
+            color="secondaryLabel"
+            style={{ marginHorizontal: space.l, marginTop: space.l }}
+          >
+            Owner list and revoke are not available over Bluetooth. The barrier exposes none; removing an
+            owner phone is done on-site only.
+          </Text>
+        </>
+      ) : null}
       <View style={{ height: space.xl }} />
     </Screen>
   );

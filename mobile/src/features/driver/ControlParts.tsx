@@ -232,8 +232,9 @@ export function ControlPad({
   const stacked = fontScale >= 1.4;
   // the banner already says why nothing moves: no second reason line above the buttons
   const hint = banner ? undefined : padCaption(en, connected, state);
-  // enabled (the firmware decides) but quiet while a live guard block was just reported
-  const quiet = guardBlocked ? ('tinted' as const) : undefined;
+  // QA review 4: only three button looks (filled, neutral-disabled, STOP); a live guard block
+  // is explained by the banner, the buttons keep their normal enabled style.
+  void guardBlocked;
   return (
     <View
       testID="control-pad"
@@ -258,7 +259,7 @@ export function ControlPad({
             title="Lower"
             icon="arrow-down"
             size="hero"
-            variant={quiet ?? 'positive'}
+            variant="positive"
             haptic={false}
             disabled={!en.lower.enabled}
             accessibilityLabel="Lower barrier"
@@ -272,7 +273,7 @@ export function ControlPad({
             title="Raise"
             icon="arrow-up"
             size="hero"
-            variant={quiet ?? 'filled'}
+            variant="filled"
             haptic={false}
             disabled={!en.raise.enabled}
             accessibilityLabel="Raise barrier"

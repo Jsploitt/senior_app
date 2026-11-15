@@ -110,7 +110,7 @@ describe('latency formatting', () => {
 
 describe('connection pill', () => {
   it('maps phases', () => {
-    expect(connectionPill('idle', null, false).label).toBe('Disconnected');
+    expect(connectionPill('idle', null, false).label).toBe('Not connected');
     expect(connectionPill('connecting', null, false).label).toBe('Connecting');
     expect(connectionPill('pairing', null, false).label).toBe('Pairing');
     expect(connectionPill('ready', true, false)).toEqual({ label: 'Connected', tone: 'positive' });

@@ -238,11 +238,11 @@ export function connectionPill(
         : { label: 'Connected', tone: 'positive' };
     case 'disconnected':
       return {
-        label: linkLost ? 'Connection lost' : 'Disconnected',
+        label: linkLost ? 'Connection lost' : 'Not connected',
         tone: linkLost ? 'critical' : 'neutral',
       };
     default:
-      return { label: 'Disconnected', tone: 'neutral' };
+      return { label: 'Not connected', tone: 'neutral' };
   }
 }
 

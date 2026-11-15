@@ -57,8 +57,9 @@ describe('HealthScreen', () => {
     expect(screen.getAllByText('Not connected').length).toBeGreaterThan(0);
     expect(screen.queryByText('Power')).toBeNull();
     // requirements stay visible, with honest wording
-    expect(screen.getByText(/measured on the barrier from its own logs, not by the phone/)).toBeTruthy();
-    expect(screen.getByText(/official accuracy score is computed from the barrier's log/)).toBeTruthy();
+    // requirements only appear with live data (QA review 4)
+    expect(screen.queryByText(/measured on the barrier from its own logs, not by the phone/)).toBeNull();
+    expect(screen.queryByText(/official accuracy score is computed from the barrier's log/)).toBeNull();
     expect(screen.queryByText(/log_parser|INTERFACES/)).toBeNull();
     expect(screen.queryByText(/passed/i)).toBeNull();
     await fireEvent.press(screen.getByTestId('health-connect'));

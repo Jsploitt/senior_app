@@ -142,7 +142,8 @@ describe('Control screen: commands and banners', () => {
     expect(screen.getByText('Something is in the way')).toBeTruthy();
     expect(screen.getAllByTestId(/^guard-row-/)).toHaveLength(1);
     // live block: hero warning line, tinted (not filled) moves, Safety checks link, no pad hint
-    expect(screen.getByText('Movement blocked: something is in the way')).toBeTruthy();
+    // the banner carries the explanation; no duplicate warning line in the hero (QA review 4)
+    expect(screen.queryByText('Movement blocked: something is in the way')).toBeNull();
     expect(enabled('btn-raise')).toBe(true);
     expect(screen.queryByTestId('pad-hint')).toBeNull();
     await fireEvent.press(screen.getByTestId('banner-safety-checks'));
