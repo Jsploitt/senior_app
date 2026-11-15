@@ -1,23 +1,14 @@
 /**
- * BleTransport: BarrierClient over react-native-ble-plx.
- * SKELETON (Phase 1). Workstream E implements BleLinkProvider fully.
- * Status: untested on hardware.
+ * BleTransport: BarrierClient over react-native-ble-plx (see BleLinkProvider for the policies).
+ * Status: untested on hardware (no board/phone available on 2026-11-15).
  */
 import { BarrierClient } from '../BarrierClient';
 import { persistentCounterStore, type CounterStore } from '../counter';
-import type { DeviceLink, LinkProvider } from '../link';
-import { TransportError, type DiscoveredDevice } from '../types';
+import type { LinkProvider } from '../link';
+import { BleLinkProvider } from './BleLinkProvider';
 
-export class BleLinkProvider implements LinkProvider {
-  async scan(_onDevice: (d: DiscoveredDevice) => void, _timeoutMs: number): Promise<void> {
-    throw new TransportError('UNSUPPORTED', 'BLE transport not implemented yet');
-  }
-  stopScan() {}
-  async connect(_deviceId: string): Promise<DeviceLink> {
-    throw new TransportError('UNSUPPORTED', 'BLE transport not implemented yet');
-  }
-  destroy() {}
-}
+export { BleLinkProvider, type BleLinkOptions } from './BleLinkProvider';
+export { ensureBlePermissions, hasBlePermissions } from './permissions';
 
 export function createBleTransport(opts: { counters?: CounterStore; provider?: LinkProvider } = {}) {
   return new BarrierClient({
