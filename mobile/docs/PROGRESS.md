@@ -4,9 +4,9 @@ Branch: `expo-rewrite` in `senior_app`. Firmware repo is read-only for this run.
 
 ## Current
 
-- Phase: 0 and 1 complete, Phase 2 starting
+- Phase: 0, 1, 2 complete; Phase 3 (visual QA) starting
 - Open failures: none
-- Next action: workstreams A-E in parallel worktrees
+- Next action: web screenshots, fresh reviewer, fix loop
 
 ## Log
 
@@ -55,3 +55,26 @@ Notes / decisions:
   `platforms: ['android', 'web']` (web = screenshot QA only), removed iOS from `eas.json` (no `submit`).
 - Exit criterion "iOS build in TestFlight" no longer applies.
 - Visual design (DESIGN.md) unchanged.
+
+### Phase 2: Parallel build (merged one at a time, gates re-run after each)
+
+| Merge                      | Commit                 | Gates after merge                             |
+| -------------------------- | ---------------------- | --------------------------------------------- |
+| D onboarding/settings      | 37182f1                | tsc 0, eslint 0, prettier clean, jest 243/243 |
+| E BleLinkProvider          | (merge before b1ac433) | jest 291/291 after config requests applied    |
+| B health/log/CSV           | b2c7b29                | jest 317/317                                  |
+| C presenter (13 scenarios) | fd7125a                | jest 358/358                                  |
+| A driver flow              | (merge before 6a6e886) | jest 409/409, expo-doctor 20/20               |
+
+Shared changes applied from workstream requests: ble-plx pinned `3.5.1`; BLE permissions owned by the plugin;
+INTERNET blocked in release builds (C5); log persistence init in root layout; guard-details formSheet; SimDevice
+`FAULT_SENSOR_MS` persistent-sensor fault and `bootAt()`; `expo-asset` installed (jest could not resolve
+`@expo/vector-icons`).
+
+Incident: `git worktree remove --force` followed the node_modules junctions and deleted part of the main
+`mobile/node_modules`. No source affected (all committed). Two stale jest processes from workstream A's hung
+test plus an agent's static server held a native module open, so `npm ci` failed with EPERM; stopping them was
+denied by the permission classifier. Workaround: moved the old folder to `senior_app/node_modules.locked-old`
+(locally git-excluded), `npm ci` fresh. Re-ran: tsc 0, eslint 0, prettier clean, jest 18 suites / 409 tests,
+expo-doctor 20/20. Leftovers for the human to delete: `Term261/senior_app-wt/`, `senior_app/node_modules.locked-old/`
+and the stale node processes (jest ControlScreen, serve.js).
