@@ -1,0 +1,8 @@
+node_modules
+coverage
+dist
+android
+ios
+.expo
+package-lock.json
+docs/vectors.json
