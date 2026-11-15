@@ -1,3 +1,4 @@
+import type { LogEntry } from '../../../transport/types';
 import { appendLog, clearLog, eventLogStore, LOG_CAP, replaceLog } from '../../../store/eventLog';
 import {
   SAVE_DEBOUNCE_MS,
@@ -32,7 +33,7 @@ beforeEach(() => {
 
 describe('parse / serialize', () => {
   it('round-trips and drops malformed entries', () => {
-    const good = { id: 1, t: 5, kind: 'auth', transport: 'ble', message: 'ok', latencyMs: 10 };
+    const good: LogEntry = { id: 1, t: 5, kind: 'auth', transport: 'ble', message: 'ok', latencyMs: 10 };
     const raw = JSON.stringify({ v: 1, entries: [good, { id: 'x' }, null, { ...good, kind: 'nope' }] });
     expect(parseStoredLog(raw)).toEqual([good]);
     expect(parseStoredLog(serializeLog([good]))).toEqual([good]);

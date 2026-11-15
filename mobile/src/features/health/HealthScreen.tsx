@@ -24,6 +24,7 @@ import {
   stateLabel,
   volts,
 } from './format';
+import { initLogPersistence } from './logPersistence';
 import { authStats, commandTallies, sinceSession } from './stats';
 
 function YesNo({ ok }: { ok: boolean }) {
@@ -62,6 +63,10 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
   const session = snap.phase === 'ready' ? snap.session : null;
   const [refreshing, setRefreshing] = useState(false);
   const age = useNotificationAge(transport);
+
+  useEffect(() => {
+    void initLogPersistence(); // idempotent; Health reads the persisted log too
+  }, []);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
