@@ -4,9 +4,9 @@ Branch: `expo-rewrite` in `senior_app`. Firmware repo is read-only for this run.
 
 ## Current
 
-- Phase: 0, 1, 2 complete; Phase 3 in progress (paused: usage limit)
+- Phase: 0-3 complete; Phase 4 blocked on human gate (EAS login)
 - Open failures: none
-- Next action: rerun fresh reviewer on qa/out (58 shots taken, `node qa/shoot.mjs`), fix < 4 scores; then `npx eas-cli login` (human) and `eas build -p android --profile preview`
+- Next action: human runs `npx eas-cli login` in `senior_app/mobile`; then `npx eas-cli build -p android --profile preview`
 
 ## Log
 
@@ -122,3 +122,24 @@ Fresh reviewer: `qa/review-3.json`, `qa/review-3.md`. Result: **45 / 58 rows >= 
 Failing: onboarding-enroll (polish 2, a11y 3), control-guard-reject (hierarchy 3), control-fault (polish 3),
 control-link-lost light (polish 3), log (hierarchy 3, hig 3), presenter-obstruction-start (hierarchy 3),
 presenter-auth-latency (hierarchy 3, polish 3). Round-3 fixes dispatched to three agents.
+
+### Phase 3 iterations 4-6: exit criterion met
+
+| Round                                       | Commit reviewed | Rows >= 4 on all criteria | Failing                                   |
+| ------------------------------------------- | --------------- | ------------------------- | ----------------------------------------- |
+| 1                                           | 6ece0f7         | 2 / 58                    | 27 screens                                |
+| 2                                           | c7848bf         | 34 / 58                   | 12 screens                                |
+| 3                                           | 89794e3         | 45 / 58                   | 7 screens                                 |
+| 4                                           | 3385792         | 54 / 58                   | control-guard-reject, health-disconnected |
+| 5                                           | 6eb3c35         | 56 / 58                   | control-link-lost (polish 3)              |
+| 6 (control screens only, after fix 648460e) | 648460e         | 18 / 18                   | none                                      |
+
+Every reviewer was a fresh Opus agent with no access to code or earlier reviews. Round 5 covered all 29 screens x 2
+schemes; the only failing screen (control-link-lost) was fixed in 648460e (stale chips hidden offline, pill
+"Offline"), a change confined to the Control screen, and round 6 re-reviewed all 9 Control screens x 2 schemes:
+minimum per criterion hierarchy 4, hig 4, tokens 4, state 4, errors 4, a11y 4, polish 4.
+Result: every screen, light and dark, scores >= 4 on every criterion (rounds 5 + 6). Remaining score-4 nits are
+listed in `qa/review-5.md` and `qa/review-6-control.md` (optional polish).
+
+Gates at 648460e: tsc 0, eslint 0, prettier clean, jest 19 suites / 415 tests, expo-doctor 20/20 (last run 6a6e886,
+no dependency changes since).

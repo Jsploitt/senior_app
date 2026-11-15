@@ -1,0 +1,346 @@
+[
+  {
+    "screen": "control-disconnected",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear empty state: Bluetooth glyph, 'No barrier connected', one primary 'Connect to barrier' CTA.",
+      "Content block floats in the vertical middle with large empty areas above and below; the CTA would sit more naturally lower (thumb zone) or the block higher.",
+      "No secondary hint (e.g. 'Previously paired' or how to enroll a new barrier) for a first-time user; acceptable but thin.",
+      "'Not connected' pill is neutral grey; fine."
+    ]
+  },
+  {
+    "screen": "control-lowered",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Hero reads instantly: flat arm, green tint, 'Lowered', plain sub-label.",
+      "Helper 'Already lowered.' explains the disabled Lower button: good.",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad.",
+      "Large title 'Barrier' plus subtitle 'M010-Barrier' repeats the word; DESIGN.md asks for the barrier name/nickname as the title.",
+      "State label has no glyph next to it (DESIGN.md 4.1 asks label + icon per state); the illustration carries it, so minor."
+    ]
+  },
+  {
+    "screen": "control-raising",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Best screen: moving arm, blue tint, elapsed '0.8 s of about 4.0 s' with progress bar, STOP promoted to filled danger, other moves disabled with 'Arm is moving. Use Stop.'",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad.",
+      "Progress track is thin (~6 px) and low-contrast against the tinted card; consider 8 px and a stronger track."
+    ]
+  },
+  {
+    "screen": "control-raised",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Upright arm, blue tint, 'Raised' with 'Your space is reserved.' read in under a second.",
+      "Lower button is filled green (success) while Raise is blue (accent): color follows destination state, consistent across screens.",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad.",
+      "Large title 'Barrier' plus subtitle 'M010-Barrier' repeats the word; DESIGN.md asks for the barrier name/nickname as the title."
+    ]
+  },
+  {
+    "screen": "control-stopped",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Amber tint and 'Stopped' clearly separate it from Raising even though the arm angle is the same.",
+      "Both moves enabled and filled; STOP back to tonal: correct.",
+      "No helper line above the pad here, so the pad divider sits ~50 px lower than in other states; the layout jumps between states. Reserve the helper line height.",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad."
+    ]
+  },
+  {
+    "screen": "control-guard-reject",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Banner copy is excellent: 'Can't move right now' / 'Something is in the way' / what to do, plus 'Safety checks' link and dismiss.",
+      "Zone chip flips to amber 'Zone blocked' in sync with the banner: good cross-referencing.",
+      "Hero still says 'Arm is flat. You can drive in.' directly above an obstruction warning; correct literally but reads as mixed signals. Consider muting the sub-label or appending 'Zone blocked' while the guard result is shown.",
+      "Banner sits only ~16 px above the move buttons and replaces the helper line; give it the 24 px section gap.",
+      "Light mode banner carries a drop shadow while the rest of the screen is flat (DESIGN.md: flat by default)."
+    ]
+  },
+  {
+    "screen": "control-fault",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Fault is unmistakable: warning glyph + 'Fault' label, dashed arm, red tint, 'Controls locked.', on-site reset instruction.",
+      "Three red surfaces (hero, 'Sensors: see fault' chip, 'Needs on-site reset' card) compete; the hero sub-label 'Position sensors disagree' and the card body 'wrong end-limit switch fired' say the same thing twice in different words. Pick one wording and let the card carry the detail.",
+      "Card body text is visually heavier (black, body size) than its red title; consider title semibold and body secondaryLabel."
+    ]
+  },
+  {
+    "screen": "control-unknown",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Dashed ghost arm and neutral card communicate 'unknown' well; 'Lower first to confirm position' and the single enabled Lower button guide the homing step.",
+      "The '?' glyph floats alone at the top of the card, detached from the label; place it inline with 'Position unknown' as Fault does.",
+      "Helper 'Lower first to confirm position' lacks the trailing period the other helpers use.",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad."
+    ]
+  },
+  {
+    "screen": "control-link-lost",
+    "scheme": "light",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Fix confirmed: stale guard chips are gone while offline; only the 'Offline' pill, banner and dimmed hero remain.",
+      "Error first: 'Connection lost' + reassurance + full-width Reconnect is the right priority.",
+      "'Last known: Raising' with a mid-travel arm can still read as live motion at a glance; the faded stripes help. Add time since the last update (e.g. 'Not live - 12 s ago').",
+      "All three pad buttons go to the same neutral disabled style, so STOP loses its red identity; acceptable since the helper says 'Controls are off while offline.'"
+    ]
+  },
+  {
+    "screen": "control-disconnected",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 4,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Clear empty state: Bluetooth glyph, 'No barrier connected', one primary 'Connect to barrier' CTA.",
+      "Content block floats in the vertical middle with large empty areas above and below; the CTA would sit more naturally lower (thumb zone) or the block higher.",
+      "No secondary hint (e.g. 'Previously paired' or how to enroll a new barrier) for a first-time user; acceptable but thin.",
+      "'Not connected' pill is neutral grey; fine."
+    ]
+  },
+  {
+    "screen": "control-lowered",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Hero reads instantly: flat arm, green tint, 'Lowered', plain sub-label.",
+      "Helper 'Already lowered.' explains the disabled Lower button: good.",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad.",
+      "Large title 'Barrier' plus subtitle 'M010-Barrier' repeats the word; DESIGN.md asks for the barrier name/nickname as the title.",
+      "State label has no glyph next to it (DESIGN.md 4.1 asks label + icon per state); the illustration carries it, so minor."
+    ]
+  },
+  {
+    "screen": "control-raising",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 5,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Best screen: moving arm, blue tint, elapsed '0.8 s of about 4.0 s' with progress bar, STOP promoted to filled danger, other moves disabled with 'Arm is moving. Use Stop.'",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad.",
+      "Progress track is thin (~6 px) and low-contrast against the tinted card; consider 8 px and a stronger track."
+    ]
+  },
+  {
+    "screen": "control-raised",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Upright arm, blue tint, 'Raised' with 'Your space is reserved.' read in under a second.",
+      "Lower button is filled green (success) while Raise is blue (accent): color follows destination state, consistent across screens.",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad.",
+      "Large title 'Barrier' plus subtitle 'M010-Barrier' repeats the word; DESIGN.md asks for the barrier name/nickname as the title."
+    ]
+  },
+  {
+    "screen": "control-stopped",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Amber tint and 'Stopped' clearly separate it from Raising even though the arm angle is the same.",
+      "Both moves enabled and filled; STOP back to tonal: correct.",
+      "No helper line above the pad here, so the pad divider sits ~50 px lower than in other states; the layout jumps between states. Reserve the helper line height.",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad."
+    ]
+  },
+  {
+    "screen": "control-guard-reject",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Banner copy is excellent: 'Can't move right now' / 'Something is in the way' / what to do, plus 'Safety checks' link and dismiss.",
+      "Zone chip flips to amber 'Zone blocked' in sync with the banner: good cross-referencing.",
+      "Hero still says 'Arm is flat. You can drive in.' directly above an obstruction warning; correct literally but reads as mixed signals. Consider muting the sub-label or appending 'Zone blocked' while the guard result is shown.",
+      "Banner sits only ~16 px above the move buttons and replaces the helper line; give it the 24 px section gap.",
+      "Dark: banner is flat (no shadow) here; good."
+    ]
+  },
+  {
+    "screen": "control-fault",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 5,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Fault is unmistakable: warning glyph + 'Fault' label, dashed arm, red tint, 'Controls locked.', on-site reset instruction.",
+      "Three red surfaces (hero, 'Sensors: see fault' chip, 'Needs on-site reset' card) compete; the hero sub-label 'Position sensors disagree' and the card body 'wrong end-limit switch fired' say the same thing twice in different words. Pick one wording and let the card carry the detail.",
+      "Card body text is visually heavier (black, body size) than its red title; consider title semibold and body secondaryLabel.",
+      "Dark: maroon fills on black are heavy; the hero and card read as one large red block."
+    ]
+  },
+  {
+    "screen": "control-unknown",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 4,
+      "hig": 4,
+      "tokens": 4,
+      "state": 5,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Dashed ghost arm and neutral card communicate 'unknown' well; 'Lower first to confirm position' and the single enabled Lower button guide the homing step.",
+      "The '?' glyph floats alone at the top of the card, detached from the label; place it inline with 'Position unknown' as Fault does.",
+      "Helper 'Lower first to confirm position' lacks the trailing period the other helpers use.",
+      "Large dead band (~300 px) between guard chips and the pinned pad; the hero could take more of it or chips could sit closer to the pad."
+    ]
+  },
+  {
+    "screen": "control-link-lost",
+    "scheme": "dark",
+    "scores": {
+      "hierarchy": 5,
+      "hig": 4,
+      "tokens": 5,
+      "state": 4,
+      "errors": 5,
+      "a11y": 4,
+      "polish": 4
+    },
+    "notes": [
+      "Fix confirmed: stale guard chips are gone while offline; only the 'Offline' pill, banner and dimmed hero remain.",
+      "Error first: 'Connection lost' + reassurance + full-width Reconnect is the right priority.",
+      "'Last known: Raising' with a mid-travel arm can still read as live motion at a glance; the faded stripes help. Add time since the last update (e.g. 'Not live - 12 s ago').",
+      "All three pad buttons go to the same neutral disabled style, so STOP loses its red identity; acceptable since the helper says 'Controls are off while offline.'",
+      "Dark: disabled STOP is a light grey square glyph on grey; fine contrast."
+    ]
+  }
+]
