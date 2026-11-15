@@ -384,7 +384,7 @@ export function Segmented<T extends string>({
               tap();
               onChange(o.value);
             }}
-            style={[styles.segItem, sel && [{ backgroundColor: t.c.surface }, shadow(t.dark)]]}
+            style={[styles.segItem, sel && [{ backgroundColor: t.c.segmentThumb }, shadow(t.dark)]]}
           >
             <Text variant="subheadline" weight={sel ? '600' : '400'}>
               {o.label}

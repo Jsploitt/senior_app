@@ -66,8 +66,10 @@ export function Button({
 }: ButtonProps) {
   const t = useTheme();
   const s = SIZES[size];
-  const col = colors(variant, t.c);
   const inactive = disabled || loading;
+  // One neutral disabled style everywhere (label >= 4.5:1 on fill), never a faded copy of the color.
+  const col =
+    disabled && variant !== 'plain' ? { bg: t.c.fill, fg: 'secondaryLabel' as const } : colors(variant, t.c);
   return (
     <Pressable
       testID={testID}
@@ -87,7 +89,7 @@ export function Button({
           paddingHorizontal: s.px,
           backgroundColor: col.bg,
           borderRadius: size === 'hero' ? radius.xl : radius.m,
-          opacity: inactive ? 0.4 : pressed ? 0.75 : 1,
+          opacity: disabled && variant === 'plain' ? 0.4 : loading ? 0.7 : pressed ? 0.75 : 1,
           transform: [{ scale: pressed && !inactive ? 0.98 : 1 }],
         },
         style,

@@ -25,21 +25,7 @@ import {
 
 /* ---------------- header chips ---------------- */
 
-export function LocalOnlyChip() {
-  return (
-    <View accessible accessibilityLabel="Local only. No internet." testID="local-only-chip">
-      <Pill label="Local only" icon="cloud-offline-outline" />
-    </View>
-  );
-}
-
-export function SimulatedBadge() {
-  return (
-    <View accessible accessibilityLabel="Simulated barrier" testID="simulated-badge">
-      <Pill label="SIMULATED" tone="warning" icon="flask-outline" />
-    </View>
-  );
-}
+export { LocalOnlyChip, SimulatedBadge } from '../../components/Badges';
 
 export function ConnectionPill({ spec, onPress }: { spec: PillSpec; onPress?: () => void }) {
   const inner = <Pill label={spec.label} tone={spec.tone} />;

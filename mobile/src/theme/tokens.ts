@@ -10,6 +10,7 @@ export interface Palette {
   surface: string; // cards / rows
   surfaceRaised: string; // nested elements on a card
   fill: string; // subtle control fill (segmented, chips)
+  segmentThumb: string; // selected segment (lighter than the track in dark mode)
   label: string;
   secondaryLabel: string;
   tertiaryLabel: string; // only for non-essential text >= 15 pt or decorative
@@ -45,6 +46,7 @@ export const light: Palette = {
   surface: '#FFFFFF',
   surfaceRaised: '#F7F7FA',
   fill: '#E9E9EE',
+  segmentThumb: '#FFFFFF',
   label: '#000000',
   secondaryLabel: '#5E5E66',
   tertiaryLabel: '#8A8A8E',
@@ -78,6 +80,7 @@ export const dark: Palette = {
   surface: '#1C1C1E',
   surfaceRaised: '#2C2C2E',
   fill: '#2C2C2E',
+  segmentThumb: '#636366',
   label: '#FFFFFF',
   secondaryLabel: '#AEAEB2',
   tertiaryLabel: '#8E8E93',
