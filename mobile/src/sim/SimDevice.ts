@@ -19,6 +19,7 @@ import {
   ENROLL_WINDOW_MS,
   FaultReason,
   MAX_OWNERS,
+  MOTION_NOMINAL_MS,
   MOTION_TIMEOUT_MS,
   Opcode,
   STATUS_HEARTBEAT_MS,
@@ -55,7 +56,7 @@ export interface SimTimings {
 }
 
 export const DEFAULT_TIMINGS: SimTimings = {
-  travelMs: 2600,
+  travelMs: MOTION_NOMINAL_MS,
   connectMs: 280,
   sessionMs: 220,
   pairingMs: 1100,

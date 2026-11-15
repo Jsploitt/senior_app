@@ -160,3 +160,6 @@ export const BATTERY_CRITICAL_MV = 11000;
 /** main.c:378-379 - status task poll period (notifies when dirty) and heartbeat */
 export const STATUS_POLL_MS = 20;
 export const STATUS_HEARTBEAT_MS = 1000;
+
+/** App-defined (not firmware): nominal arm travel used by SimDevice and the arm animation. */
+export const MOTION_NOMINAL_MS = 4000;
