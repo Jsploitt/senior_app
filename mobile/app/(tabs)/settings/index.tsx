@@ -1,9 +1,11 @@
 import { router } from 'expo-router';
+import { View } from 'react-native';
 import { Row, Screen, Section } from '@/components';
 import { chooseTransport } from '@/features/settings/actions';
 import { Pad, SegmentedPicker, SwitchRow } from '@/features/settings/controls';
 import { type ThemePref, updateSettings, useSettings } from '@/store/settings';
 import { bleSupported } from '@/store/transport';
+import { space } from '@/theme/tokens';
 import type { TransportKind } from '@/transport/types';
 
 export default function SettingsHome() {
@@ -62,6 +64,9 @@ export default function SettingsHome() {
             ]}
           />
         </Pad>
+      </Section>
+
+      <Section title="Feedback">
         <SwitchRow
           testID="haptics-switch"
           title="Haptics"
@@ -76,7 +81,7 @@ export default function SettingsHome() {
         <Row
           testID="row-replay"
           icon="refresh-outline"
-          iconBg="warningFill"
+          iconBg="tintFill"
           title="Replay onboarding"
           chevron
           onPress={() => {
@@ -103,6 +108,7 @@ export default function SettingsHome() {
           onPress={() => router.push('/settings/about')}
         />
       </Section>
+      <View style={{ height: space.xl }} />
     </Screen>
   );
 }

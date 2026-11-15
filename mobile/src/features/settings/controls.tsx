@@ -97,7 +97,14 @@ export function SwitchRow({
         ) : null}
       </View>
       <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-        <Switch value={value} trackColor={{ true: t.c.positiveFill, false: t.c.fill }} thumbColor="#FFFFFF" />
+        <Switch
+          value={value}
+          trackColor={{ true: t.c.tintFill, false: t.c.fill }}
+          thumbColor="#FFFFFF"
+          ios_backgroundColor={t.c.fill}
+          // react-native-web paints the "on" thumb teal unless told otherwise
+          {...({ activeThumbColor: '#FFFFFF' } as object)}
+        />
       </View>
     </Pressable>
   );

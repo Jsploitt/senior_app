@@ -76,29 +76,17 @@ export function LogScreen() {
         onChange={setFilter}
         accessibilityLabel="Filter events"
       />
-      <View style={{ flexDirection: 'row', gap: space.m, marginTop: space.m }}>
-        <Button
-          title="Share CSV"
-          icon="share-outline"
-          variant="tinted"
-          size="small"
-          style={{ flex: 1 }}
-          disabled={entries.length === 0}
-          onPress={share}
-          accessibilityHint="Exports the whole log as a CSV file"
-          testID="share-csv"
-        />
-        <Button
-          title="Clear log"
-          icon="trash-outline"
-          variant="destructive"
-          size="small"
-          style={{ flex: 1 }}
-          disabled={entries.length === 0}
-          onPress={clear}
-          testID="clear-log"
-        />
-      </View>
+      <Button
+        title="Share CSV"
+        icon="share-outline"
+        variant="filled"
+        size="small"
+        style={{ marginTop: space.m }}
+        disabled={entries.length === 0}
+        onPress={share}
+        accessibilityHint="Exports the whole log as a CSV file"
+        testID="share-csv"
+      />
       {notice ? (
         <Banner
           tone={notice.tone}
@@ -150,12 +138,37 @@ export function LogScreen() {
     </View>
   );
 
+  const footer = (
+    <Pressable
+      onPress={clear}
+      disabled={entries.length === 0}
+      accessibilityRole="button"
+      accessibilityLabel="Clear log"
+      accessibilityHint="Asks for confirmation before deleting every event"
+      accessibilityState={{ disabled: entries.length === 0 }}
+      testID="clear-log"
+      style={({ pressed }) => ({
+        alignSelf: 'center',
+        minHeight: 44,
+        justifyContent: 'center',
+        paddingHorizontal: space.l,
+        marginTop: space.xl,
+        opacity: entries.length === 0 ? 0.4 : pressed ? 0.6 : 1,
+      })}
+    >
+      <Text variant="body" color="critical">
+        Clear log
+      </Text>
+    </Pressable>
+  );
+
   return (
     <View style={{ flex: 1, backgroundColor: t.c.background }} testID="log-screen">
       <FlatList<LogEntry>
         data={shown}
         keyExtractor={(e) => String(e.id)}
         ListHeaderComponent={header}
+        ListFooterComponent={entries.length ? footer : undefined}
         ListEmptyComponent={
           <EmptyState
             icon="list-outline"
@@ -172,8 +185,6 @@ export function LogScreen() {
             style={[
               {
                 backgroundColor: t.c.surface,
-                borderBottomWidth: index === shown.length - 1 ? 0 : 0.5,
-                borderBottomColor: t.c.separator,
               },
               index === 0 && { borderTopLeftRadius: radius.l, borderTopRightRadius: radius.l },
               index === shown.length - 1 && {
@@ -183,13 +194,13 @@ export function LogScreen() {
               index === 0 && index === shown.length - 1 && shadow(t.dark),
             ]}
           >
-            <EventRow entry={item} />
+            <EventRow entry={item} inset={index !== shown.length - 1} />
           </View>
         )}
         contentContainerStyle={{
           paddingHorizontal: space.l,
           paddingTop: insets.top + space.s,
-          paddingBottom: space.huge,
+          paddingBottom: space.huge + space.xl,
         }}
       />
     </View>

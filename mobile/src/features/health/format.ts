@@ -93,3 +93,9 @@ export function clockTime(t: number): string {
   const p = (n: number, w = 2) => String(n).padStart(w, '0');
   return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.${p(d.getMilliseconds(), 3)}`;
 }
+
+/** Label shared by Health and This barrier so both read the same field the same way. */
+export const BARRIER_LAST_COUNTER_LABEL = "Barrier's last counter";
+/** The newest Status.last_counter from the transport snapshot, or a placeholder when none is known. */
+export const barrierLastCounter = (status: { lastCounter: number } | null | undefined): string =>
+  status ? String(status.lastCounter) : 'Not connected';

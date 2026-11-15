@@ -64,12 +64,13 @@ function Chip({
   icon: IconName;
   label: string;
   a11yLabel?: string;
-  tone: 'positive' | 'warning' | 'critical';
+  tone: 'positive' | 'warning' | 'critical' | 'neutral';
   onPress?: () => void;
   testID?: string;
 }) {
   const t = useTheme();
-  const wash = t.c[`${tone}Wash` as keyof Palette];
+  const wash = tone === 'neutral' ? t.c.fill : t.c[`${tone}Wash` as keyof Palette];
+  const fg: keyof Palette = tone === 'neutral' ? 'secondaryLabel' : tone;
   return (
     <Pressable
       testID={testID}
@@ -80,24 +81,35 @@ function Chip({
       hitSlop={{ top: 6, bottom: 6 }}
       style={({ pressed }) => [styles.chip, { backgroundColor: wash, opacity: pressed ? 0.7 : 1 }]}
     >
-      <Icon name={icon} size={15} color={tone} />
-      <Text variant="footnote" weight="600" color={tone}>
+      <Icon name={icon} size={15} color={fg} />
+      <Text variant="footnote" weight="600" color={fg}>
         {label}
       </Text>
     </Pressable>
   );
 }
 
+/**
+ * Interlock health chips. Live values keep positive/warning semantics; when the link is down the
+ * values are last-known only (neutral, clock glyph, never a green check), and while a fault is
+ * latched the sensor chip defers to the fault card instead of claiming "OK".
+ */
 export function GuardChips({
   zoneClear,
   sensorsValid,
   batteryMv,
   onPress,
+  live = true,
+  faulted = false,
 }: {
   zoneClear: boolean;
   sensorsValid: boolean;
   batteryMv: number;
   onPress: () => void;
+  /** false = link lost / disconnected: show last-known values in a neutral style */
+  live?: boolean;
+  /** true = FAULT latched: sensor health is untrusted */
+  faulted?: boolean;
 }) {
   const battTone =
     batteryMv < BATTERY_CRITICAL_MV
@@ -105,28 +117,42 @@ export function GuardChips({
       : batteryMv < BATTERY_HEALTHY_MIN_MV
         ? 'warning'
         : 'positive';
+  const zoneLabel = zoneClear ? 'Zone clear' : 'Zone blocked';
+  const sensorsLabel = faulted ? 'Sensors: see fault' : sensorsValid ? 'Sensors OK' : 'Sensors invalid';
+  const batt = formatBattery(batteryMv);
+  const stale = (label: string) => `${label}, last known, not live`;
   return (
     <View style={styles.chipRow} testID="guard-chips">
       <Chip
         testID="chip-zone"
-        icon={zoneClear ? 'checkmark-circle' : 'alert-circle'}
-        label={zoneClear ? 'Zone clear' : 'Zone blocked'}
-        tone={zoneClear ? 'positive' : 'warning'}
+        icon={!live ? 'time-outline' : zoneClear ? 'checkmark-circle' : 'alert-circle'}
+        label={zoneLabel}
+        a11yLabel={live ? undefined : stale(zoneLabel)}
+        tone={!live ? 'neutral' : zoneClear ? 'positive' : 'warning'}
         onPress={onPress}
       />
       <Chip
         testID="chip-sensors"
-        icon={sensorsValid ? 'checkmark-circle' : 'alert-circle'}
-        label={sensorsValid ? 'Sensors OK' : 'Sensors invalid'}
-        tone={sensorsValid ? 'positive' : 'warning'}
+        icon={
+          !live
+            ? 'time-outline'
+            : faulted
+              ? 'alert-circle-outline'
+              : sensorsValid
+                ? 'checkmark-circle'
+                : 'alert-circle'
+        }
+        label={sensorsLabel}
+        a11yLabel={live ? undefined : stale(sensorsLabel)}
+        tone={!live || faulted ? 'neutral' : sensorsValid ? 'positive' : 'warning'}
         onPress={onPress}
       />
       <Chip
         testID="chip-battery"
-        icon={battTone === 'positive' ? 'battery-full' : 'battery-dead'}
-        label={formatBattery(batteryMv)}
-        a11yLabel={`Battery ${formatBattery(batteryMv)}`}
-        tone={battTone}
+        icon={!live ? 'time-outline' : battTone === 'positive' ? 'battery-full' : 'battery-dead'}
+        label={batt}
+        a11yLabel={live ? `Battery ${batt}` : stale(`Battery ${batt}`)}
+        tone={!live ? 'neutral' : battTone}
         onPress={onPress}
       />
     </View>
@@ -177,8 +203,13 @@ function StopButton({
 }
 
 /** One-line reason shown above the pad whenever a command is unavailable. */
-export function padCaption(en: ReturnType<typeof controlEnablement>, connected: boolean): string | undefined {
-  if (!connected) return en.lower.reason;
+export function padCaption(
+  en: ReturnType<typeof controlEnablement>,
+  connected: boolean,
+  state?: BarrierState | null,
+): string | undefined {
+  if (!connected) return 'Controls are off while offline.';
+  if (state === BarrierState.FAULT) return 'Controls locked.';
   return en.lower.reason ?? en.raise.reason;
 }
 
@@ -201,7 +232,7 @@ export function ControlPad({
   const { fontScale } = useWindowDimensions();
   const en = controlEnablement(state, connected);
   const stacked = fontScale >= 1.4;
-  const hint = padCaption(en, connected);
+  const hint = padCaption(en, connected, state);
   return (
     <View
       testID="control-pad"
@@ -406,7 +437,7 @@ export function AuthLatencyBadge({ ms, source }: { ms: number | null; source: 'b
 }
 
 const styles = StyleSheet.create({
-  chipRow: { flexDirection: 'row', gap: space.s },
+  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',

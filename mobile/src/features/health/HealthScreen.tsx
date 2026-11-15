@@ -14,7 +14,9 @@ import { useTransport, useTransportSnapshot } from '../../store/transport';
 import { space } from '../../theme/tokens';
 import { BatteryGauge } from './BatteryGauge';
 import {
+  BARRIER_LAST_COUNTER_LABEL,
   ageLabel,
+  barrierLastCounter,
   batteryBand,
   faultLabel,
   percent,
@@ -123,7 +125,12 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
                 ) : undefined
               }
             />
-            <Row title="Last counter" value={String(status.lastCounter)} last />
+            <Row
+              title={BARRIER_LAST_COUNTER_LABEL}
+              value={barrierLastCounter(status)}
+              testID="health-last-counter"
+              last
+            />
           </Section>
 
           <Section
@@ -268,6 +275,7 @@ export function HealthScreen({ onConnect }: { onConnect: () => void }) {
         Owner list and revoke are not available over Bluetooth. The barrier exposes none; removing an owner
         phone is done on-site only.
       </Text>
+      <View style={{ height: space.xl }} />
     </Screen>
   );
 }

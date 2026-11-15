@@ -117,7 +117,7 @@ export default function ConnectScreen() {
         <Button title="Close" variant="plain" size="small" onPress={leave} testID="btn-close" />
       </View>
       <Text variant="largeTitle" accessibilityRole="header">
-        Find barrier
+        Connect
       </Text>
     </View>
   );
@@ -148,7 +148,6 @@ export default function ConnectScreen() {
                 {status}
               </Text>
             </View>
-            {!failure && !done ? <ActivityIndicator color={t.c.tint} /> : null}
           </View>
           <StepList steps={steps} />
         </Card>

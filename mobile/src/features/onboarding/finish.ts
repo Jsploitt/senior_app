@@ -23,11 +23,11 @@ export function doneCopy(
   if (transport === 'sim') {
     return {
       title: "You're all set.",
-      body: 'The simulator is ready. On the Barrier tab, tap Connect to start the virtual barrier.',
+      body: 'The simulator is ready. On the Barrier tab, tap Connect to barrier to start the virtual barrier.',
     };
   }
   return {
     title: "You're all set.",
-    body: 'When you are next to the barrier, open the Barrier tab and tap Connect.',
+    body: 'When you are next to the barrier, open the Barrier tab and tap Connect to barrier.',
   };
 }

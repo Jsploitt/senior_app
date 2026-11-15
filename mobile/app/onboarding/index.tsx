@@ -17,7 +17,7 @@ export default function Welcome() {
       testID="onboarding-welcome"
       title="M010 Barrier"
       body="Control your parking barrier from your phone. Everything stays between your phone and the barrier: no internet, no cloud."
-      illustration={<Illustration icon="car-sport" badge="bluetooth" />}
+      illustration={<Illustration icon="car-sport" badge="bluetooth" badgeTone="tint" />}
       step={nav.step}
       primary={{ title: 'Get started', onPress: nav.next }}
     >

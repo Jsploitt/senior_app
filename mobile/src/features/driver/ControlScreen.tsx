@@ -198,7 +198,9 @@ export default function ControlScreen() {
 
   /* ---------- render ---------- */
   const pill = connectionPill(snap.phase, status?.ownerConnected ?? null, linkLost);
-  const compact = fontScale >= 1.3 || height < 700;
+  const faulted = status?.state === BarrierState.FAULT;
+  // link lost / fault add a banner or card: shrink the hero so the chips always clear the dock
+  const compact = fontScale >= 1.3 || height < 700 || linkLost || faulted;
   const openFinder = () => router.push('/connect');
 
   return (
@@ -244,7 +246,7 @@ export default function ControlScreen() {
         ) : null}
         <View style={styles.chips}>
           <ConnectionPill spec={pill} onPress={connected ? undefined : openFinder} />
-          <LocalOnlyChip compact />
+          <LocalOnlyChip />
           {snap.kind === 'sim' ? <SimulatedBadge /> : null}
         </View>
 
@@ -253,10 +255,7 @@ export default function ControlScreen() {
             tone="critical"
             icon="cloud-offline"
             title="Connection lost"
-            detail={
-              reconnectError ??
-              'The barrier stops automatically if it was moving. Reconnect to keep controlling it.'
-            }
+            detail={reconnectError ?? 'The barrier stops automatically if it was moving.'}
             testID="link-lost-banner"
             action={
               <Button
@@ -286,22 +285,31 @@ export default function ControlScreen() {
                 zoneClear={status.zoneClear}
                 sensorsValid={status.sensorsValid}
                 batteryMv={status.batteryMv}
+                live={connected}
+                faulted={faulted}
                 onPress={() => router.push('/guard-details')}
               />
             </View>
             {status.state === BarrierState.FAULT ? (
               <FaultCard fault={status.fault} heading="Needs on-site reset" compact />
             ) : null}
-            <Text variant="caption1" color="secondaryLabel" style={{ marginTop: space.l }} testID="footnote">
-              An accepted command starts a monitored movement; the barrier confirms arrival with its end-limit
-              switch.
-            </Text>
+            {connected && !faulted ? (
+              <Text
+                variant="caption1"
+                color="secondaryLabel"
+                style={{ marginTop: space.l }}
+                testID="footnote"
+              >
+                An accepted command starts a monitored movement; the barrier confirms arrival with its
+                end-limit switch.
+              </Text>
+            ) : null}
           </>
         ) : (
           <View style={styles.empty}>
             <EmptyState
               icon="bluetooth-outline"
-              title={connecting ? 'Connecting to your barrier' : 'Find your barrier'}
+              title={connecting ? 'Connecting to your barrier' : 'No barrier connected'}
               detail={
                 connecting
                   ? 'Hang on while your phone connects and checks that you are an owner.'
@@ -309,8 +317,8 @@ export default function ControlScreen() {
               }
             />
             <Button
-              title={connecting ? 'View progress' : 'Find barrier'}
-              icon="search"
+              title={connecting ? 'View progress' : 'Connect to barrier'}
+              icon="bluetooth"
               size="large"
               onPress={openFinder}
               testID="btn-find"
@@ -348,6 +356,6 @@ export default function ControlScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   sub: { flexDirection: 'row', alignItems: 'center', gap: space.s, flexWrap: 'wrap' },
-  chips: { flexDirection: 'row', alignItems: 'center', gap: space.s, marginTop: space.s },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.s, marginTop: space.s },
   empty: { flex: 1, justifyContent: 'center', paddingBottom: space.huge },
 });

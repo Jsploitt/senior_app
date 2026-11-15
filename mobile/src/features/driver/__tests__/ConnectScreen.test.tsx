@@ -58,7 +58,7 @@ describe('Connect modal', () => {
     expect(mockHandle.transport.getSnapshot().phase).toBe('pairing');
     expect(screen.getByTestId('pairing-card')).toBeTruthy();
     expect(screen.getByText(/Your phone will ask for a 6-digit code/)).toBeTruthy();
-    expect(screen.getByTestId('step-connecting').props.accessibilityLabel).toBe('Connecting, done');
+    expect(screen.getByTestId('step-connecting').props.accessibilityLabel).toBe('Connected, done');
     await advance(600);
 
     expect(mockHandle.transport.getSnapshot().phase).toBe('ready');

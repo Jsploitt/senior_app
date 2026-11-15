@@ -2,12 +2,13 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, EmptyState, Text } from '@/components';
+import { Button, Card, EmptyState, Text } from '@/components';
+import { StackHeader } from '@/components/StackHeader';
 import { exitPresenter } from '@/features/presenter/exit';
 import { useDeviceTick, useHandleSnapshot, useRunnerSnapshot } from '@/features/presenter/hooks';
 import { LiveHero, LiveReadout } from '@/features/presenter/LiveReadout';
 import { ScenarioRunner } from '@/features/presenter/runner';
-import { ScenarioDrawer } from '@/features/presenter/ScenarioDrawer';
+import { LatencyPanel, ScenarioDrawer, ScenarioSheet } from '@/features/presenter/ScenarioDrawer';
 import { findScenario } from '@/features/presenter/scenarios';
 import { SimulatedBadge } from '@/features/presenter/SimulatedBadge';
 import { StepCard, StepProgress } from '@/features/presenter/StepCard';
@@ -48,7 +49,8 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
   const insets = useSafeAreaInsets();
   const wide = useWindowDimensions().width >= 900;
   const snap = useRunnerSnapshot(runner);
-  const [drawerOpen, setDrawerOpen] = useState(runner.scenario.id === 'auth-latency');
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [dockH, setDockH] = useState(96);
   const phone = useHandleSnapshot(snap.handle);
   useDeviceTick(snap.handle?.device ?? null);
   const sc = runner.scenario;
@@ -59,8 +61,8 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
   const canNext = reviewing || !done;
   const passed = snap.results.filter((r) => r?.status === 'pass').length;
   const bad = snap.results.filter((r) => r && r.status !== 'pass').length;
-  /* The drawer's expanded panel needs the room on a phone: the hero steps aside, the step card stays. */
-  const hero = drawerOpen && !wide ? null : <LiveHero snap={phone} />;
+  const hero = <LiveHero snap={phone} />;
+  const isLatency = sc.id === 'auth-latency';
   const readout = (
     <View>
       <LiveReadout snap={phone} device={snap.handle?.device ?? null} />
@@ -89,35 +91,36 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
         reviewing={reviewing}
         booting={snap.booting}
       />
+      {isLatency ? (
+        <Card>
+          <LatencyPanel
+            samples={snap.samples}
+            params={snap.params}
+            onParams={(p) => runner.setParams(p)}
+            editable
+          />
+        </Card>
+      ) : null}
     </View>
   );
   return (
     <View style={[styles.flex, { backgroundColor: t.c.background }]} testID="presenter-runner">
       <Stack.Screen options={{ title: sc.title }} />
-      <View style={[styles.header, { paddingTop: insets.top + space.s }]}>
-        <Button
-          testID="presenter-back"
-          title="Scenarios"
-          icon="chevron-back"
-          variant="plain"
-          size="small"
-          haptic={false}
-          onPress={() => (router.canGoBack() ? router.back() : exitPresenter())}
-          accessibilityHint="Ends this run and returns to the scenario list"
-        />
-        <View style={styles.flex} />
-        <SimulatedBadge />
-      </View>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          { paddingTop: insets.top + space.s, paddingBottom: dockH + space.l },
+        ]}
+        contentInsetAdjustmentBehavior="never"
+      >
         <View style={styles.column}>
-          <Text variant="title2" accessibilityRole="header" numberOfLines={1} style={styles.title}>
-            {sc.title}
-          </Text>
-          {snap.frontier === 0 ? (
-            <Text variant="subheadline" color="secondaryLabel" style={styles.summary}>
-              {sc.summary}
-            </Text>
-          ) : null}
+          <StackHeader
+            backLabel="Scenarios"
+            title={sc.title}
+            subtitle={sc.summary}
+            right={<SimulatedBadge />}
+            onBack={() => (router.canGoBack() ? router.back() : exitPresenter())}
+          />
           {wide ? (
             <View style={styles.cols}>
               <View style={styles.col}>
@@ -149,13 +152,24 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
           ) : null}
         </View>
       </ScrollView>
-      <View style={{ paddingBottom: insets.bottom, backgroundColor: t.c.surface }}>
+      {panelOpen ? (
+        <ScenarioSheet
+          scenario={sc}
+          bottomOffset={dockH}
+          onClose={() => setPanelOpen(false)}
+          toggles={runner.readInterlocks()}
+          onToggle={(k, v) => void runner.setInterlock(k, v)}
+          samples={snap.samples}
+          params={snap.params}
+          onParams={(p) => runner.setParams(p)}
+        />
+      ) : null}
+      <View
+        style={[styles.dock, { paddingBottom: insets.bottom, backgroundColor: t.c.surface }]}
+        onLayout={(e) => setDockH(Math.round(e.nativeEvent.layout.height))}
+      >
         <View style={styles.column}>
           <ScenarioDrawer
-            scenario={sc}
-            stepIndex={snap.frontier}
-            viewIndex={snap.view}
-            onOpenChange={setDrawerOpen}
             onNext={() => void runner.next()}
             onPrev={() => runner.prev()}
             onAuto={() => (snap.auto ? runner.stopAuto() : void runner.autoPlay())}
@@ -164,11 +178,8 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
             busy={snap.busy || snap.booting}
             canPrev={snap.view > 0}
             canNext={canNext}
-            toggles={runner.readInterlocks()}
-            onToggle={(k, v) => void runner.setInterlock(k, v)}
-            samples={snap.samples}
-            params={snap.params}
-            onParams={(p) => runner.setParams(p)}
+            panelOpen={panelOpen}
+            onTogglePanel={() => setPanelOpen((o) => !o)}
           />
         </View>
       </View>
@@ -179,12 +190,11 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   missing: { flex: 1, justifyContent: 'center' },
-  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.m, paddingBottom: space.xs },
-  content: { paddingHorizontal: space.l, paddingBottom: space.xl, gap: space.xs },
+  content: { paddingHorizontal: space.l, gap: space.xs },
+  dock: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   column: { width: '100%', maxWidth: 1200, alignSelf: 'center' },
   cols: { flexDirection: 'row', gap: space.xl, alignItems: 'flex-start' },
   col: { flex: 1 },
   summary: { marginTop: space.xs, marginBottom: space.s },
   stack: { gap: space.m },
-  title: { marginBottom: space.s },
 });

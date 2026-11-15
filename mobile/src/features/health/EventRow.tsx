@@ -1,6 +1,7 @@
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Icon, Pill, Text, type IconName } from '../../components';
 import type { LogEntry, LogKind } from '../../transport/types';
+import { useTheme } from '../../theme/ThemeProvider';
 import { space } from '../../theme/tokens';
 import { clockTime, faultTitleFromName, humanizeMessage, opcodeLabel, resultTitleFromName } from './format';
 
@@ -16,44 +17,64 @@ const KIND_ICON: Record<LogKind, { icon: IconName; label: string }> = {
 
 type ChipTone = 'neutral' | 'positive' | 'warning' | 'critical' | 'tint';
 
-function resultTone(result: string): ChipTone {
+/** Same semantics as the barrier hero: motion = tint, lowered/done = positive, stopped/rejected = warning, fault = critical. */
+export function resultTone(result: string): ChipTone {
   if (result === 'FAULT') return 'critical';
-  if (result.startsWith('REJECTED_')) return 'warning';
-  if (result === 'ACCEPTED' || result === 'COMPLETED') return 'positive';
+  if (result === 'REJECTED_FORMAT') return 'critical';
+  if (result.startsWith('REJECTED_') || result === 'STOPPED') return 'warning';
+  if (result === 'ACCEPTED') return 'tint';
+  if (result === 'COMPLETED') return 'positive';
   return 'neutral';
 }
 
+/** Result-style chips only; counter and latency go to the subtitle (see entryMeta). */
 export function entryChips(e: LogEntry): { label: string; tone: ChipTone }[] {
   const chips: { label: string; tone: ChipTone }[] = [];
-  if (e.opcode) chips.push({ label: opcodeLabel(e.opcode), tone: 'tint' });
-  if (e.counter !== undefined) chips.push({ label: `#${e.counter}`, tone: 'neutral' });
   if (e.result) chips.push({ label: resultTitleFromName(e.result), tone: resultTone(e.result) });
   if (e.guardFailMask) chips.push({ label: 'Safety check blocked', tone: 'warning' });
-  if (e.latencyMs !== undefined) chips.push({ label: `${e.latencyMs} ms`, tone: 'neutral' });
   if (e.fault && e.fault !== 'NONE') chips.push({ label: faultTitleFromName(e.fault), tone: 'critical' });
   return chips;
 }
 
-export function EventRow({ entry }: { entry: LogEntry }) {
+/** Plain-text details in tabular digits: command, counter, latency. */
+export function entryMeta(e: LogEntry): string {
+  const parts = [clockTime(e.t)];
+  if (e.opcode) parts.push(opcodeLabel(e.opcode));
+  if (e.counter !== undefined) parts.push(`#${e.counter}`);
+  if (e.latencyMs !== undefined) parts.push(`${e.latencyMs} ms`);
+  parts.push(e.transport === 'sim' ? 'simulated' : 'Bluetooth');
+  return parts.join(' \u00B7 ');
+}
+
+export function EventRow({ entry, inset = false }: { entry: LogEntry; inset?: boolean }) {
+  const t = useTheme();
   const k = KIND_ICON[entry.kind];
-  const tone = entry.kind === 'error' || entry.kind === 'disconnect' ? 'critical' : 'tint';
+  const tone =
+    entry.kind === 'error' || entry.kind === 'disconnect'
+      ? 'critical'
+      : entry.kind === 'command'
+        ? 'tint'
+        : 'secondaryLabel';
   const chips = entryChips(entry);
   return (
     <View
       testID={`event-${entry.id}`}
       accessible
-      accessibilityLabel={[k.label, clockTime(entry.t), entry.message, ...chips.map((c) => c.label)].join(
-        ', ',
-      )}
-      style={{ flexDirection: 'row', gap: space.m, paddingVertical: space.m, paddingHorizontal: space.l }}
+      accessibilityLabel={[k.label, entryMeta(entry), entry.message, ...chips.map((c) => c.label)].join(', ')}
+      style={{ flexDirection: 'row', gap: space.m, paddingLeft: space.l }}
     >
-      <View style={{ width: 22, alignItems: 'center', paddingTop: 1 }}>
+      <View style={{ width: 22, alignItems: 'center', paddingTop: space.m + 2 }}>
         <Icon name={k.icon} size={18} color={tone} />
       </View>
-      <View style={{ flex: 1 }}>
+      <View
+        style={[
+          { flex: 1, paddingVertical: space.m, paddingRight: space.l },
+          inset && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: t.c.separator },
+        ]}
+      >
         <Text variant="body">{humanizeMessage(entry.message)}</Text>
         <Text variant="caption1" color="secondaryLabel" tabular style={{ marginTop: space.xxs }}>
-          {clockTime(entry.t)} {entry.transport === 'sim' ? 'simulated' : 'Bluetooth'}
+          {entryMeta(entry)}
         </Text>
         {chips.length ? (
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.xs, marginTop: space.s }}>

@@ -274,12 +274,16 @@ export interface Step {
   state: StepState;
 }
 
-const STEP_DEFS: Pick<Step, 'key' | 'label'>[] = [
-  { key: 'connecting', label: 'Connecting' },
-  { key: 'securing', label: 'Securing (pairing)' },
-  { key: 'owner', label: 'Checking owner' },
-  { key: 'ready', label: 'Ready' },
+const STEP_DEFS: (Pick<Step, 'key' | 'label'> & { doneLabel: string })[] = [
+  { key: 'connecting', label: 'Connecting', doneLabel: 'Connected' },
+  { key: 'securing', label: 'Securing (pairing)', doneLabel: 'Secured' },
+  { key: 'owner', label: 'Checking owner', doneLabel: 'Owner verified' },
+  { key: 'ready', label: 'Ready', doneLabel: 'Ready' },
 ];
+
+function makeStep(d: (typeof STEP_DEFS)[number], state: StepState): Step {
+  return { key: d.key, label: state === 'done' ? d.doneLabel : d.label, state };
+}
 
 /** Index of the step a phase belongs to (-1 = not started). */
 export function stepIndexOf(phase: ConnectionPhase): number {
@@ -303,17 +307,15 @@ export function stepIndexOf(phase: ConnectionPhase): number {
  */
 export function connectSteps(phase: ConnectionPhase, failedAtIndex: number | null = null): Step[] {
   if (failedAtIndex !== null) {
-    return STEP_DEFS.map((d, i) => ({
-      ...d,
-      state: i < failedAtIndex ? 'done' : i === failedAtIndex ? 'error' : 'todo',
-    }));
+    return STEP_DEFS.map((d, i) =>
+      makeStep(d, i < failedAtIndex ? 'done' : i === failedAtIndex ? 'error' : 'todo'),
+    );
   }
   const idx = stepIndexOf(phase);
-  return STEP_DEFS.map((d, i) => ({
-    ...d,
+  return STEP_DEFS.map((d, i) =>
     // 'ready' is terminal: every step is done
-    state: idx === 3 ? 'done' : i < idx ? 'done' : i === idx ? 'active' : 'todo',
-  }));
+    makeStep(d, idx === 3 ? 'done' : i < idx ? 'done' : i === idx ? 'active' : 'todo'),
+  );
 }
 
 export interface FailureCopy {

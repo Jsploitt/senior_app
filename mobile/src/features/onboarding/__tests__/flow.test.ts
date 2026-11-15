@@ -18,8 +18,13 @@ describe('onboarding flow', () => {
     expect(prevStep('welcome', 'ble')).toBeNull();
   });
   it('progress dots track position and total', () => {
-    expect(progressFor('enroll', 'ble')).toEqual({ index: 3, total: 5 });
-    expect(progressFor('enroll', 'sim')).toEqual({ index: 2, total: 4 });
+    expect(progressFor('enroll', 'ble')).toEqual({ index: 3, total: 5, skipped: [] });
+    expect(progressFor('enroll', 'sim')).toEqual({ index: 3, total: 5, skipped: [2] });
+  });
+  it('dot total is identical on every page and mode', () => {
+    for (const k of ['ble', 'sim'] as const)
+      for (const st of ['welcome', 'mode', 'bluetooth', 'enroll', 'done'] as const)
+        expect(progressFor(st, k).total).toBe(5);
   });
   it('every step has a route', () => {
     for (const s of stepsFor('ble')) expect(STEP_ROUTE[s]).toMatch(/^\/onboarding/);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Switch, useWindowDimensions, View } from 'react-native';
 import { Button } from '../../components/Button';
 import { Icon, type IconName } from '../../components/Icon';
@@ -21,7 +21,7 @@ const TOGGLES: { key: InterlockKey; label: string; hint: string }[] = [
   { key: 'link', label: 'Link', hint: 'Off drops the owner phone connection' },
 ];
 
-type Panel = 'interlocks' | 'latency';
+export type Panel = 'interlocks' | 'latency';
 const SPREADS: { value: string; label: string; sigma: number }[] = [
   { value: 'tight', label: 'Tight', sigma: 0.15 },
   { value: 'typical', label: 'Typical', sigma: 0.35 },
@@ -29,13 +29,6 @@ const SPREADS: { value: string; label: string; sigma: number }[] = [
 ];
 
 export interface ScenarioDrawerProps {
-  scenario: Scenario;
-  /** number of steps already run */
-  stepIndex: number;
-  /** step currently shown in the step card (0-based) */
-  viewIndex?: number;
-  /** tells the screen whether the panel is expanded (the hero steps aside on phones) */
-  onOpenChange?(open: boolean): void;
   onNext(): void;
   onPrev(): void;
   onAuto(): void;
@@ -45,6 +38,73 @@ export interface ScenarioDrawerProps {
   canPrev: boolean;
   /** a next step (or a review step) is available */
   canNext: boolean;
+  /** the interlocks / latency sheet is showing */
+  panelOpen: boolean;
+  onTogglePanel(): void;
+}
+
+/** Compact bottom dock, one row: Back / Next step / Auto / Reset / panel toggle. */
+export function ScenarioDrawer(p: ScenarioDrawerProps) {
+  const t = useTheme();
+  return (
+    <View
+      testID="scenario-drawer"
+      style={[styles.drawer, { backgroundColor: t.c.surface, borderTopColor: t.c.separator }]}
+    >
+      <View style={styles.controls}>
+        <IconButton
+          testID="btn-prev"
+          icon="play-skip-back"
+          label="Back"
+          hint="Review the previous step"
+          disabled={!p.canPrev || p.busy}
+          onPress={p.onPrev}
+        />
+        <Button
+          testID="btn-next"
+          title="Next step"
+          size="small"
+          style={styles.next}
+          disabled={!p.canNext || p.auto}
+          loading={p.busy && !p.auto}
+          onPress={p.onNext}
+          accessibilityHint="Runs the next step of the scenario"
+        />
+        <Button
+          testID="btn-auto"
+          title={p.auto ? 'Pause' : 'Auto'}
+          icon={p.auto ? 'pause' : 'play'}
+          variant="tinted"
+          size="small"
+          disabled={!p.auto && (!p.canNext || p.busy)}
+          onPress={p.onAuto}
+          accessibilityLabel={p.auto ? 'Pause auto-play' : 'Auto-play'}
+          accessibilityHint="Runs the remaining steps and stops at the first unexpected result"
+        />
+        <IconButton
+          testID="btn-reset"
+          icon="refresh"
+          label="Reset scenario"
+          hint="Starts the scenario over with a fresh simulated barrier"
+          onPress={p.onReset}
+        />
+        <IconButton
+          testID="drawer-toggle"
+          icon="options-outline"
+          label={p.panelOpen ? 'Hide interlocks and latency' : 'Show interlocks and latency'}
+          selected={p.panelOpen}
+          onPress={p.onTogglePanel}
+        />
+      </View>
+    </View>
+  );
+}
+
+export interface ScenarioSheetProps {
+  scenario: Scenario;
+  /** dock height: the sheet sits directly above it */
+  bottomOffset: number;
+  onClose(): void;
   toggles: InterlockToggles;
   onToggle(k: InterlockKey, v: boolean): void;
   samples: number[];
@@ -52,53 +112,40 @@ export interface ScenarioDrawerProps {
   onParams(p: Partial<ScenarioParams>): void;
 }
 
-/** Bottom controls: Back / Next / Auto-play / Reset, interlock toggles and the auth-latency meter. */
-export function ScenarioDrawer(p: ScenarioDrawerProps) {
+/** Interlock toggles and the auth-latency meter, shown over the content only when requested. */
+export function ScenarioSheet(p: ScenarioSheetProps) {
   const t = useTheme();
-  const [panel, setPanel] = useState<Panel>(p.scenario.id === 'auth-latency' ? 'latency' : 'interlocks');
   const { height } = useWindowDimensions();
-  const [open, setOpen] = useState(height >= 1000 || p.scenario.id === 'auth-latency');
-  const { onOpenChange } = p;
-  useEffect(() => onOpenChange?.(open), [open, onOpenChange]);
-  const view = Math.min(p.viewIndex ?? p.stepIndex, p.scenario.steps.length - 1);
-  const stepTitle = p.scenario.steps[view]?.title ?? '';
-  const spread = SPREADS.find((s) => s.sigma === p.params.latencySigma)?.value ?? 'typical';
   const isLatency = p.scenario.id === 'auth-latency';
+  const [panel, setPanel] = useState<Panel>('interlocks');
+  const shown: Panel = isLatency ? 'interlocks' : panel;
   return (
-    <View
-      testID="scenario-drawer"
-      style={[styles.drawer, { backgroundColor: t.c.surface, borderTopColor: t.c.separator }]}
-    >
-      <View style={styles.head}>
-        <View style={styles.flex}>
+    <View style={styles.overlay} testID="scenario-sheet">
+      <Pressable
+        style={[StyleSheet.absoluteFill, { backgroundColor: t.c.overlay }]}
+        onPress={p.onClose}
+        accessibilityRole="button"
+        accessibilityLabel="Close panel"
+      />
+      <View
+        style={[
+          styles.sheet,
+          { bottom: p.bottomOffset, backgroundColor: t.c.surface, maxHeight: Math.max(240, height * 0.6) },
+        ]}
+      >
+        {isLatency ? null : (
           <Segmented<Panel>
-            accessibilityLabel="Drawer panel"
+            accessibilityLabel="Panel"
             value={panel}
-            onChange={(v) => {
-              setPanel(v);
-              setOpen(true);
-            }}
+            onChange={setPanel}
             options={[
               { value: 'interlocks', label: 'Interlocks' },
               { value: 'latency', label: 'Auth latency' },
             ]}
           />
-        </View>
-        <IconButton
-          testID="drawer-toggle"
-          icon={open ? 'chevron-down' : 'chevron-up'}
-          label={open ? 'Hide drawer panel' : 'Show drawer panel'}
-          onPress={() => setOpen(!open)}
-        />
-      </View>
-
-      {!open ? null : (
-        <ScrollView
-          style={{ maxHeight: Math.max(160, height * 0.4) }}
-          contentContainerStyle={styles.panel}
-          showsVerticalScrollIndicator
-        >
-          {panel === 'interlocks' ? (
+        )}
+        <ScrollView contentContainerStyle={styles.panel} showsVerticalScrollIndicator>
+          {shown === 'interlocks' ? (
             <View style={styles.toggles}>
               {TOGGLES.map((tg) => {
                 const on = p.toggles[tg.key];
@@ -129,106 +176,69 @@ export function ScenarioDrawer(p: ScenarioDrawerProps) {
               })}
             </View>
           ) : (
-            <View style={styles.latency}>
-              <LatencyMeter
-                samples={p.samples}
-                specMs={SPEC5_AUTH_MAX_MS}
-                label="Phone-measured, simulated"
-              />
-              {isLatency ? (
-                <View style={styles.params}>
-                  <View style={styles.stepper}>
-                    <Button
-                      title="-100 ms"
-                      accessibilityLabel="Decrease median latency by 100 milliseconds"
-                      variant="gray"
-                      size="small"
-                      style={styles.step}
-                      onPress={() =>
-                        p.onParams({ latencyMedianMs: Math.max(200, p.params.latencyMedianMs - 100) })
-                      }
-                    />
-                    <View style={styles.flex}>
-                      <Text variant="footnote" color="secondaryLabel" align="center">
-                        Simulated median (next run)
-                      </Text>
-                      <Text variant="title3" align="center" tabular>
-                        {(p.params.latencyMedianMs / 1000).toFixed(2)} s
-                      </Text>
-                    </View>
-                    <Button
-                      title="+100 ms"
-                      accessibilityLabel="Increase median latency by 100 milliseconds"
-                      variant="gray"
-                      size="small"
-                      style={styles.step}
-                      onPress={() =>
-                        p.onParams({ latencyMedianMs: Math.min(3000, p.params.latencyMedianMs + 100) })
-                      }
-                    />
-                  </View>
-                  <Segmented
-                    accessibilityLabel="Latency spread"
-                    value={spread}
-                    onChange={(v) => p.onParams({ latencySigma: SPREADS.find((s) => s.value === v)!.sigma })}
-                    options={SPREADS.map((s) => ({ value: s.value, label: s.label }))}
-                  />
-                  <Text variant="footnote" color="secondaryLabel">
-                    Applies to the next run of &quot;Repeated connects&quot;. Reset to start over.
-                  </Text>
-                </View>
-              ) : null}
-            </View>
+            <LatencyPanel samples={p.samples} params={p.params} onParams={p.onParams} editable={false} />
           )}
         </ScrollView>
-      )}
-
-      <Text
-        variant="subheadline"
-        weight="600"
-        numberOfLines={1}
-        testID="drawer-step-caption"
-        accessibilityLabel={`Step ${view + 1} of ${p.scenario.steps.length}: ${stepTitle}`}
-      >
-        {`Step ${view + 1} of ${p.scenario.steps.length}: ${stepTitle}`}
-      </Text>
-      <View style={styles.controls}>
-        <IconButton
-          testID="btn-prev"
-          icon="chevron-back"
-          label="Previous step"
-          hint="Review the previous step"
-          disabled={!p.canPrev || p.busy}
-          onPress={p.onPrev}
-        />
-        <Button
-          testID="btn-next"
-          title="Next step"
-          icon="play-skip-forward"
-          style={styles.next}
-          disabled={!p.canNext || p.auto}
-          loading={p.busy && !p.auto}
-          onPress={p.onNext}
-          accessibilityHint="Runs the next step of the scenario"
-        />
-        <Button
-          testID="btn-auto"
-          title={p.auto ? 'Pause' : 'Auto'}
-          icon={p.auto ? 'pause' : 'play'}
-          variant="tinted"
-          disabled={!p.auto && (!p.canNext || p.busy)}
-          onPress={p.onAuto}
-          accessibilityLabel={p.auto ? 'Pause auto-play' : 'Auto-play'}
-          accessibilityHint="Runs the remaining steps and stops at the first unexpected result"
-        />
-        <IconButton
-          testID="btn-reset"
-          icon="refresh"
-          label="Reset scenario"
-          hint="Starts the scenario over with a fresh simulated barrier"
-          onPress={p.onReset}
-        />
       </View>
+    </View>
+  );
+}
+
+/** Latency meter, plus the simulated-median controls when the scenario is the latency one. */
+export function LatencyPanel({
+  samples,
+  params,
+  onParams,
+  editable,
+}: {
+  samples: number[];
+  params: ScenarioParams;
+  onParams(p: Partial<ScenarioParams>): void;
+  editable: boolean;
+}) {
+  const spread = SPREADS.find((s) => s.sigma === params.latencySigma)?.value ?? 'typical';
+  return (
+    <View style={styles.latency}>
+      <LatencyMeter samples={samples} specMs={SPEC5_AUTH_MAX_MS} label="Phone-measured, simulated" />
+      {editable ? (
+        <View style={styles.params}>
+          <View style={styles.stepper}>
+            <Button
+              title="-100 ms"
+              accessibilityLabel="Decrease median latency by 100 milliseconds"
+              variant="gray"
+              size="small"
+              style={styles.step}
+              onPress={() => onParams({ latencyMedianMs: Math.max(200, params.latencyMedianMs - 100) })}
+            />
+            <View style={styles.flex}>
+              <Text variant="footnote" color="secondaryLabel" align="center">
+                Simulated median (next run)
+              </Text>
+              <Text variant="title3" align="center" tabular>
+                {(params.latencyMedianMs / 1000).toFixed(2)} s
+              </Text>
+            </View>
+            <Button
+              title="+100 ms"
+              accessibilityLabel="Increase median latency by 100 milliseconds"
+              variant="gray"
+              size="small"
+              style={styles.step}
+              onPress={() => onParams({ latencyMedianMs: Math.min(3000, params.latencyMedianMs + 100) })}
+            />
+          </View>
+          <Segmented
+            accessibilityLabel="Latency spread"
+            value={spread}
+            onChange={(v) => onParams({ latencySigma: SPREADS.find((s) => s.value === v)!.sigma })}
+            options={SPREADS.map((s) => ({ value: s.value, label: s.label }))}
+          />
+          <Text variant="footnote" color="secondaryLabel">
+            Applies to the next run of &quot;Repeated connects&quot;. Reset to start over.
+          </Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -239,6 +249,7 @@ function IconButton({
   hint,
   onPress,
   disabled,
+  selected,
   testID,
 }: {
   icon: IconName;
@@ -246,6 +257,7 @@ function IconButton({
   hint?: string;
   onPress(): void;
   disabled?: boolean;
+  selected?: boolean;
   testID?: string;
 }) {
   const t = useTheme();
@@ -255,7 +267,7 @@ function IconButton({
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={hint}
-      accessibilityState={{ disabled: !!disabled }}
+      accessibilityState={{ disabled: !!disabled, selected: !!selected }}
       disabled={disabled}
       onPress={() => {
         tap();
@@ -263,25 +275,38 @@ function IconButton({
       }}
       style={({ pressed }) => [
         styles.iconBtn,
-        { backgroundColor: t.c.fill, opacity: disabled ? 0.4 : pressed ? 0.75 : 1 },
+        { backgroundColor: selected ? t.c.tintWash : t.c.fill, opacity: disabled ? 0.4 : pressed ? 0.75 : 1 },
       ]}
     >
-      <Icon name={icon} size={22} color="label" />
+      <Icon name={icon} size={22} color={selected ? 'tint' : 'label'} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  head: { flexDirection: 'row', alignItems: 'center', gap: space.s },
-  iconBtn: { width: 50, height: 50, borderRadius: radius.m, alignItems: 'center', justifyContent: 'center' },
+  iconBtn: {
+    width: hit,
+    height: hit,
+    borderRadius: radius.m,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   drawer: {
     paddingHorizontal: space.l,
-    paddingTop: space.m,
-    paddingBottom: space.m,
-    gap: space.s,
+    paddingVertical: space.m,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
   flex: { flex: 1 },
+  overlay: { ...StyleSheet.absoluteFill },
+  sheet: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    padding: space.l,
+    gap: space.m,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+  },
   toggles: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s },
   toggle: {
     flexGrow: 1,
@@ -299,6 +324,6 @@ const styles = StyleSheet.create({
   latency: { gap: space.m },
   params: { gap: space.s },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: space.s },
-  controls: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s, alignItems: 'center' },
-  next: { flexGrow: 1, flexBasis: 120 },
+  controls: { flexDirection: 'row', gap: space.s, alignItems: 'center' },
+  next: { flex: 1, minWidth: 0 },
 });

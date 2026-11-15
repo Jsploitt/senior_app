@@ -25,6 +25,13 @@ import { space, type Palette } from '../../theme/tokens';
 import { BarrierHero } from '../driver/BarrierHero';
 import { useDeviceTick, useNow } from './hooks';
 
+/** RAW_ENUM_NAME -> "Raw enum name" (hex codes stay as they are). */
+const sentence = (raw: string) => {
+  if (/^0x/i.test(raw)) return raw;
+  const w = raw.replace(/_/g, ' ').toLowerCase();
+  return w.charAt(0).toUpperCase() + w.slice(1);
+};
+
 const hex2 = (n: number) => `0x${n.toString(16).padStart(2, '0')}`;
 
 /** 7 s motion timer against the 4 s nominal travel, visible only while the arm is driven. */
@@ -146,7 +153,7 @@ function ReadRow({
     <View
       testID={testID}
       accessible
-      accessibilityLabel={`${label}: ${value}${raw ? `, code ${raw}` : ''}`}
+      accessibilityLabel={`${label}: ${value}${raw ? `, code ${sentence(raw)}` : ''}`}
       style={[
         styles.readRow,
         !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: t.c.separator },
@@ -159,8 +166,8 @@ function ReadRow({
         {value}
       </Text>
       {raw ? (
-        <Text variant="caption1" color="secondaryLabel" mono style={styles.readRaw}>
-          {raw}
+        <Text variant="footnote" color="secondaryLabel" style={styles.readRaw}>
+          {sentence(raw)}
         </Text>
       ) : null}
     </View>
@@ -195,7 +202,7 @@ export function LiveReadout({ snap, device }: LiveReadoutProps) {
   return (
     <View testID="live-readout" style={styles.readout}>
       <MotionClock device={device} />
-      <Card padded={false} style={styles.strip}>
+      <Card style={styles.strip}>
         <ReadRow testID="tile-state" label="State" value={stateText} raw={stateRaw} />
         <ReadRow
           testID="tile-result"
@@ -269,7 +276,7 @@ function StatusPill({ label, bad, ok }: { label: string; bad?: boolean; ok?: boo
 
 const styles = StyleSheet.create({
   readout: { gap: space.m },
-  strip: { paddingHorizontal: space.l },
+  strip: { paddingVertical: space.xs },
   readRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -279,7 +286,7 @@ const styles = StyleSheet.create({
   },
   readLabel: { width: 76 },
   readValue: { flex: 1 },
-  readRaw: { maxWidth: 130, textAlign: 'right' },
+  readRaw: { maxWidth: 120, textAlign: 'right' },
   upper: { textTransform: 'uppercase', letterSpacing: 0.4 },
   tileDetail: { marginTop: space.xxs },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s },

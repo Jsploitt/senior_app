@@ -217,16 +217,18 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
   const faultTitle = state === BarrierState.FAULT && fault ? FAULT_TEXT[fault].title : undefined;
   const base = state === null ? 'Not connected' : (faultTitle ?? text!.label);
   const label = stale && state !== null ? `Last known: ${base}` : base;
+  // FAULT: the title names the fault; the cause and the on-site reset live in the fault card only.
   const sub =
     detail ??
     (state === null
       ? 'Connect to see the arm.'
       : stale
-        ? 'Not live. Reconnect to update.'
+        ? 'Not live.'
         : state === BarrierState.FAULT
-          ? 'Locked until it is reset on site.'
+          ? undefined
           : text!.detail);
-  const ghost = state === null || state === BarrierState.UNKNOWN;
+  // FAULT: the arm position is untrusted, so draw it like UNKNOWN (dashed outline) in the fault tone
+  const ghost = state === null || state === BarrierState.UNKNOWN || state === BarrierState.FAULT;
 
   const washStyle = useAnimatedStyle(
     () => ({ backgroundColor: withTiming(wash, { duration: 300 }) }),
@@ -337,9 +339,11 @@ export function BarrierHero({ state, fault, compact, testID, stale, detail }: Ba
             {label}
           </Text>
         </View>
-        <Text variant="subheadline" color="secondaryLabel" align="center" style={{ marginTop: space.xs }}>
-          {sub}
-        </Text>
+        {sub ? (
+          <Text variant="subheadline" color="secondaryLabel" align="center" style={{ marginTop: space.xs }}>
+            {sub}
+          </Text>
+        ) : null}
         {isMoving(state) && !stale && !reduce && movingSince !== null ? (
           <ElapsedLine startedAt={movingSince} color="secondaryLabel" />
         ) : null}

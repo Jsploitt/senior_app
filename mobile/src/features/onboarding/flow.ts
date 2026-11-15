@@ -29,10 +29,19 @@ export function prevStep(step: OnboardingStep, kind: TransportKind): OnboardingS
   return i > 0 ? (s[i - 1] ?? null) : null;
 }
 
-/** 0-based dot index and total for the progress dots. */
-export function progressFor(step: OnboardingStep, kind: TransportKind): { index: number; total: number } {
-  const s = stepsFor(kind);
-  return { index: Math.max(0, s.indexOf(step)), total: s.length };
+/** Every page that can appear in the flow; the dots always show all of them. */
+export const DOT_STEPS: OnboardingStep[] = ['welcome', 'mode', 'bluetooth', 'enroll', 'done'];
+
+/**
+ * 0-based dot index and total for the progress dots. The total is fixed (5) so the dots never
+ * change between pages or modes; the Bluetooth dot is reported as skipped in simulator mode.
+ */
+export function progressFor(
+  step: OnboardingStep,
+  kind: TransportKind,
+): { index: number; total: number; skipped: number[] } {
+  const skipped = stepsFor(kind).includes('bluetooth') ? [] : [DOT_STEPS.indexOf('bluetooth')];
+  return { index: Math.max(0, DOT_STEPS.indexOf(step)), total: DOT_STEPS.length, skipped };
 }
 
 /** Where "Skip" goes: straight to the final page. */

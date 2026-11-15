@@ -133,7 +133,18 @@ const SHOTS = [
   { name: 'presenter-obstruction-step3', route: '/presenter/obstruction', setup: [clickText(/^Next/, 3, 2500)] },
   { name: 'presenter-limit-conflict', route: '/presenter/limit-conflict', setup: [clickText(/^Next/, 3, 5000)] },
   { name: 'presenter-replayed-command', route: '/presenter/replayed-command', setup: [clickText(/^Next/, 2, 2500)] },
-  { name: 'presenter-auth-latency', route: '/presenter/auth-latency', setup: [clickText(/^Next/, 1, 12000)] },
+  {
+    name: 'presenter-auth-latency',
+    route: '/presenter/auth-latency',
+    setup: [
+      clickText(/^Next/, 1, 12000),
+      async (p) => {
+        // the latency card sits below the step card: scroll it into view
+        await p.mouse.move(195, 400);
+        await p.mouse.wheel(0, 900);
+      },
+    ],
+  },
 ];
 
 const browser = await chromium.launch({ channel: 'chrome', headless: true });

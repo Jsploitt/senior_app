@@ -140,23 +140,26 @@ export function PairingCard() {
           Your phone will ask for a 6-digit code. Enter the passkey printed on the barrier&apos;s label in the
           Android pairing dialog.
         </Text>
-        {/* stylised system prompt */}
+        {/* static, muted illustration of the OS dialog: not an input */}
         <View
-          style={[styles.prompt, { backgroundColor: t.c.surface }]}
+          style={styles.illustration}
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
+          testID="pairing-illustration"
         >
-          <Text variant="footnote" weight="600" align="center">
-            Bluetooth Pairing Request
-          </Text>
-          <Text variant="caption1" color="secondaryLabel" align="center">
-            Enter the passkey for M010-Barrier
-          </Text>
-          <View style={{ flexDirection: 'row', gap: space.s, justifyContent: 'center', marginTop: space.xs }}>
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <View key={i} style={[styles.digit, { backgroundColor: t.c.fill }]} />
-            ))}
+          <View style={[styles.prompt, { backgroundColor: t.c.fill, opacity: 0.75 }]}>
+            <Text variant="caption1" weight="600" color="secondaryLabel" align="center">
+              Bluetooth pairing request
+            </Text>
+            <View style={styles.dots}>
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <View key={i} style={[styles.dot, { backgroundColor: t.c.tertiaryLabel }]} />
+              ))}
+            </View>
           </View>
+          <Text variant="caption1" color="secondaryLabel" align="center" style={{ marginTop: space.xs }}>
+            Example of the Android dialog
+          </Text>
         </View>
       </View>
     </Card>
@@ -182,6 +185,14 @@ const styles = StyleSheet.create({
   deviceIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   step: { flexDirection: 'row', alignItems: 'center', gap: space.m, minHeight: 32 },
   stepIcon: { width: 28, alignItems: 'center' },
-  prompt: { borderRadius: radius.l, padding: space.l, gap: space.xs },
-  digit: { width: 22, height: 28, borderRadius: radius.s },
+  illustration: { alignItems: 'center' },
+  prompt: {
+    borderRadius: radius.m,
+    paddingVertical: space.s,
+    paddingHorizontal: space.l,
+    gap: space.xs,
+    width: 200,
+  },
+  dots: { flexDirection: 'row', gap: space.s, justifyContent: 'center' },
+  dot: { width: 8, height: 8, borderRadius: 4 },
 });

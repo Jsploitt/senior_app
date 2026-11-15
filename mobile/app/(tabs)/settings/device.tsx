@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Banner, Button, Row, Screen, Section } from '@/components';
 import { StackHeader } from '@/components/StackHeader';
+import { BARRIER_LAST_COUNTER_LABEL, barrierLastCounter } from '@/features/health/format';
 import { FORGET_INSTRUCTIONS, forgetBarrier } from '@/features/settings/actions';
 import { useSettings } from '@/store/settings';
 import { useTransport, useTransportSnapshot } from '@/store/transport';
@@ -27,13 +28,12 @@ export default function DevicePage() {
       >
         <Row title="Name" value={name ?? 'None yet'} />
         <Row title="Device ID" value={id ?? 'None yet'} />
-        <Row title="Next command counter (this phone)" testID="local-counter" value={num(snap.nextCounter)} />
         <Row
-          title="Last counter (reported by barrier)"
+          title={BARRIER_LAST_COUNTER_LABEL}
           testID="device-counter"
-          value={snap.status ? String(snap.status.lastCounter) : 'Not connected'}
-          last
+          value={barrierLastCounter(snap.status)}
         />
+        <Row title="Phone's next counter" testID="local-counter" value={num(snap.nextCounter)} last />
       </Section>
 
       {phase === 'idle' ? (

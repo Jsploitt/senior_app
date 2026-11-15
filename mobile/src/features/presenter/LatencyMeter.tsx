@@ -32,16 +32,16 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
   return (
     <View testID="latency-meter" accessible accessibilityLabel={a11y} style={styles.wrap}>
       <View style={styles.top}>
-        <View style={styles.flex}>
-          <Text variant="caption1" color="secondaryLabel">
-            Auth latency, last
+        <View style={styles.stat}>
+          <Text variant="footnote" color="secondaryLabel">
+            Last
           </Text>
-          <Text variant="title1" tabular style={styles.big}>
+          <Text variant="title3" tabular>
             {formatSeconds(sum.last)}
           </Text>
         </View>
         <View style={styles.stat}>
-          <Text variant="caption1" color="secondaryLabel">
+          <Text variant="footnote" color="secondaryLabel">
             Median
           </Text>
           <Text variant="title3" tabular>
@@ -49,7 +49,7 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
           </Text>
         </View>
         <View style={styles.stat}>
-          <Text variant="caption1" color="secondaryLabel">
+          <Text variant="footnote" color="secondaryLabel">
             95th pct
           </Text>
           <Text variant="title3" tabular color={sum.p95 !== null && sum.p95 > specMs ? 'critical' : 'label'}>
@@ -57,8 +57,8 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
           </Text>
         </View>
         <View style={styles.stat}>
-          <Text variant="caption1" color="secondaryLabel">
-            n
+          <Text variant="footnote" color="secondaryLabel">
+            Connects
           </Text>
           <Text variant="title3" tabular>
             {sum.count}
@@ -85,7 +85,7 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
         </View>
         <View
           pointerEvents="none"
-          style={[styles.spec, { left: `${specPct}%`, backgroundColor: t.c.critical, height: BAR_H + 4 }]}
+          style={[styles.spec, { left: `${specPct}%`, borderColor: t.c.secondaryLabel, height: BAR_H + 4 }]}
         />
       </View>
       <View style={styles.axis}>
@@ -93,7 +93,7 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
           <Text variant="caption1" color="secondaryLabel">
             0
           </Text>
-          <Text variant="caption1" color="critical" weight="700">
+          <Text variant="caption1" color="secondaryLabel" weight="600">
             {formatSeconds(specMs, 1)} spec
           </Text>
         </View>
@@ -117,14 +117,12 @@ export function LatencyMeter({ samples, specMs, label }: LatencyMeterProps) {
 
 const styles = StyleSheet.create({
   wrap: { gap: space.s },
-  flex: { flex: 1 },
-  top: { flexDirection: 'row', alignItems: 'flex-end', gap: space.l },
-  big: { marginTop: 0 },
-  stat: { alignItems: 'flex-start', minWidth: 60 },
+  top: { flexDirection: 'row', alignItems: 'flex-start', gap: space.s },
+  stat: { flex: 1, alignItems: 'flex-start' },
   chart: { position: 'relative' },
   bars: { flexDirection: 'row', alignItems: 'flex-end', gap: 3, height: BAR_H + 4 },
   slot: { flex: 1, justifyContent: 'flex-end' },
-  spec: { position: 'absolute', top: 0, width: 2, borderRadius: 1 },
+  spec: { position: 'absolute', top: 0, width: 0, borderLeftWidth: 2, borderStyle: 'dashed' },
   axis: { flexDirection: 'row' },
   axisLeft: { flexDirection: 'row', justifyContent: 'space-between' },
   axisRight: { alignItems: 'flex-end' },

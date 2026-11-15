@@ -61,7 +61,7 @@ describe('Control screen: disconnected', () => {
     const { createSimTransport } = jest.requireActual('@/transport/SimTransport');
     mockHandle = createSimTransport();
     await mount();
-    expect(screen.getByText('Find your barrier')).toBeTruthy();
+    expect(screen.getByText('No barrier connected')).toBeTruthy();
     expect(screen.getByTestId('control-title').props.children).toBe('Barrier');
     expect(screen.getByTestId('local-only-chip')).toBeTruthy();
     expect(screen.getByTestId('simulated-badge')).toBeTruthy();
@@ -91,7 +91,7 @@ describe('Control screen: button enablement per state', () => {
     expect(enabled('btn-raise')).toBe(raise);
     expect(enabled('btn-stop')).toBe(stop);
     expect(screen.getByTestId('hero')).toBeTruthy();
-    expect(screen.getByTestId('footnote')).toBeTruthy();
+    if (state !== BarrierState.FAULT) expect(screen.getByTestId('footnote')).toBeTruthy();
     // disabled buttons carry the reason as an accessibility hint
     // a one-line reason caption is always shown above the pad when a command is disabled
     if (!raise || !lower) expect(screen.getByTestId('pad-hint')).toBeTruthy();
@@ -159,6 +159,10 @@ describe('Control screen: commands and banners', () => {
     expect(screen.getByText(/Hold the unit button for 8 seconds/)).toBeTruthy();
     expect(haptics.notify).toHaveBeenCalledWith('error');
     expect(enabled('btn-stop')).toBe(true);
+    // the sensor chip never claims "OK" while a fault is latched; "on-site reset" is said once
+    expect(screen.queryByText('Sensors OK')).toBeNull();
+    expect(screen.getByText('Sensors: see fault')).toBeTruthy();
+    expect(screen.getAllByText(/on-site reset/i)).toHaveLength(1);
   });
 
   it('STOP while moving sends STOP and reports "Stopped"', async () => {
@@ -205,7 +209,9 @@ describe('Control screen: link lost', () => {
     // stale hero: last known state, neutral, with a reason caption above the pad
     expect(screen.getByTestId('hero-label').props.children).toMatch(/^Last known: /);
     expect(screen.getByTestId('hero').props.accessibilityLabel).toMatch(/not live/);
-    expect(screen.getByTestId('pad-hint').props.children).toMatch(/Not connected/);
+    expect(screen.getByTestId('pad-hint').props.children).toMatch(/offline/);
+    // last-known chips are neutral and flagged as not live
+    expect(screen.getByTestId('chip-zone').props.accessibilityLabel).toMatch(/last known/);
     await fireEvent.press(screen.getByTestId('btn-reconnect'));
     await drive(Promise.resolve(), 10, 10);
     await advance(3000);

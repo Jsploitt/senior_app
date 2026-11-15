@@ -25,7 +25,8 @@ export function CountdownRing({
   const left = remainingMs(totalMs, startedAt, now);
   const frac = ringFraction(totalMs, startedAt, now);
   const expired = startedAt !== null && left === 0;
-  const color = expired ? t.c.critical : t.c.tint;
+  const idle = startedAt === null;
+  const color = expired ? t.c.critical : idle ? t.c.separator : t.c.tint;
   return (
     <View
       testID="countdown-ring"
@@ -48,7 +49,7 @@ export function CountdownRing({
           strokeDashoffset={circ * (1 - frac)}
         />
       </Svg>
-      <Text variant="display" tabular color={expired ? 'critical' : 'label'}>
+      <Text variant="display" tabular color={expired ? 'critical' : idle ? 'secondaryLabel' : 'label'}>
         {formatCountdown(left)}
       </Text>
       <Text variant="footnote" color="secondaryLabel">
