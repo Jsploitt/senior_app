@@ -1,6 +1,6 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, EmptyState, Text } from '@/components';
 import { exitPresenter } from '@/features/presenter/exit';
@@ -46,6 +46,7 @@ function RunnerScreen({ scenario }: { scenario: Scenario }) {
 function RunnerView({ runner }: { runner: ScenarioRunner }) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
+  const wide = useWindowDimensions().width >= 900;
   const snap = useRunnerSnapshot(runner);
   const phone = useHandleSnapshot(snap.handle);
   useDeviceTick(snap.handle?.device ?? null);
@@ -82,29 +83,35 @@ function RunnerView({ runner }: { runner: ScenarioRunner }) {
           <Text variant="subheadline" color="secondaryLabel" style={styles.summary}>
             {sc.summary}
           </Text>
-          <LiveReadout snap={phone} device={snap.handle?.device ?? null} />
-          {snap.bootError ? (
-            <Text variant="callout" color="critical" style={styles.summary}>
-              Could not connect the simulated owner phone: {snap.bootError}
-            </Text>
-          ) : null}
-          <StepProgress
-            scenario={sc}
-            results={snap.results}
-            view={snap.view}
-            frontier={snap.frontier}
-            runningIndex={snap.runningIndex}
-            onSelect={(i) => runner.goTo(i)}
-          />
-          <View style={styles.card}>
-            <StepCard
-              scenario={sc}
-              index={snap.view}
-              result={snap.results[snap.view] ?? null}
-              running={snap.runningIndex === snap.view}
-              reviewing={reviewing}
-              booting={snap.booting}
-            />
+          <View style={wide ? styles.cols : undefined}>
+            <View style={wide ? styles.col : undefined}>
+              <LiveReadout snap={phone} device={snap.handle?.device ?? null} />
+              {snap.bootError ? (
+                <Text variant="callout" color="critical" style={styles.summary}>
+                  Could not connect the simulated owner phone: {snap.bootError}
+                </Text>
+              ) : null}
+            </View>
+            <View style={wide ? styles.col : undefined}>
+              <StepProgress
+                scenario={sc}
+                results={snap.results}
+                view={snap.view}
+                frontier={snap.frontier}
+                runningIndex={snap.runningIndex}
+                onSelect={(i) => runner.goTo(i)}
+              />
+              <View style={styles.card}>
+                <StepCard
+                  scenario={sc}
+                  index={snap.view}
+                  result={snap.results[snap.view] ?? null}
+                  running={snap.runningIndex === snap.view}
+                  reviewing={reviewing}
+                  booting={snap.booting}
+                />
+              </View>
+            </View>
           </View>
           {done ? (
             <Text
@@ -152,7 +159,9 @@ const styles = StyleSheet.create({
   missing: { flex: 1, justifyContent: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.m, paddingBottom: space.xs },
   content: { paddingHorizontal: space.l, paddingBottom: space.xl },
-  column: { width: '100%', maxWidth: 760, alignSelf: 'center' },
+  column: { width: '100%', maxWidth: 1200, alignSelf: 'center' },
+  cols: { flexDirection: 'row', gap: space.xl, alignItems: 'flex-start' },
+  col: { flex: 1 },
   summary: { marginTop: space.xs, marginBottom: space.s },
   card: { marginTop: space.m },
 });

@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Switch, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, useWindowDimensions, View } from 'react-native';
 import { Button } from '../../components/Button';
+import { Icon, type IconName } from '../../components/Icon';
 import { Segmented } from '../../components/Layout';
 import { Text } from '../../components/Text';
 import { SPEC5_AUTH_MAX_MS } from '../../protocol/constants';
 import { useTheme } from '../../theme/ThemeProvider';
 import { hit, radius, space } from '../../theme/tokens';
+import { tap } from '../../utils/haptics';
 import { LatencyMeter } from './LatencyMeter';
 import type { InterlockKey, InterlockToggles } from './runner';
 import type { Scenario, ScenarioParams } from './types';
@@ -50,6 +52,8 @@ export interface ScenarioDrawerProps {
 export function ScenarioDrawer(p: ScenarioDrawerProps) {
   const t = useTheme();
   const [panel, setPanel] = useState<Panel>(p.scenario.id === 'auth-latency' ? 'latency' : 'interlocks');
+  const { height } = useWindowDimensions();
+  const [open, setOpen] = useState(height >= 820 || p.scenario.id === 'auth-latency');
   const spread = SPREADS.find((s) => s.sigma === p.params.latencySigma)?.value ?? 'typical';
   const isLatency = p.scenario.id === 'auth-latency';
   return (
@@ -57,17 +61,30 @@ export function ScenarioDrawer(p: ScenarioDrawerProps) {
       testID="scenario-drawer"
       style={[styles.drawer, { backgroundColor: t.c.surface, borderTopColor: t.c.separator }]}
     >
-      <Segmented<Panel>
-        accessibilityLabel="Drawer panel"
-        value={panel}
-        onChange={setPanel}
-        options={[
-          { value: 'interlocks', label: 'Interlocks' },
-          { value: 'latency', label: 'Auth latency' },
-        ]}
-      />
+      <View style={styles.head}>
+        <View style={styles.flex}>
+          <Segmented<Panel>
+            accessibilityLabel="Drawer panel"
+            value={panel}
+            onChange={(v) => {
+              setPanel(v);
+              setOpen(true);
+            }}
+            options={[
+              { value: 'interlocks', label: 'Interlocks' },
+              { value: 'latency', label: 'Auth latency' },
+            ]}
+          />
+        </View>
+        <IconButton
+          testID="drawer-toggle"
+          icon={open ? 'chevron-down' : 'chevron-up'}
+          label={open ? 'Hide drawer panel' : 'Show drawer panel'}
+          onPress={() => setOpen(!open)}
+        />
+      </View>
 
-      {panel === 'interlocks' ? (
+      {!open ? null : panel === 'interlocks' ? (
         <View style={styles.toggles}>
           {TOGGLES.map((tg) => {
             const on = p.toggles[tg.key];
@@ -91,6 +108,7 @@ export function ScenarioDrawer(p: ScenarioDrawerProps) {
                   accessible={false}
                   importantForAccessibility="no-hide-descendants"
                   trackColor={{ false: t.c.separator, true: t.c.positiveFill }}
+                  thumbColor={t.c.onTint}
                 />
               </Pressable>
             );
@@ -144,14 +162,13 @@ export function ScenarioDrawer(p: ScenarioDrawerProps) {
       )}
 
       <View style={styles.controls}>
-        <Button
+        <IconButton
           testID="btn-prev"
-          title="Back"
           icon="chevron-back"
-          variant="gray"
+          label="Previous step"
+          hint="Review the previous step"
           disabled={!p.canPrev || p.busy}
           onPress={p.onPrev}
-          accessibilityHint="Review the previous step"
         />
         <Button
           testID="btn-next"
@@ -165,27 +182,67 @@ export function ScenarioDrawer(p: ScenarioDrawerProps) {
         />
         <Button
           testID="btn-auto"
-          title={p.auto ? 'Pause' : 'Auto-play'}
+          title={p.auto ? 'Pause' : 'Auto'}
           icon={p.auto ? 'pause' : 'play'}
           variant="tinted"
           disabled={!p.auto && (!p.canNext || p.busy)}
           onPress={p.onAuto}
+          accessibilityLabel={p.auto ? 'Pause auto-play' : 'Auto-play'}
           accessibilityHint="Runs the remaining steps and stops at the first unexpected result"
         />
-        <Button
+        <IconButton
           testID="btn-reset"
-          title="Reset"
           icon="refresh"
-          variant="gray"
+          label="Reset scenario"
+          hint="Starts the scenario over with a fresh simulated barrier"
           onPress={p.onReset}
-          accessibilityHint="Starts the scenario over with a fresh simulated barrier"
         />
       </View>
     </View>
   );
 }
 
+function IconButton({
+  icon,
+  label,
+  hint,
+  onPress,
+  disabled,
+  testID,
+}: {
+  icon: IconName;
+  label: string;
+  hint?: string;
+  onPress(): void;
+  disabled?: boolean;
+  testID?: string;
+}) {
+  const t = useTheme();
+  return (
+    <Pressable
+      testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityHint={hint}
+      accessibilityState={{ disabled: !!disabled }}
+      disabled={disabled}
+      onPress={() => {
+        tap();
+        onPress();
+      }}
+      style={({ pressed }) => [
+        styles.iconBtn,
+        { backgroundColor: t.c.fill, opacity: disabled ? 0.4 : pressed ? 0.75 : 1 },
+      ]}
+    >
+      <Icon name={icon} size={22} color="label" />
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
+  head: { flexDirection: 'row', alignItems: 'center', gap: space.s },
+  iconBtn: { width: 50, height: 50, borderRadius: radius.m, alignItems: 'center', justifyContent: 'center' },
   drawer: {
     paddingHorizontal: space.l,
     paddingTop: space.m,
@@ -210,5 +267,5 @@ const styles = StyleSheet.create({
   params: { gap: space.s },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: space.s },
   controls: { flexDirection: 'row', flexWrap: 'wrap', gap: space.s, alignItems: 'center' },
-  next: { flexGrow: 1, flexBasis: 140 },
+  next: { flexGrow: 1, flexBasis: 120 },
 });
